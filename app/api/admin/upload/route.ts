@@ -17,9 +17,16 @@ export async function POST(request: NextRequest) {
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
-
     const buffer = await file.arrayBuffer();
-    const bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "website-b4855.firebasestorage.app";
+    
+    // The bucket is almost always <project-id>.appspot.com by default.
+    // .firebasestorage.app is a hostname, not the bucket name!
+    let bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "";
+    if (!bucketName || bucketName.includes("firebasestorage.app")) {
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID || "website-b4855";
+      bucketName = `${projectId}.appspot.com`;
+    }
+    
     const bucket = adminStorage.bucket(bucketName);
     
     const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
