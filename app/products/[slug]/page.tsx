@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/components/products/product-detail";
-import { getProductBySlug } from "@/lib/db";
+import { getProductBySlug, getProductReviews, getRelatedProducts } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -21,9 +21,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     notFound();
   }
 
+  const [reviews, relatedProducts] = await Promise.all([
+    getProductReviews(product.id).catch(() => []),
+    getRelatedProducts(product.categoryId, product.id, 4).catch(() => [])
+  ]);
+
   return (
     <div className="container py-16">
-      <ProductDetail product={product} />
+      <ProductDetail product={product} reviews={reviews} relatedProducts={relatedProducts} />
     </div>
   );
 }

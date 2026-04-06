@@ -3,21 +3,38 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, ShoppingCart, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { signOut } from "firebase/auth";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { APP_NAME, NAV_LINKS } from "@/lib/constants";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAppStore } from "@/store/use-app-store";
+import { useAuth } from "@/components/providers/auth-provider";
+import { getClientAuth } from "@/lib/firebase/client";
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const cartItemsCount = useAppStore((state) => state.cartItems.length);
+  const { user } = useAuth();
+  const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
     setHydrated(true);
   }, []);
+
+  async function handleSignOut() {
+    await fetch("/api/auth/session", { method: "DELETE" });
+    const auth = getClientAuth();
+    if (auth) {
+      await signOut(auth);
+    }
+    setOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/20 bg-background/65 backdrop-blur-2xl">
@@ -56,12 +73,22 @@ export function SiteHeader() {
             <span>{hydrated ? cartItemsCount : 0}</span>
           </Link>
           <ThemeToggle />
-          <Link
-            href="/login"
-            className="hidden rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:bg-primary/90 md:inline-flex"
-          >
-            Sign in
-          </Link>
+          {user || isAdminRoute ? (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="hidden rounded-full border border-border/80 bg-white/75 px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-white md:inline-flex dark:bg-white/5"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:bg-primary/90 md:inline-flex"
+            >
+              Sign in
+            </Link>
+          )}
           <button
             type="button"
             onClick={() => setOpen((state) => !state)}
@@ -91,9 +118,19 @@ export function SiteHeader() {
                   {link.label}
                 </Link>
               ))}
-              <Link href="/login" onClick={() => setOpen(false)} className="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white">
-                Sign in
-              </Link>
+              {user || isAdminRoute ? (
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="rounded-2xl border border-border/70 px-4 py-2 text-left text-sm font-semibold"
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link href="/login" onClick={() => setOpen(false)} className="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white">
+                  Sign in
+                </Link>
+              )}
             </div>
           </motion.div>
         ) : null}

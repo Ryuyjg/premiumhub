@@ -1,17 +1,21 @@
-import { Clock3, CreditCard, LayoutDashboard } from "lucide-react";
-import type { AppUser, Order, Subscription } from "@/types";
+import { Clock3, CreditCard, LayoutDashboard, Wallet } from "lucide-react";
+import Link from "next/link";
+import type { AppUser, Order, Subscription, SupportTicket } from "@/types";
 import { daysUntil, formatCurrency, formatDate } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { RevealCredentials } from "@/components/dashboard/reveal-credentials";
+import { SupportCenter } from "@/components/dashboard/support-center";
 
 export function DashboardOverview({
   user,
   subscriptions,
-  orders
+  orders,
+  tickets
 }: {
   user: AppUser;
   subscriptions: Subscription[];
   orders: Order[];
+  tickets: SupportTicket[];
 }) {
   return (
     <div className="space-y-8">
@@ -22,7 +26,7 @@ export function DashboardOverview({
           Track subscription health, see order activity, and stay ahead of expiry with proactive renewal visibility.
         </p>
       </div>
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <LayoutDashboard className="h-5 w-5 text-primary" />
           <p className="mt-5 text-sm text-muted-foreground">Active subscriptions</p>
@@ -39,6 +43,11 @@ export function DashboardOverview({
           <p className="mt-2 text-3xl font-semibold">
             {subscriptions.length ? `${Math.min(...subscriptions.map((item) => daysUntil(item.expiresAt)))} days` : "N/A"}
           </p>
+        </Card>
+        <Card>
+          <Wallet className="h-5 w-5 text-primary" />
+          <p className="mt-5 text-sm text-muted-foreground">Wallet balance</p>
+          <p className="mt-2 text-3xl font-semibold">{formatCurrency(user.walletBalance || 0)}</p>
         </Card>
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
@@ -77,6 +86,9 @@ export function DashboardOverview({
                     <div>
                       <p className="font-semibold">{order.productName}</p>
                       <p className="mt-1 text-sm text-muted-foreground">{formatDate(order.createdAt)}</p>
+                      <Link href={`/products/${order.productSlug}`} className="mt-2 inline-block text-xs font-semibold text-primary">
+                        Re-access product page
+                      </Link>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">{formatCurrency(order.amount)}</p>
@@ -91,6 +103,7 @@ export function DashboardOverview({
           </div>
         </Card>
       </div>
+      <SupportCenter tickets={tickets} />
     </div>
   );
 }

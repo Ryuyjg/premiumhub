@@ -30,7 +30,8 @@ async function ensureRazorpay() {
 
 export function CheckoutButton({ product }: { product: Product }) {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<"none" | "razorpay" | "wallet">("none");
+  const [couponCode, setCouponCode] = useState("");
 
   async function handleCheckout() {
     if (!user) {
@@ -38,13 +39,13 @@ export function CheckoutButton({ product }: { product: Product }) {
       return;
     }
 
-    setLoading(true);
+    setLoading("razorpay");
     try {
       await ensureRazorpay();
       const orderResponse = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id })
+        body: JSON.stringify({ productId: product.id, couponCode: couponCode.trim() || undefined })
       });
 
       if (!orderResponse.ok) {
@@ -94,13 +95,52 @@ export function CheckoutButton({ product }: { product: Product }) {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Checkout failed.");
     } finally {
-      setLoading(false);
+      setLoading("none");
+    }
+  }
+
+  async function handleWalletCheckout() {
+    if (!user) {
+      window.location.href = `/login?redirect=/products/${product.slug}`;
+      return;
+    }
+
+    setLoading("wallet");
+    try {
+      const response = await fetch("/api/wallet/purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id, couponCode: couponCode.trim() || undefined })
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || "Wallet purchase failed.");
+      }
+
+      toast.success("Wallet payment successful and subscription activated.");
+      window.location.href = "/dashboard";
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Wallet payment failed.");
+    } finally {
+      setLoading("none");
     }
   }
 
   return (
-    <Button onClick={handleCheckout} className="h-12 w-full" disabled={loading}>
-      {loading ? "Preparing secure checkout..." : "Buy now"}
-    </Button>
+    <div className="grid gap-3">
+      <input
+        value={couponCode}
+        onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
+        placeholder="Coupon code (optional)"
+        className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+      />
+      <Button onClick={handleCheckout} className="h-12 w-full" disabled={loading !== "none"}>
+        {loading === "razorpay" ? "Preparing secure checkout..." : "Buy with Razorpay"}
+      </Button>
+      <Button onClick={handleWalletCheckout} variant="outline" className="h-12 w-full" disabled={loading !== "none"}>
+        {loading === "wallet" ? "Processing wallet payment..." : "Pay with wallet balance"}
+      </Button>
+    </div>
   );
 }

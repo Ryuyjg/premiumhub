@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       email: decodedToken.email || "",
       displayName: decodedToken.name || existingUser.data()?.displayName || "",
       role: existingUser.data()?.role || "user",
+      walletBalance: Number(existingUser.data()?.walletBalance || 0),
       createdAt: existingUser.data()?.createdAt || new Date().toISOString()
     },
     { merge: true }

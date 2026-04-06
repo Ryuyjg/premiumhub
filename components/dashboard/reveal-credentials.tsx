@@ -33,18 +33,37 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
     }
   }
 
+  async function copyValue(value: string, label: string) {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} copied.`);
+    } catch {
+      toast.error(`Unable to copy ${label.toLowerCase()}.`);
+    }
+  }
+
   return (
     <div className="mt-4 space-y-3">
       {!credentials ? (
         <Button type="button" variant="ghost" className="border border-border" onClick={handleReveal} disabled={loading}>
-          {loading ? "Decrypting..." : "Reveal credentials"}
+          {loading ? "Decrypting..." : "Re-access credentials"}
         </Button>
       ) : (
         <div className="rounded-2xl border border-border bg-background/50 p-4 text-sm">
           <p className="font-semibold">{credentials.provider}</p>
           <p className="mt-2 text-muted-foreground">{credentials.label}</p>
-          <p className="mt-3">Email: {credentials.email}</p>
-          <p className="mt-1">Password: {credentials.password}</p>
+          <div className="mt-3 flex items-center justify-between gap-2">
+            <p className="truncate">Email: {credentials.email}</p>
+            <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.email, "Email")}>
+              Copy
+            </Button>
+          </div>
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <p className="truncate">Password: {credentials.password}</p>
+            <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.password, "Password")}>
+              Copy
+            </Button>
+          </div>
         </div>
       )}
     </div>

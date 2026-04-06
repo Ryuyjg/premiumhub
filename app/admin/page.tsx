@@ -2,17 +2,19 @@ import { AdminDashboard } from "@/components/admin/admin-dashboard";
 import {
   getAdminAnalytics,
   getAdminProducts,
+  getAdminReviews,
   getAllOrders,
   getAllUsers,
   getCategories,
   getCoupons,
-  getOttAccounts
+  getOttAccounts,
+  getSupportTickets
 } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const [analytics, products, orders, users, coupons, accounts, categories] = await Promise.all([
+  const [analytics, products, orders, users, coupons, accounts, categories, reviews, tickets] = await Promise.all([
     getAdminAnalytics().catch(() => ({
       revenue: 0,
       orders: 0,
@@ -25,7 +27,9 @@ export default async function AdminPage() {
     getAllUsers().catch(() => []),
     getCoupons().catch(() => []),
     getOttAccounts().catch(() => []),
-    getCategories().catch(() => [])
+    getCategories().catch(() => []),
+    getAdminReviews().catch(() => []),
+    getSupportTickets().catch(() => [])
   ]);
 
   return (
@@ -37,6 +41,8 @@ export default async function AdminPage() {
       accounts={accounts}
       categories={categories}
       users={users}
+      reviews={reviews}
+      tickets={tickets}
     />
   );
 }

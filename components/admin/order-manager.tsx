@@ -2,10 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 import type { Order } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const statusClass: Record<string, string> = {
   created: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
@@ -26,6 +28,21 @@ export function OrderManager({ orders }: { orders: Order[] }) {
       return matchStatus && matchQuery;
     });
   }, [orders, query, status]);
+
+  async function handleAction(orderId: string, action: "refund" | "replace") {
+    const response = await fetch("/api/admin/orders/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId, action })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      toast.error(data.error || "Unable to update order.");
+      return;
+    }
+    toast.success(action === "refund" ? "Refund processed." : "Account replaced.");
+    window.location.reload();
+  }
 
   return (
     <Card>
@@ -56,18 +73,20 @@ export function OrderManager({ orders }: { orders: Order[] }) {
         />
       </div>
       <div className="mt-5 overflow-hidden rounded-2xl border border-border/80">
-        <div className="hidden grid-cols-[1.2fr_0.8fr_0.5fr_0.6fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground md:grid">
+        <div className="hidden grid-cols-[1.2fr_0.8fr_0.5fr_0.6fr_0.8fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground md:grid">
           <p>Order</p>
           <p>User</p>
           <p>Status</p>
           <p className="text-right">Amount</p>
+          <p className="text-right">Actions</p>
         </div>
         <div className="divide-y divide-border/70">
           {filteredOrders.map((order) => (
-            <div key={order.id} className="grid gap-4 px-4 py-4 md:grid-cols-[1.2fr_0.8fr_0.5fr_0.6fr] md:items-center">
+            <div key={order.id} className="grid gap-4 px-4 py-4 md:grid-cols-[1.2fr_0.8fr_0.5fr_0.6fr_0.8fr] md:items-center">
               <div>
                 <p className="font-semibold">{order.productName}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{formatDate(order.createdAt)}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">{order.paymentMethod || "razorpay"}</p>
               </div>
               <p className="truncate text-sm text-muted-foreground">{order.userId}</p>
               <p className="text-sm">
@@ -76,6 +95,24 @@ export function OrderManager({ orders }: { orders: Order[] }) {
                 </span>
               </p>
               <p className="text-right text-sm font-semibold">{formatCurrency(order.amount)}</p>
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleAction(order.id, "replace")}
+                  disabled={order.status !== "paid"}
+                >
+                  Replace
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleAction(order.id, "refund")}
+                  disabled={order.status !== "paid"}
+                >
+                  Refund
+                </Button>
+              </div>
             </div>
           ))}
           {filteredOrders.length === 0 ? (

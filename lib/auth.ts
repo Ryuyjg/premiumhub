@@ -55,7 +55,8 @@ export async function getCurrentUser() {
       id: decoded.uid,
       email: decoded.email || "",
       displayName: decoded.name,
-      role: (userDoc.data()?.role || "user") as AppUser["role"]
+      role: (userDoc.data()?.role || "user") as AppUser["role"],
+      walletBalance: Number(userDoc.data()?.walletBalance || 0)
     } satisfies AppUser;
   } catch {
     return null;

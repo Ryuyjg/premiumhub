@@ -1,15 +1,24 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { Check, ShieldCheck } from "lucide-react";
-import type { Product } from "@/types";
+import { Check, ShieldCheck, Star } from "lucide-react";
+import type { Product, Review } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { CheckoutButton } from "@/components/products/purchase-panel";
 import { Badge } from "@/components/ui/badge";
 
-export function ProductDetail({ product }: { product: Product }) {
+export function ProductDetail({
+  product,
+  reviews,
+  relatedProducts
+}: {
+  product: Product;
+  reviews: Review[];
+  relatedProducts: Product[];
+}) {
   const [activeImage, setActiveImage] = useState(product.imageUrls[0]);
 
   return (
@@ -85,6 +94,44 @@ export function ProductDetail({ product }: { product: Product }) {
             ))}
           </div>
         </motion.div>
+        <motion.div whileHover={{ y: -4 }} className="surface rounded-[1.75rem] p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold">Customer reviews</h2>
+            <p className="text-sm text-muted-foreground">{reviews.length} reviews</p>
+          </div>
+          <div className="mt-4 space-y-3">
+            {reviews.map((review) => (
+              <div key={review.id} className="rounded-2xl border border-border/80 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-semibold">{review.name}</p>
+                  <div className="flex items-center gap-1 text-amber-500">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Star key={`${review.id}-${index}`} className={`h-3.5 w-3.5 ${index < review.rating ? "fill-current" : ""}`} />
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">{review.message}</p>
+              </div>
+            ))}
+            {reviews.length === 0 ? <p className="text-sm text-muted-foreground">No reviews yet.</p> : null}
+          </div>
+        </motion.div>
+      </div>
+      <div className="lg:col-span-2">
+        <div className="surface rounded-[1.75rem] p-6">
+          <h2 className="text-xl font-semibold">You may also like</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Recommended plans from the same category.</p>
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {relatedProducts.map((item) => (
+              <Link key={item.id} href={`/products/${item.slug}`} className="rounded-2xl border border-border/80 p-4 transition hover:border-primary/40">
+                <p className="font-semibold">{item.name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{item.shortDescription}</p>
+                <p className="mt-3 text-sm font-semibold">{formatCurrency(item.salePrice || item.price)}</p>
+              </Link>
+            ))}
+            {relatedProducts.length === 0 ? <p className="text-sm text-muted-foreground">No related products found.</p> : null}
+          </div>
+        </div>
       </div>
     </div>
   );

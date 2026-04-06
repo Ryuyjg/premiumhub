@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BarChart3, Boxes, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
-import type { AnalyticsSummary, AppUser, Category, Coupon, Order, OttAccount, Product } from "@/types";
+import type { AnalyticsSummary, AppUser, Category, Coupon, Order, OttAccount, Product, Review, SupportTicket } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { ProductManager } from "@/components/admin/product-manager";
@@ -11,6 +11,9 @@ import { CouponManager } from "@/components/admin/coupon-manager";
 import { AccountManager } from "@/components/admin/account-manager";
 import { CategoryManager } from "@/components/admin/category-manager";
 import { OrderManager } from "@/components/admin/order-manager";
+import { UserBalanceManager } from "@/components/admin/user-balance-manager";
+import { ReviewManager } from "@/components/admin/review-manager";
+import { SupportManager } from "@/components/admin/support-manager";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
@@ -28,7 +31,9 @@ export function AdminDashboard({
   coupons,
   accounts,
   categories,
-  users
+  users,
+  reviews,
+  tickets
 }: {
   analytics: AnalyticsSummary;
   products: Product[];
@@ -37,11 +42,21 @@ export function AdminDashboard({
   accounts: OttAccount[];
   categories: Category[];
   users: AppUser[];
+  reviews: Review[];
+  tickets: SupportTicket[];
 }) {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
   const paidOrders = useMemo(() => orders.filter((order) => order.status === "paid").length, [orders]);
   const failedOrders = useMemo(() => orders.filter((order) => order.status === "failed").length, [orders]);
+  const lowStockPools = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const remaining = Number(account.maxUsers || 0) - Number(account.activeUsers || 0);
+        return account.status !== "disabled" && remaining <= 1;
+      }).length,
+    [accounts]
+  );
 
   return (
     <div className="space-y-8">
@@ -68,6 +83,10 @@ export function AdminDashboard({
               <div className="rounded-2xl border border-border/70 bg-white/70 px-4 py-3 dark:bg-white/5">
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Account pools</p>
                 <p className="mt-1 font-semibold">{accounts.length} managed</p>
+              </div>
+              <div className="rounded-2xl border border-border/70 bg-white/70 px-4 py-3 dark:bg-white/5">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Stock alerts</p>
+                <p className="mt-1 font-semibold">{lowStockPools} low pools</p>
               </div>
             </div>
           </div>
@@ -159,36 +178,15 @@ export function AdminDashboard({
             <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
               <AccountManager accounts={accounts} products={products} />
               <OrderManager orders={orders} />
-              <Card className="xl:col-span-2">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">User directory</h2>
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{users.length} users</p>
-                </div>
-                <div className="mt-5 overflow-hidden rounded-2xl border border-border/80">
-                  <div className="grid grid-cols-[1.3fr_0.5fr_0.7fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                    <p>Email</p>
-                    <p>Role</p>
-                    <p>UID</p>
-                  </div>
-                  <div className="max-h-[22rem] divide-y divide-border/70 overflow-y-auto">
-                    {users.map((user) => (
-                      <div key={user.id} className="grid grid-cols-[1.3fr_0.5fr_0.7fr] items-center gap-3 px-4 py-3">
-                        <p className="truncate text-sm">{user.email || "unknown"}</p>
-                        <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${user.role === "admin" ? "bg-primary/10 text-primary" : "bg-slate-500/10 text-slate-700 dark:text-slate-300"}`}>
-                          {user.role || "user"}
-                        </span>
-                        <p className="truncate text-xs text-muted-foreground">{user.id}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Card>
+              <UserBalanceManager users={users} />
+              <SupportManager tickets={tickets} />
             </div>
           ) : null}
 
           {activeTab === "growth" ? (
             <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
               <CouponManager coupons={coupons} />
+              <ReviewManager reviews={reviews} products={products} />
               <Card>
                 <h2 className="text-xl font-semibold">Growth snapshots</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Track tactical levers influencing conversion.</p>

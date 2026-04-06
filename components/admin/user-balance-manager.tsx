@@ -1,0 +1,110 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import { toast } from "sonner";
+import type { AppUser } from "@/types";
+import { formatCurrency } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+export function UserBalanceManager({ users }: { users: AppUser[] }) {
+  const [query, setQuery] = useState("");
+  const [amountByUser, setAmountByUser] = useState<Record<string, string>>({});
+  const [actionByUser, setActionByUser] = useState<Record<string, "add" | "deduct">>({});
+  const [submittingUserId, setSubmittingUserId] = useState<string | null>(null);
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) =>
+      `${user.email} ${user.id}`.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [users, query]);
+
+  async function addBalance(userId: string) {
+    const amount = Number(amountByUser[userId] || "0");
+    const action = actionByUser[userId] || "add";
+    if (!amount || amount <= 0) {
+      toast.error("Enter a valid amount.");
+      return;
+    }
+
+    setSubmittingUserId(userId);
+    try {
+      const response = await fetch("/api/admin/users/balance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, amount, action })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to add balance.");
+      }
+
+      toast.success(action === "deduct" ? "Balance deducted." : "Balance added.");
+      setAmountByUser((current) => ({ ...current, [userId]: "" }));
+      window.location.reload();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Balance update failed.");
+    } finally {
+      setSubmittingUserId(null);
+    }
+  }
+
+  return (
+    <Card className="xl:col-span-2">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold">User balances</h2>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{users.length} users</p>
+      </div>
+      <div className="mt-4 relative">
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by email or uid" className="pl-10" />
+      </div>
+      <div className="mt-5 overflow-hidden rounded-2xl border border-border/80">
+        <div className="grid grid-cols-[1.2fr_0.5fr_1fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <p>User</p>
+          <p>Balance</p>
+          <p>Add funds</p>
+        </div>
+        <div className="max-h-[24rem] divide-y divide-border/70 overflow-y-auto">
+          {filteredUsers.map((user) => (
+            <div key={user.id} className="grid grid-cols-[1.2fr_0.5fr_1fr] items-center gap-3 px-4 py-3">
+              <div>
+                <p className="truncate text-sm font-medium">{user.email || "unknown"}</p>
+                <p className="truncate text-xs text-muted-foreground">{user.id}</p>
+              </div>
+              <p className="text-sm font-semibold">{formatCurrency(user.walletBalance || 0)}</p>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min="1"
+                  value={amountByUser[user.id] || ""}
+                  onChange={(event) => setAmountByUser((current) => ({ ...current, [user.id]: event.target.value }))}
+                  placeholder="Amount"
+                />
+                <select
+                  value={actionByUser[user.id] || "add"}
+                  onChange={(event) =>
+                    setActionByUser((current) => ({
+                      ...current,
+                      [user.id]: event.target.value as "add" | "deduct"
+                    }))
+                  }
+                  className="h-10 rounded-xl border border-border/80 bg-white/80 px-3 text-sm dark:bg-white/5"
+                >
+                  <option value="add">Add</option>
+                  <option value="deduct">Deduct</option>
+                </select>
+                <Button type="button" disabled={submittingUserId === user.id} onClick={() => addBalance(user.id)}>
+                  {submittingUserId === user.id ? "..." : "Apply"}
+                </Button>
+              </div>
+            </div>
+          ))}
+          {filteredUsers.length === 0 ? <p className="px-4 py-8 text-center text-sm text-muted-foreground">No users found.</p> : null}
+        </div>
+      </div>
+    </Card>
+  );
+}

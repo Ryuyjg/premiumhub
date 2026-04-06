@@ -37,6 +37,16 @@ export type Product = {
   updatedAt?: string;
 };
 
+export type Review = {
+  id: string;
+  productId: string;
+  name: string;
+  rating: number;
+  message: string;
+  active: boolean;
+  createdAt: string;
+};
+
 export type Coupon = {
   id: string;
   code: string;
@@ -58,8 +68,10 @@ export type Order = {
   productSlug: string;
   amount: number;
   status: OrderStatus;
-  razorpayOrderId: string;
+  razorpayOrderId?: string | null;
   razorpayPaymentId?: string;
+  paymentMethod?: "razorpay" | "wallet";
+  walletDeducted?: number;
   couponCode?: string;
   discountAmount?: number;
   createdAt: string;
@@ -100,7 +112,28 @@ export type AppUser = {
   email: string;
   displayName?: string;
   role: UserRole;
+  walletBalance?: number;
   createdAt?: string;
+};
+
+export type SupportTicket = {
+  id: string;
+  userId: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "open" | "in_progress" | "resolved";
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export type UserNotification = {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
 };
 
 export type AnalyticsSummary = {

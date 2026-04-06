@@ -8,6 +8,8 @@ import type {
   Order,
   OttAccount,
   Product,
+  Review,
+  SupportTicket,
   Subscription
 } from "@/types";
 
@@ -27,11 +29,13 @@ export async function expireOverdueSubscriptions() {
   }
 
   const batch = adminDb.batch();
+  const affectedAccountIds = new Set<string>();
   snapshot.docs.forEach((doc) => {
     const data = doc.data();
     batch.update(doc.ref, { status: "expired" });
 
     if (data.ottAccountId) {
+      affectedAccountIds.add(String(data.ottAccountId));
       batch.update(adminDb.collection("ottAccounts").doc(String(data.ottAccountId)), {
         activeUsers: FieldValue.increment(-1)
       });
@@ -39,6 +43,21 @@ export async function expireOverdueSubscriptions() {
   });
 
   await batch.commit();
+
+  await Promise.all(
+    Array.from(affectedAccountIds).map(async (accountId) => {
+      const accountRef = adminDb.collection("ottAccounts").doc(accountId);
+      const accountDoc = await accountRef.get();
+      if (!accountDoc.exists) {
+        return;
+      }
+      const account = accountDoc.data()!;
+      const activeUsers = Math.max(Number(account.activeUsers || 0), 0);
+      const maxUsers = Math.max(Number(account.maxUsers || 1), 1);
+      const status = account.status === "disabled" ? "disabled" : activeUsers >= maxUsers ? "full" : "available";
+      await accountRef.update({ activeUsers, status, updatedAt: new Date().toISOString() });
+    })
+  );
 }
 
 export async function getFeaturedProducts() {
@@ -134,9 +153,57 @@ export async function getOttAccounts() {
   return snapshot.docs.map((doc) => withId<OttAccount>(doc.id, doc.data()));
 }
 
+export async function getRelatedProducts(categoryId: string, excludeProductId: string, limit = 4) {
+  const snapshot = await adminDb
+    .collection("products")
+    .where("stockStatus", "==", "active")
+    .where("categoryId", "==", categoryId)
+    .limit(12)
+    .get();
+
+  return snapshot.docs
+    .map((doc) => withId<Product>(doc.id, doc.data()))
+    .filter((item) => item.id !== excludeProductId)
+    .slice(0, limit);
+}
+
 export async function getAllUsers() {
   const snapshot = await adminDb.collection("users").orderBy("createdAt", "desc").limit(200).get();
   return snapshot.docs.map((doc) => withId<AppUser>(doc.id, doc.data()));
+}
+
+export async function getProductReviews(productId: string) {
+  const snapshot = await adminDb
+    .collection("reviews")
+    .where("productId", "==", productId)
+    .where("active", "==", true)
+    .limit(20)
+    .get();
+
+  return snapshot.docs
+    .map((doc) => withId<Review>(doc.id, doc.data()))
+    .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+}
+
+export async function getAdminReviews() {
+  const snapshot = await adminDb.collection("reviews").orderBy("createdAt", "desc").limit(100).get();
+  return snapshot.docs.map((doc) => withId<Review>(doc.id, doc.data()));
+}
+
+export async function getSupportTickets() {
+  const snapshot = await adminDb.collection("supportTickets").orderBy("createdAt", "desc").limit(200).get();
+  return snapshot.docs.map((doc) => withId<SupportTicket>(doc.id, doc.data()));
+}
+
+export async function getSupportTicketsForUser(userId: string) {
+  const snapshot = await adminDb
+    .collection("supportTickets")
+    .where("userId", "==", userId)
+    .limit(50)
+    .get();
+  return snapshot.docs
+    .map((doc) => withId<SupportTicket>(doc.id, doc.data()))
+    .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 }
 
 export async function assignOttAccount(productId: string) {
