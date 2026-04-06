@@ -22,7 +22,14 @@ export function verifyAdminCookieValue(value?: string) {
     return false;
   }
 
-  const [email, signature] = value.split(".");
+  // Split on the last dot so emails like `name@gmail.com` remain intact.
+  const separatorIndex = value.lastIndexOf(".");
+  if (separatorIndex <= 0 || separatorIndex === value.length - 1) {
+    return false;
+  }
+
+  const email = value.slice(0, separatorIndex);
+  const signature = value.slice(separatorIndex + 1);
   if (!email || !signature || !ADMIN_LOGIN_EMAIL) {
     return false;
   }
