@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { toast } from "sonner";
-import { auth } from "@/lib/firebase/client";
+import { getClientAuth } from "@/lib/firebase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -15,6 +15,11 @@ export function AuthCard() {
   const [loading, setLoading] = useState(false);
 
   async function persistSession() {
+    const auth = getClientAuth();
+    if (!auth) {
+      throw new Error("Firebase client configuration missing.");
+    }
+
     const token = await auth.currentUser?.getIdToken();
     const response = await fetch("/api/auth/session", {
       method: "POST",
@@ -34,6 +39,11 @@ export function AuthCard() {
 
     setLoading(true);
     try {
+      const auth = getClientAuth();
+      if (!auth) {
+        throw new Error("Firebase client configuration missing.");
+      }
+
       if (mode === "register") {
         const credentials = await createUserWithEmailAndPassword(auth, email, password);
         if (name) {

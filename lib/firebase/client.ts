@@ -1,7 +1,7 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { type FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
+import { type Auth, getAuth } from "firebase/auth";
+import { type Firestore, getFirestore } from "firebase/firestore";
+import { type FirebaseStorage, getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,8 +12,65 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let cachedApp: FirebaseApp | null = null;
+let cachedAuth: Auth | null = null;
+let cachedDb: Firestore | null = null;
+let cachedStorage: FirebaseStorage | null = null;
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+function ensureBrowserApp() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  if (!firebaseConfig.apiKey) {
+    return null;
+  }
+
+  if (!cachedApp) {
+    cachedApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  }
+
+  return cachedApp;
+}
+
+export function getClientAuth() {
+  if (cachedAuth) {
+    return cachedAuth;
+  }
+
+  const app = ensureBrowserApp();
+  if (!app) {
+    return null;
+  }
+
+  cachedAuth = getAuth(app);
+  return cachedAuth;
+}
+
+export function getClientDb() {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  const app = ensureBrowserApp();
+  if (!app) {
+    return null;
+  }
+
+  cachedDb = getFirestore(app);
+  return cachedDb;
+}
+
+export function getClientStorage() {
+  if (cachedStorage) {
+    return cachedStorage;
+  }
+
+  const app = ensureBrowserApp();
+  if (!app) {
+    return null;
+  }
+
+  cachedStorage = getStorage(app);
+  return cachedStorage;
+}

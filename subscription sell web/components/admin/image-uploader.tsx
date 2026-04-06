@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { toast } from "sonner";
-import { storage } from "@/lib/firebase/client";
+import { getClientStorage } from "@/lib/firebase/client";
 
 export function ImageUploader({
   onUploaded
@@ -20,6 +20,11 @@ export function ImageUploader({
 
     setUploading(true);
     try {
+      const storage = getClientStorage();
+      if (!storage) {
+        throw new Error("Firebase storage config missing.");
+      }
+
       const fileRef = ref(storage, `products/${Date.now()}-${file.name}`);
       await uploadBytes(fileRef, file, {
         contentType: file.type
