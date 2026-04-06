@@ -19,15 +19,15 @@ export async function POST(request: NextRequest) {
     }
     const buffer = await file.arrayBuffer();
     
-    // The bucket is almost always <project-id>.appspot.com by default.
-    // .firebasestorage.app is a hostname, not the bucket name!
-    let bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "";
-    if (!bucketName || bucketName.includes("firebasestorage.app")) {
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID || "website-b4855";
-      bucketName = `${projectId}.appspot.com`;
+    // Dynamically fetch the real bucket directly from Google Cloud
+    // This perfectly bypasses any incorrect configuration in .env variables!
+    const [buckets] = await adminStorage.getBuckets();
+    if (!buckets || buckets.length === 0) {
+      throw new Error("No storage buckets exist in this Firebase project.");
     }
     
-    const bucket = adminStorage.bucket(bucketName);
+    // Auto-select the first available storage bucket
+    const bucket = buckets[0];
     
     const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
     const fileRef = bucket.file(fileName);
