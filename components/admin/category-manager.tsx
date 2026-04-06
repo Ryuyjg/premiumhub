@@ -128,11 +128,12 @@ export function CategoryManager({
                   type="button"
                   onClick={() => void deleteCategory(category)}
                   disabled={inUse || isDeleting}
-                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-rose-500/25 text-rose-600 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-rose-500/30 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-rose-600 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
                   aria-label={`Delete ${category.name}`}
                   title={inUse ? "Move linked products first" : "Delete category"}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3.5 w-3.5" />
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>
