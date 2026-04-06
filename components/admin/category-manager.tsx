@@ -87,7 +87,7 @@ export function CategoryManager({
 
   return (
     <Card className="h-full">
-      <h2 className="text-xl font-semibold">Category management</h2>
+      <h2 className="text-xl font-semibold">Category management (Delete enabled)</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         Create categories and safely delete categories that are not linked to products.
       </p>
