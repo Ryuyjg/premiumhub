@@ -5,6 +5,7 @@ import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 import { AppProviders } from "@/components/providers/app-providers";
 import { SiteHeader } from "@/components/navigation/site-header";
 import { SiteFooter } from "@/components/navigation/site-footer";
+import { SupportFloat } from "@/components/navigation/support-float";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProviders>
           <SiteHeader />
           <main className="min-h-screen">{children}</main>
+          <SupportFloat />
           <SiteFooter />
         </AppProviders>
       </body>
