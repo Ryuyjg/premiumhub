@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies();
-    const adminSession = cookieStore.get("admin_session");
+    const adminSession = cookieStore.get(process.env.ADMIN_SESSION_COOKIE_NAME || "ott_admin");
 
     if (!adminSession) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
