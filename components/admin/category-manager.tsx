@@ -1,32 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Box, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import type { Category, Product } from "@/types";
+import type { Category } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-export function CategoryManager({
-  categories,
-  products
-}: {
-  categories: Category[];
-  products: Product[];
-}) {
+export function CategoryManager({ categories }: { categories: Category[] }) {
   const [submitting, setSubmitting] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const categoryUsage = useMemo(() => {
-    const usageMap = new Map<string, number>();
-
-    products.forEach((product) => {
-      usageMap.set(product.categoryId, (usageMap.get(product.categoryId) || 0) + 1);
-    });
-
-    return usageMap;
-  }, [products]);
 
   async function createCategory(formData: FormData) {
     setSubmitting(true);
@@ -56,50 +38,10 @@ export function CategoryManager({
     }
   }
 
-  async function deleteCategory(category: Category) {
-    const productCount = categoryUsage.get(category.id) || 0;
-
-    if (productCount > 0) {
-      toast.error(`Move or delete ${productCount} product${productCount === 1 ? "" : "s"} from ${category.name} first.`);
-      return;
-    }
-
-    if (!confirm(`Delete "${category.name}" category?`)) {
-      return;
-    }
-
-    setDeletingId(category.id);
-    try {
-      const response = await fetch(`/api/admin/categories?id=${category.id}`, {
-        method: "DELETE"
-      });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to delete category.");
-      }
-
-      toast.success("Category deleted.");
-      window.location.reload();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Category delete failed.");
-    } finally {
-      setDeletingId(null);
-    }
-  }
-
   return (
     <Card className="h-full">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-semibold">Category management</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Create categories and safely remove only the ones that have no linked products.
-          </p>
-        </div>
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{categories.length} categories</p>
-      </div>
-
+      <h2 className="text-xl font-semibold">Category management</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Create categories with name and description.</p>
       <form action={createCategory} className="mt-5 grid gap-4">
         <Input name="name" placeholder="Movies and Entertainment" required />
         <textarea
@@ -109,50 +51,13 @@ export function CategoryManager({
         />
         <Button disabled={submitting}>{submitting ? "Saving..." : "Create category"}</Button>
       </form>
-
       <div className="mt-6 grid gap-3">
-        {categories.map((category) => {
-          const productCount = categoryUsage.get(category.id) || 0;
-          const inUse = productCount > 0;
-          const isDeleting = deletingId === category.id;
-
-          return (
-            <div key={category.id} className="rounded-2xl border border-border/80 px-4 py-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-semibold">{category.name}</p>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-muted/40 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                      <Box className="h-3.5 w-3.5" />
-                      {productCount} product{productCount === 1 ? "" : "s"}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{category.description || "No description added."}</p>
-                  {inUse ? (
-                    <p className="mt-2 text-xs text-amber-600 dark:text-amber-300">
-                      Delete is locked because products still use this category.
-                    </p>
-                  ) : (
-                    <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-300">
-                      Safe to delete.
-                    </p>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => void deleteCategory(category)}
-                  disabled={inUse || isDeleting}
-                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-rose-500/20 text-rose-600 transition hover:bg-rose-500/8 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
-                  aria-label={`Delete ${category.name}`}
-                  title={inUse ? "Move linked products first" : "Delete category"}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          );
-        })}
+        {categories.map((category) => (
+          <div key={category.id} className="rounded-2xl border border-border/80 px-4 py-3">
+            <p className="font-semibold">{category.name}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{category.description || "No description added."}</p>
+          </div>
+        ))}
       </div>
     </Card>
   );
