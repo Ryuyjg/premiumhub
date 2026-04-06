@@ -20,22 +20,35 @@ const updateAccountSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const allowed = await isAdminAuthorized();
-  if (!allowed) {
-    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  try {
+    const allowed = await isAdminAuthorized();
+    if (!allowed) {
+      return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    }
+    
+    // Validate request body
+    const body = await request.json();
+    const parsed = accountSchema.parse(body);
+    
+    const ref = await adminDb.collection("ottAccounts").add({
+      productId: parsed.productId,
+      provider: parsed.provider,
+      emailCiphertext: encryptSensitiveValue(parsed.email),
+      passwordCiphertext: encryptSensitiveValue(parsed.password),
+      maxUsers: parsed.maxUsers,
+      activeUsers: 0,
+      label: parsed.label,
+      status: "available"
+    });
+    
+    return NextResponse.json({ id: ref.id });
+  } catch (error) {
+    console.error("Account store error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to store account. Please check all fields." },
+      { status: 400 }
+    );
   }
-  const parsed = accountSchema.parse(await request.json());
-  const ref = await adminDb.collection("ottAccounts").add({
-    productId: parsed.productId,
-    provider: parsed.provider,
-    emailCiphertext: encryptSensitiveValue(parsed.email),
-    passwordCiphertext: encryptSensitiveValue(parsed.password),
-    maxUsers: parsed.maxUsers,
-    activeUsers: 0,
-    label: parsed.label,
-    status: "available"
-  });
-  return NextResponse.json({ id: ref.id });
 }
 
 export async function PUT(request: Request) {

@@ -46,12 +46,13 @@ export function AccountManager({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-
+      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error("Unable to store OTT account.");
+        throw new Error(data.error || "Unable to store account.");
       }
 
-      toast.success("Credential vault updated. Refresh to view the account.");
+      toast.success("OTT account stored.");
+      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Account storage failed.");
     } finally {
