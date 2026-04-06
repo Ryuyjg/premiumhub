@@ -48,7 +48,8 @@ export function CheckoutButton({ product }: { product: Product }) {
       });
 
       if (!orderResponse.ok) {
-        throw new Error("Unable to create Razorpay order.");
+        const orderError = await orderResponse.json().catch(() => ({}));
+        throw new Error(orderError.error || "Unable to create Razorpay order.");
       }
 
       const order = await orderResponse.json();

@@ -166,13 +166,15 @@ export function ProductManager({
             required
           />
           <div className="space-y-3">
-            <Input
-              value={form.imageUrl}
-              onChange={(event) => setForm((current) => ({ ...current, imageUrl: event.target.value }))}
-              placeholder="Product image URL"
-              required
-            />
+            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Product image</p>
             <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
+            {form.imageUrl ? (
+              <div className="rounded-xl border border-border/80 bg-muted/30 p-3 text-xs text-muted-foreground">
+                Uploaded image ready.
+              </div>
+            ) : (
+              <p className="text-xs text-rose-600">Please upload an image before saving.</p>
+            )}
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <Input
