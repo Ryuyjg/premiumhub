@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getCurrentUser } from "@/lib/auth";
+import { isAdminAuthorized } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { slugify } from "@/lib/utils";
 
@@ -11,8 +11,8 @@ const categorySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "admin") {
+  const allowed = await isAdminAuthorized();
+  if (!allowed) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 

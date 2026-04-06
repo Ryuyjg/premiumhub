@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || "ott_session";
+const ADMIN_SESSION_COOKIE_NAME = process.env.ADMIN_SESSION_COOKIE_NAME || "ott_admin";
 const SESSION_COOKIE_MAX_AGE = Number(process.env.SESSION_COOKIE_MAX_AGE || 60 * 60 * 24 * 5);
 
 export async function POST(request: Request) {
@@ -35,11 +36,13 @@ export async function POST(request: Request) {
     path: "/",
     maxAge: SESSION_COOKIE_MAX_AGE
   });
+  (await cookies()).delete(ADMIN_SESSION_COOKIE_NAME);
 
   return NextResponse.json({ success: true });
 }
 
 export async function DELETE() {
   (await cookies()).delete(SESSION_COOKIE_NAME);
+  (await cookies()).delete(ADMIN_SESSION_COOKIE_NAME);
   return NextResponse.json({ success: true });
 }

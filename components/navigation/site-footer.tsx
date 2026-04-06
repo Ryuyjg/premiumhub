@@ -9,7 +9,6 @@ export function SiteFooter() {
         <div className="flex gap-5">
           <Link href="/products">Plans</Link>
           <Link href="/dashboard">Dashboard</Link>
-          <Link href="/admin">Admin</Link>
         </div>
       </div>
     </footer>

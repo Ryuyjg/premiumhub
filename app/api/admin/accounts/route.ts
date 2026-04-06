@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getCurrentUser } from "@/lib/auth";
+import { isAdminAuthorized } from "@/lib/auth";
 import { encryptSensitiveValue } from "@/lib/crypto";
 import { adminDb } from "@/lib/firebase/admin";
 
@@ -14,8 +14,8 @@ const accountSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "admin") {
+  const allowed = await isAdminAuthorized();
+  if (!allowed) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
   const parsed = accountSchema.parse(await request.json());

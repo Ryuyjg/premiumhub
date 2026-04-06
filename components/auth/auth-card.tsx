@@ -39,6 +39,21 @@ export function AuthCard() {
 
     setLoading(true);
     try {
+      if (mode === "login") {
+        const adminLoginResponse = await fetch("/api/auth/admin-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (adminLoginResponse.ok) {
+          toast.success("Admin access granted.");
+          router.push("/admin");
+          router.refresh();
+          return;
+        }
+      }
+
       const auth = getClientAuth();
       if (!auth) {
         throw new Error("Firebase client configuration missing.");
@@ -58,7 +73,12 @@ export function AuthCard() {
       router.push(searchParams.get("redirect") || "/dashboard");
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Authentication failed.");
+      const message = error instanceof Error ? error.message : "Authentication failed.";
+      if (message.includes("Firebase client configuration")) {
+        toast.error("Firebase is not configured in deployment. Add NEXT_PUBLIC_FIREBASE_* env variables in Vercel.");
+      } else {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
     }

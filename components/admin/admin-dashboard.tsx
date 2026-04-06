@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BarChart3, Boxes, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
-import type { AnalyticsSummary, Category, Coupon, Order, OttAccount, Product } from "@/types";
+import type { AnalyticsSummary, AppUser, Category, Coupon, Order, OttAccount, Product } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { ProductManager } from "@/components/admin/product-manager";
@@ -27,7 +27,8 @@ export function AdminDashboard({
   orders,
   coupons,
   accounts,
-  categories
+  categories,
+  users
 }: {
   analytics: AnalyticsSummary;
   products: Product[];
@@ -35,6 +36,7 @@ export function AdminDashboard({
   coupons: Coupon[];
   accounts: OttAccount[];
   categories: Category[];
+  users: AppUser[];
 }) {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
@@ -157,6 +159,30 @@ export function AdminDashboard({
             <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
               <AccountManager accounts={accounts} products={products} />
               <OrderManager orders={orders} />
+              <Card className="xl:col-span-2">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold">User directory</h2>
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{users.length} users</p>
+                </div>
+                <div className="mt-5 overflow-hidden rounded-2xl border border-border/80">
+                  <div className="grid grid-cols-[1.3fr_0.5fr_0.7fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    <p>Email</p>
+                    <p>Role</p>
+                    <p>UID</p>
+                  </div>
+                  <div className="max-h-[22rem] divide-y divide-border/70 overflow-y-auto">
+                    {users.map((user) => (
+                      <div key={user.id} className="grid grid-cols-[1.3fr_0.5fr_0.7fr] items-center gap-3 px-4 py-3">
+                        <p className="truncate text-sm">{user.email || "unknown"}</p>
+                        <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${user.role === "admin" ? "bg-primary/10 text-primary" : "bg-slate-500/10 text-slate-700 dark:text-slate-300"}`}>
+                          {user.role || "user"}
+                        </span>
+                        <p className="truncate text-xs text-muted-foreground">{user.id}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
             </div>
           ) : null}
 

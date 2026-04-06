@@ -1,6 +1,7 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
 import type {
+  AppUser,
   AnalyticsSummary,
   Category,
   Coupon,
@@ -131,6 +132,11 @@ export async function getCoupons() {
 export async function getOttAccounts() {
   const snapshot = await adminDb.collection("ottAccounts").orderBy("provider", "asc").get();
   return snapshot.docs.map((doc) => withId<OttAccount>(doc.id, doc.data()));
+}
+
+export async function getAllUsers() {
+  const snapshot = await adminDb.collection("users").orderBy("createdAt", "desc").limit(200).get();
+  return snapshot.docs.map((doc) => withId<AppUser>(doc.id, doc.data()));
 }
 
 export async function assignOttAccount(productId: string) {

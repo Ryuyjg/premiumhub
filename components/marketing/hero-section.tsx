@@ -36,12 +36,6 @@ export function HeroSection() {
               >
                 Explore plans <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link
-                href="/admin"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-white/70 px-6 text-sm font-semibold transition hover:border-primary/30 hover:bg-white dark:bg-white/5"
-              >
-                View platform admin
-              </Link>
             </div>
             <div className="grid gap-4 pt-2 sm:grid-cols-3">
               {proofCards.map((item, index) => (
