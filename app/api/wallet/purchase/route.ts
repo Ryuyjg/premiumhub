@@ -3,7 +3,12 @@ import { getCurrentUser } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { fulfillPaidOrder } from "@/lib/order-fulfillment";
 
-function computeFinalAmount(baseAmount: number, coupon: Record<string, unknown> | null) {
+type CouponCandidate = {
+  type?: "flat" | "percent" | string;
+  value?: number;
+};
+
+function computeFinalAmount(baseAmount: number, coupon: CouponCandidate | null) {
   let finalAmount = baseAmount;
   let discountAmount = 0;
 
@@ -41,7 +46,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid product price." }, { status: 400 });
     }
 
-    let couponData: Record<string, unknown> | null = null;
+    let couponData: CouponCandidate | null = null;
     if (couponCode) {
       const couponSnapshot = await adminDb
         .collection("coupons")
@@ -53,7 +58,10 @@ export async function POST(request: Request) {
       if (!couponSnapshot.empty) {
         const coupon = couponSnapshot.docs[0].data();
         if (new Date(coupon.expiresAt) > new Date() && Number(coupon.usedCount || 0) < Number(coupon.usageLimit || 0)) {
-          couponData = coupon;
+          couponData = {
+            type: coupon.type,
+            value: Number(coupon.value || 0)
+          };
         }
       }
     }
