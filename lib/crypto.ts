@@ -3,9 +3,9 @@ import crypto from "crypto";
 const algorithm = "aes-256-gcm";
 
 function getKey() {
-  const secret = process.env.OTT_CREDENTIAL_SECRET;
+  const secret = process.env.OTT_CREDENTIAL_SECRET || process.env.ADMIN_SESSION_SECRET;
   if (!secret) {
-    throw new Error("OTT_CREDENTIAL_SECRET is missing.");
+    throw new Error("OTT_CREDENTIAL_SECRET is missing. Set OTT_CREDENTIAL_SECRET (or ADMIN_SESSION_SECRET) in server environment variables.");
   }
 
   return crypto.createHash("sha256").update(secret).digest();
