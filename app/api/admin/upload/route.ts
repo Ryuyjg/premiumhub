@@ -1,5 +1,5 @@
+// Updated to use ImgBB for 100% Free Image Hosting (No Credit Card required)
 import { type NextRequest, NextResponse } from "next/server";
-import { adminStorage } from "@/lib/firebase/admin";
 import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
@@ -17,32 +17,37 @@ export async function POST(request: NextRequest) {
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
-    const buffer = await file.arrayBuffer();
-    
-    // Explicitly grab the storageBucket from env as initialized
-    if (!process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET) {
-      throw new Error("Missing NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET in your Vercel Environment Variables.");
+
+    const apiKey = process.env.IMGBB_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "Free image hosting setup required. Please get a free API key from https://api.imgbb.com and add it as IMGBB_API_KEY in Vercel." },
+        { status: 500 }
+      );
     }
-    
-    // Try to get the bucket. If the bucket throws 404, Firebase Storage isn't initialized OR the name is wrong.
-    const bucket = adminStorage.bucket();
-    
-    const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
-    const fileRef = bucket.file(fileName);
 
-    await fileRef.save(Buffer.from(buffer), {
-      metadata: {
-        contentType: file.type
-      }
+    const buffer = await file.arrayBuffer();
+    const base64String = Buffer.from(buffer).toString('base64');
+    
+    // Upload directly to ImgBB
+    const imgbbFormData = new URLSearchParams();
+    imgbbFormData.append("key", apiKey);
+    imgbbFormData.append("image", base64String);
+
+    const uploadResponse = await fetch("https://api.imgbb.com/1/upload", {
+      method: "POST",
+      body: imgbbFormData,
     });
 
-    // Generate a long-lived signed URL to securely bypass any bucket rules or public-access blocks.
-    const [url] = await fileRef.getSignedUrl({
-      action: "read",
-      expires: "01-01-2500"
-    });
+    const data = await uploadResponse.json();
 
-    return NextResponse.json({ url });
+    if (!uploadResponse.ok || !data.success) {
+      throw new Error(data.error?.message || "Failed to upload to ImgBB");
+    }
+
+    // Return the direct image URL from ImgBB
+    return NextResponse.json({ url: data.data.url });
+
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(
