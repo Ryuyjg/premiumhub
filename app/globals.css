@@ -83,12 +83,12 @@ body:not(.dark) {
 
   /* ── Glass ── */
   .glass-panel {
-    @apply border border-white/20 bg-white/60 shadow-glass backdrop-blur-xl dark:border-white/8 dark:bg-white/4;
+    @apply border border-white/20 bg-white/60 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
   }
 
   .section-shell {
-    @apply rounded-[2rem] border border-white/25 bg-white/65 shadow-premium backdrop-blur-xl
-           dark:border-white/8 dark:bg-white/4;
+    @apply rounded-[2rem] border border-white/25 bg-white/70 shadow-premium backdrop-blur-xl
+           dark:border-white/10 dark:bg-white/5;
   }
 
   /* ── Surface ── */
@@ -112,7 +112,7 @@ body:not(.dark) {
     @apply rounded-full border border-border/70 bg-white/60 px-4 py-2 text-sm font-medium
            text-muted-foreground transition-all duration-200
            hover:border-primary/40 hover:bg-primary/5 hover:text-foreground
-           dark:bg-white/4;
+           dark:bg-white/5;
   }
 
   .pill-filter-active {
@@ -135,7 +135,7 @@ body:not(.dark) {
   /* ── Badge ── */
   .glow-badge {
     @apply inline-flex items-center gap-2 rounded-full border border-primary/25
-           bg-primary/8 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest
+           bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest
            text-primary shadow-inner shadow-primary/10;
   }
 
@@ -204,8 +204,8 @@ body:not(.dark) {
            px-4 text-sm text-foreground outline-none
            placeholder:text-muted-foreground/60
            transition-all duration-200
-           focus:border-primary/60 focus:bg-white focus:ring-4 focus:ring-primary/12
-           dark:bg-white/4 dark:focus:bg-white/8;
+           focus:border-primary/60 focus:bg-white focus:ring-4 focus:ring-primary/10
+           dark:bg-white/5 dark:focus:bg-white/10;
   }
 
   /* ── Gradient orb ── */
