@@ -18,6 +18,7 @@ type ProductForm = {
   imageUrl: string;
   price: string;
   discount: string;
+  bestSelling: boolean;
   deliveryMode: "direct_credentials" | "otp_manual" | "email_invite";
   otpSupportNumber: string;
   deliveryNotes: string;
@@ -30,6 +31,7 @@ const initialForm: ProductForm = {
   imageUrl: "",
   price: "",
   discount: "0",
+  bestSelling: false,
   deliveryMode: "direct_credentials",
   otpSupportNumber: "",
   deliveryNotes: ""
@@ -74,6 +76,7 @@ export function ProductManager({
         imageUrl: form.imageUrl.trim(),
         price: Number(form.price),
         discount: Number(form.discount || "0"),
+        bestSelling: form.bestSelling,
         deliveryMode: form.deliveryMode,
         otpSupportNumber: form.otpSupportNumber.trim(),
         deliveryNotes: form.deliveryNotes.trim(),
@@ -138,6 +141,7 @@ export function ProductManager({
       imageUrl: product.imageUrls[0] || "",
       price: String(product.price),
       discount: String(discount),
+      bestSelling: Boolean(product.bestSelling),
       deliveryMode: product.deliveryMode || "direct_credentials",
       otpSupportNumber: product.otpSupportNumber || "",
       deliveryNotes: product.deliveryNotes || ""
@@ -207,6 +211,15 @@ export function ProductManager({
               required
             />
           </div>
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={form.bestSelling}
+              onChange={(event) => setForm((current) => ({ ...current, bestSelling: event.target.checked }))}
+              className="h-4 w-4"
+            />
+            Mark as best-selling
+          </label>
           <select
             value={form.deliveryMode}
             onChange={(event) =>

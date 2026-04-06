@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Clock3 } from "lucide-react";
+import type { MouseEvent } from "react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { formatCurrency } from "@/lib/utils";
@@ -11,7 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/store/use-app-store";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  variant = "grid"
+}: {
+  product: Product;
+  variant?: "grid" | "list";
+}) {
   const addToCart = useAppStore((state) => state.addToCart);
   const isOutOfStock = Boolean(product.isOutOfStock);
   const rotateX = useMotionValue(0);
@@ -24,7 +31,7 @@ export function ProductCard({ product }: { product: Product }) {
     ["0 18px 45px rgba(14, 116, 216, 0.1)", "0 18px 45px rgba(14, 116, 216, 0.2)"]
   );
 
-  function onMove(event: React.MouseEvent<HTMLElement>) {
+  function onMove(event: MouseEvent<HTMLElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -64,9 +71,9 @@ export function ProductCard({ product }: { product: Product }) {
       style={{ rotateX: springX, rotateY: springY, boxShadow: shadow, transformStyle: "preserve-3d" }}
       className="relative"
     >
-      <div className="surface-interactive group overflow-hidden rounded-[1.75rem]">
+      <div className={`surface-interactive group overflow-hidden rounded-[1.75rem] ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
         <Link href={`/products/${product.slug}`} className="block">
-          <div className="relative aspect-[16/10] overflow-hidden">
+          <div className={`relative overflow-hidden ${variant === "list" ? "aspect-[16/8] md:aspect-[16/6]" : "aspect-[16/10]"}`}>
             <Image
               src={product.imageUrls[0] || "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1200&q=80"}
               alt={product.name}
@@ -77,15 +84,22 @@ export function ProductCard({ product }: { product: Product }) {
             <div className="absolute left-5 top-5">
               <Badge>{isOutOfStock ? "No stock" : product.categoryName}</Badge>
             </div>
+            {product.bestSelling ? (
+              <div className="absolute right-5 top-5 rounded-full border border-amber-400/25 bg-amber-500/90 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-amber-500/25">
+                Best seller
+              </div>
+            ) : null}
             <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
               <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/15 to-transparent blur-xl" />
             </div>
           </div>
-          <div className="space-y-4 p-6">
+          <div className={`space-y-4 ${variant === "list" ? "p-5 md:p-6" : "p-6"}`}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-xl font-semibold">{product.name}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{product.shortDescription}</p>
+                <h3 className={`${variant === "list" ? "text-lg md:text-xl" : "text-xl"} font-semibold`}>{product.name}</h3>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {product.shortDescription}
+                </p>
               </div>
               <ArrowRight className="h-5 w-5 shrink-0 text-primary transition group-hover:translate-x-1" />
             </div>

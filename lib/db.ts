@@ -5,6 +5,7 @@ import type {
   AnalyticsSummary,
   Category,
   Coupon,
+  Offer,
   Order,
   OttAccount,
   Product,
@@ -136,6 +137,13 @@ export async function getCategories() {
   return snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
 }
 
+export async function getOffers() {
+  const snapshot = await adminDb.collection("offers").where("active", "==", true).get();
+  return snapshot.docs
+    .map((doc) => withId<Offer>(doc.id, doc.data()))
+    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+}
+
 export async function getSubscriptionsForUser(userId: string) {
   await expireOverdueSubscriptions();
   const snapshot = await adminDb.collection("subscriptions").where("userId", "==", userId).get();
@@ -185,6 +193,13 @@ export async function getAllOrders() {
 export async function getCoupons() {
   const snapshot = await adminDb.collection("coupons").orderBy("expiresAt", "asc").get();
   return snapshot.docs.map((doc) => withId<Coupon>(doc.id, doc.data()));
+}
+
+export async function getAdminOffers() {
+  const snapshot = await adminDb.collection("offers").get();
+  return snapshot.docs
+    .map((doc) => withId<Offer>(doc.id, doc.data()))
+    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
 }
 
 export async function getOttAccounts() {

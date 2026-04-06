@@ -3,7 +3,18 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BarChart3, Boxes, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
-import type { AnalyticsSummary, AppUser, Category, Coupon, Order, OttAccount, Product, Review, SupportTicket } from "@/types";
+import type {
+  AnalyticsSummary,
+  AppUser,
+  Category,
+  Coupon,
+  Offer,
+  Order,
+  OttAccount,
+  Product,
+  Review,
+  SupportTicket
+} from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { ProductManager } from "@/components/admin/product-manager";
@@ -14,6 +25,7 @@ import { OrderManager } from "@/components/admin/order-manager";
 import { UserBalanceManager } from "@/components/admin/user-balance-manager";
 import { ReviewManager } from "@/components/admin/review-manager";
 import { SupportManager } from "@/components/admin/support-manager";
+import { OfferManager } from "@/components/admin/offer-manager";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
@@ -34,7 +46,8 @@ export function AdminDashboard({
   categories,
   users,
   reviews,
-  tickets
+  tickets,
+  offers
 }: {
   analytics: AnalyticsSummary;
   products: Product[];
@@ -45,6 +58,7 @@ export function AdminDashboard({
   users: AppUser[];
   reviews: Review[];
   tickets: SupportTicket[];
+  offers: Offer[];
 }) {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
@@ -193,6 +207,7 @@ export function AdminDashboard({
             <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
               <CouponManager coupons={coupons} />
               <ReviewManager reviews={reviews} products={products} />
+              <OfferManager offers={offers} />
               <Card>
                 <h2 className="text-xl font-semibold">Growth snapshots</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Track tactical levers influencing conversion.</p>

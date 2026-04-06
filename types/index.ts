@@ -30,6 +30,7 @@ export type Product = {
   imageUrls: string[];
   features: string[];
   featured?: boolean;
+  bestSelling?: boolean;
   stockStatus: "active" | "draft" | "archived";
   deliveryMode?: "direct_credentials" | "otp_manual" | "email_invite";
   otpSupportNumber?: string;
@@ -37,6 +38,20 @@ export type Product = {
   isOutOfStock?: boolean;
   seoTitle?: string;
   seoDescription?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type Offer = {
+  id: string;
+  title: string;
+  description: string;
+  badge?: string;
+  accent?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  active: boolean;
+  order: number;
   createdAt?: string;
   updatedAt?: string;
 };

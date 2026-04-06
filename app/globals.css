@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 40% 98%;
-  --foreground: 224 38% 12%;
+  --background: 210 38% 98%;
+  --foreground: 222 42% 11%;
   --card: 0 0% 100%;
   --border: 222 23% 88%;
   --input: 222 23% 88%;
-  --ring: 221 86% 57%;
-  --muted: 220 26% 95%;
-  --muted-foreground: 220 12% 39%;
-  --primary: 221 86% 57%;
+  --ring: 190 92% 43%;
+  --muted: 210 24% 95%;
+  --muted-foreground: 220 11% 40%;
+  --primary: 190 92% 43%;
   --primary-foreground: 0 0% 100%;
-  --accent: 195 96% 42%;
+  --accent: 214 94% 56%;
   --accent-foreground: 0 0% 100%;
   --success: 146 61% 40%;
   --warning: 35 92% 51%;
@@ -22,17 +22,17 @@
 }
 
 .dark {
-  --background: 224 42% 8%;
+  --background: 222 36% 8%;
   --foreground: 210 40% 98%;
   --card: 224 35% 11%;
   --border: 223 29% 20%;
   --input: 223 29% 20%;
-  --ring: 195 90% 49%;
+  --ring: 190 92% 48%;
   --muted: 223 30% 16%;
   --muted-foreground: 216 16% 70%;
-  --primary: 216 89% 61%;
+  --primary: 190 92% 48%;
   --primary-foreground: 0 0% 100%;
-  --accent: 195 90% 49%;
+  --accent: 214 90% 60%;
   --accent-foreground: 0 0% 100%;
   --success: 146 61% 40%;
   --warning: 35 92% 51%;
@@ -91,11 +91,11 @@ main::before {
   }
 
   .surface {
-    @apply rounded-3xl border border-border/70 bg-[hsl(var(--surface)/0.92)] text-[hsl(var(--surface-foreground))] shadow-[0_18px_68px_rgba(15,23,42,0.09)] backdrop-blur-xl dark:shadow-[0_22px_80px_rgba(2,6,23,0.36)];
+    @apply rounded-3xl border border-border/70 bg-[hsl(var(--surface)/0.92)] text-[hsl(var(--surface-foreground))] shadow-[0_14px_42px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:shadow-[0_18px_60px_rgba(2,6,23,0.34)];
   }
 
   .surface-interactive {
-    @apply surface transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_90px_rgba(37,99,235,0.16)] dark:hover:shadow-[0_24px_90px_rgba(14,165,233,0.24)];
+    @apply surface transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_70px_rgba(8,145,178,0.18)] dark:hover:shadow-[0_24px_78px_rgba(8,145,178,0.3)];
   }
 
   .pill-filter {
