@@ -19,15 +19,13 @@ export async function POST(request: NextRequest) {
     }
     const buffer = await file.arrayBuffer();
     
-    // Dynamically fetch the real bucket directly from Google Cloud
-    // This perfectly bypasses any incorrect configuration in .env variables!
-    const [buckets] = await adminStorage.getBuckets();
-    if (!buckets || buckets.length === 0) {
-      throw new Error("No storage buckets exist in this Firebase project.");
+    // Explicitly grab the storageBucket from env as initialized
+    if (!process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET) {
+      throw new Error("Missing NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET in your Vercel Environment Variables.");
     }
     
-    // Auto-select the first available storage bucket
-    const bucket = buckets[0];
+    // Try to get the bucket. If the bucket throws 404, Firebase Storage isn't initialized OR the name is wrong.
+    const bucket = adminStorage.bucket();
     
     const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
     const fileRef = bucket.file(fileName);
