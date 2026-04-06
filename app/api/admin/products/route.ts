@@ -27,7 +27,7 @@ async function buildProductPayload(parsed: z.infer<typeof productSchema>) {
 
   const category = categoryDoc.data()!;
   const discount = Number(parsed.discount || 0);
-  const salePrice = discount > 0 ? Math.max(Math.round(parsed.price * (1 - discount / 100)), 1) : undefined;
+  const salePrice = discount > 0 ? Math.max(Math.round(parsed.price * (1 - discount / 100)), 1) : null;
 
   return {
     name: parsed.name,
