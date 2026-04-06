@@ -51,35 +51,34 @@ export function AuthCard() {
 
     setLoading(true);
     try {
-      const auth = getClientAuth();
-      if (!auth) {
-        throw new Error("Firebase client configuration missing.");
-      }
-
       if (mode === "register") {
+        const auth = getClientAuth();
+        if (!auth) {
+          throw new Error("Firebase client configuration missing.");
+        }
         const credentials = await createUserWithEmailAndPassword(auth, email, password);
         if (name) {
           await updateProfile(credentials.user, { displayName: name });
         }
       } else {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-        } catch (firebaseLoginError) {
-          const adminLoginResponse = await fetch("/api/auth/admin-login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-          });
+        const adminLoginResponse = await fetch("/api/auth/admin-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
 
-          if (adminLoginResponse.ok) {
-            toast.success("Admin access granted.");
-            router.replace("/admin");
-            router.refresh();
-            return;
-          }
-
-          throw firebaseLoginError;
+        if (adminLoginResponse.ok) {
+          toast.success("Admin access granted.");
+          router.replace("/admin");
+          router.refresh();
+          return;
         }
+
+        const auth = getClientAuth();
+        if (!auth) {
+          throw new Error("Firebase client configuration missing.");
+        }
+        await signInWithEmailAndPassword(auth, email, password);
       }
 
       await persistSession();
