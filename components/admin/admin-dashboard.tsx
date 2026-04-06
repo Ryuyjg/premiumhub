@@ -19,6 +19,7 @@ const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
   { id: "catalog", label: "Catalog", icon: Boxes },
   { id: "operations", label: "Operations", icon: ShieldCheck },
+  { id: "users", label: "Users", icon: Users2 },
   { id: "growth", label: "Growth", icon: TicketPercent }
 ] as const;
 
@@ -178,8 +179,13 @@ export function AdminDashboard({
             <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
               <AccountManager accounts={accounts} products={products} />
               <OrderManager orders={orders} />
-              <UserBalanceManager users={users} />
               <SupportManager tickets={tickets} />
+            </div>
+          ) : null}
+
+          {activeTab === "users" ? (
+            <div className="grid gap-6">
+              <UserBalanceManager users={users} />
             </div>
           ) : null}
 

@@ -54,7 +54,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
   return (
     <Card className="xl:col-span-2">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold">User balances</h2>
+        <h2 className="text-xl font-semibold">All registered users and wallet</h2>
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{users.length} users</p>
       </div>
       <div className="mt-4 relative">
@@ -65,7 +65,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
         <div className="grid grid-cols-[1.2fr_0.5fr_1fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <p>User</p>
           <p>Balance</p>
-          <p>Add funds</p>
+          <p>Wallet action</p>
         </div>
         <div className="max-h-[24rem] divide-y divide-border/70 overflow-y-auto">
           {filteredUsers.map((user) => (
@@ -102,7 +102,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
               </div>
             </div>
           ))}
-          {filteredUsers.length === 0 ? <p className="px-4 py-8 text-center text-sm text-muted-foreground">No users found.</p> : null}
+          {filteredUsers.length === 0 ? <p className="px-4 py-8 text-center text-sm text-muted-foreground">No users found. Users appear after signup/login.</p> : null}
         </div>
       </div>
     </Card>

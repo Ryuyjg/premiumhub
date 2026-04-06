@@ -1,5 +1,5 @@
 import { FieldValue } from "firebase-admin/firestore";
-import { adminDb } from "@/lib/firebase/admin";
+import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import type {
   AppUser,
   AnalyticsSummary,
@@ -168,8 +168,40 @@ export async function getRelatedProducts(categoryId: string, excludeProductId: s
 }
 
 export async function getAllUsers() {
-  const snapshot = await adminDb.collection("users").orderBy("createdAt", "desc").limit(200).get();
-  return snapshot.docs.map((doc) => withId<AppUser>(doc.id, doc.data()));
+  const firestoreSnapshot = await adminDb.collection("users").limit(500).get();
+  const firestoreMap = new Map<string, AppUser>();
+
+  firestoreSnapshot.docs.forEach((doc) => {
+    const data = doc.data();
+    firestoreMap.set(doc.id, {
+      id: doc.id,
+      email: String(data.email || ""),
+      displayName: String(data.displayName || ""),
+      role: (data.role || "user") as AppUser["role"],
+      walletBalance: Number(data.walletBalance || 0),
+      createdAt: String(data.createdAt || "")
+    });
+  });
+
+  try {
+    const authUsers = await adminAuth.listUsers(1000);
+
+    authUsers.users.forEach((userRecord) => {
+      const existing = firestoreMap.get(userRecord.uid);
+      firestoreMap.set(userRecord.uid, {
+        id: userRecord.uid,
+        email: userRecord.email || existing?.email || "",
+        displayName: userRecord.displayName || existing?.displayName || "",
+        role: existing?.role || "user",
+        walletBalance: Number(existing?.walletBalance || 0),
+        createdAt: existing?.createdAt || userRecord.metadata.creationTime || ""
+      });
+    });
+  } catch {
+    // Fallback to Firestore-only user list if Auth listing is unavailable.
+  }
+
+  return Array.from(firestoreMap.values()).sort((a, b) => (String(a.createdAt || "") > String(b.createdAt || "") ? -1 : 1));
 }
 
 export async function getProductReviews(productId: string) {
