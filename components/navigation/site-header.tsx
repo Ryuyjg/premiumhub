@@ -17,13 +17,50 @@ export function SiteHeader() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [sessionAuthenticated, setSessionAuthenticated] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const cartItemsCount = useAppStore((state) => state.cartItems.length);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkSession() {
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!response.ok) {
+          if (!cancelled) {
+            setSessionAuthenticated(false);
+            setCheckingSession(false);
+          }
+          return;
+        }
+        const payload = (await response.json()) as { authenticated?: boolean };
+        if (!cancelled) {
+          setSessionAuthenticated(Boolean(payload.authenticated));
+          setCheckingSession(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setSessionAuthenticated(false);
+          setCheckingSession(false);
+        }
+      }
+    }
+
+    checkSession();
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
+
+  const isLoggedIn = Boolean(user) || sessionAuthenticated || isAdminRoute;
+  const authLoading = loading || checkingSession;
 
   async function handleSignOut() {
     await fetch("/api/auth/session", { method: "DELETE" });
@@ -73,7 +110,9 @@ export function SiteHeader() {
             <span>{hydrated ? cartItemsCount : 0}</span>
           </Link>
           <ThemeToggle />
-          {user || isAdminRoute ? (
+          {authLoading ? (
+            <div className="hidden h-10 w-24 rounded-full border border-border/60 bg-white/50 md:block dark:bg-white/5" />
+          ) : isLoggedIn ? (
             <button
               type="button"
               onClick={handleSignOut}
@@ -84,7 +123,7 @@ export function SiteHeader() {
           ) : (
             <Link
               href="/login"
-              className="hidden rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:bg-primary/90 md:inline-flex"
+              className="hidden rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-primary/90 md:inline-flex"
             >
               Sign in
             </Link>
@@ -118,7 +157,7 @@ export function SiteHeader() {
                   {link.label}
                 </Link>
               ))}
-              {user || isAdminRoute ? (
+              {authLoading ? null : isLoggedIn ? (
                 <button
                   type="button"
                   onClick={handleSignOut}
