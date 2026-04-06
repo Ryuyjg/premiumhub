@@ -6,33 +6,65 @@ import { slugify } from "@/lib/utils";
 
 const productSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(3),
-  shortDescription: z.string().min(12),
-  description: z.string().min(20),
-  price: z.number().positive(),
-  salePrice: z.number().positive().optional(),
+  name: z.string().min(2),
+  description: z.string().min(8),
+  price: z.coerce.number().positive(),
+  discount: z.coerce.number().min(0).max(99).optional(),
   categoryId: z.string().min(1),
-  categoryName: z.string().min(1),
-  durationInDays: z.number().int().positive(),
-  imageUrls: z.array(z.string().url()).min(1),
-  features: z.array(z.string()).min(1),
-  featured: z.boolean().optional(),
-  stockStatus: z.enum(["active", "draft", "archived"])
+  imageUrl: z.string().min(1),
+  stockStatus: z.enum(["active", "draft", "archived"]).optional()
 });
+
+async function buildProductPayload(parsed: z.infer<typeof productSchema>) {
+  const categoryDoc = await adminDb.collection("categories").doc(parsed.categoryId).get();
+  if (!categoryDoc.exists) {
+    throw new Error("Selected category does not exist.");
+  }
+
+  const category = categoryDoc.data()!;
+  const discount = Number(parsed.discount || 0);
+  const salePrice = discount > 0 ? Math.max(Math.round(parsed.price * (1 - discount / 100)), 1) : undefined;
+
+  return {
+    name: parsed.name,
+    slug: slugify(parsed.name),
+    shortDescription: parsed.description.slice(0, 120),
+    description: parsed.description,
+    price: parsed.price,
+    salePrice,
+    discount,
+    categoryId: parsed.categoryId,
+    categoryName: String(category.name || ""),
+    durationInDays: 30,
+    imageUrls: [parsed.imageUrl],
+    features: ["Instant activation", "Secure payment verification", "Priority support"],
+    featured: false,
+    stockStatus: parsed.stockStatus || "active",
+    updatedAt: new Date().toISOString()
+  };
+}
 
 export async function POST(request: Request) {
   const allowed = await isAdminAuthorized();
   if (!allowed) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
-  const parsed = productSchema.parse(await request.json());
-  const ref = await adminDb.collection("products").add({
-    ...parsed,
-    slug: slugify(parsed.name),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  });
-  return NextResponse.json({ id: ref.id });
+
+  try {
+    const parsed = productSchema.parse(await request.json());
+    const payload = await buildProductPayload(parsed);
+    const ref = await adminDb.collection("products").add({
+      ...payload,
+      createdAt: new Date().toISOString()
+    });
+
+    return NextResponse.json({ id: ref.id });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to create product." },
+      { status: 400 }
+    );
+  }
 }
 
 export async function PUT(request: Request) {
@@ -40,13 +72,18 @@ export async function PUT(request: Request) {
   if (!allowed) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
-  const parsed = productSchema.extend({ id: z.string() }).parse(await request.json());
-  await adminDb.collection("products").doc(parsed.id).update({
-    ...parsed,
-    slug: slugify(parsed.name),
-    updatedAt: new Date().toISOString()
-  });
-  return NextResponse.json({ success: true });
+
+  try {
+    const parsed = productSchema.extend({ id: z.string() }).parse(await request.json());
+    const payload = await buildProductPayload(parsed);
+    await adminDb.collection("products").doc(parsed.id).update(payload);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to update product." },
+      { status: 400 }
+    );
+  }
 }
 
 export async function DELETE(request: Request) {

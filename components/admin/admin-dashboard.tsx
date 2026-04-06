@@ -150,7 +150,7 @@ export function AdminDashboard({
 
           {activeTab === "catalog" ? (
             <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-              <ProductManager products={products} />
+              <ProductManager products={products} categories={categories} />
               <CategoryManager categories={categories} />
             </div>
           ) : null}

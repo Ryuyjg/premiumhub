@@ -24,12 +24,14 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error("Unable to create category.");
+        throw new Error(data.error || "Unable to create category.");
       }
 
-      toast.success("Category created. Refresh to use it in products.");
+      toast.success("Category created.");
+      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category creation failed.");
     } finally {

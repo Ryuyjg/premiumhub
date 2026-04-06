@@ -16,11 +16,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
-  const parsed = categorySchema.parse(await request.json());
-  const ref = await adminDb.collection("categories").add({
-    ...parsed,
-    slug: slugify(parsed.name)
-  });
+  try {
+    const parsed = categorySchema.parse(await request.json());
+    const slug = slugify(parsed.name);
 
-  return NextResponse.json({ id: ref.id });
+    const duplicate = await adminDb.collection("categories").where("slug", "==", slug).limit(1).get();
+    if (!duplicate.empty) {
+      return NextResponse.json({ error: "Category already exists." }, { status: 409 });
+    }
+
+    const ref = await adminDb.collection("categories").add({
+      ...parsed,
+      slug
+    });
+
+    return NextResponse.json({ id: ref.id });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to create category." },
+      { status: 400 }
+    );
+  }
 }
