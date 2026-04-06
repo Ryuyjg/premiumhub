@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 import { isAdminAuthorized } from "@/lib/auth";
 import { encryptSensitiveValue } from "@/lib/crypto";
 import { adminDb } from "@/lib/firebase/admin";
 
 const accountSchema = z.object({
   productId: z.string().min(1),
-  provider: z.string().min(2),
+  provider: z.string().trim().min(1, "Provider is required."),
   email: z.string().email(),
   password: z.string().min(4),
   maxUsers: z.number().int().positive(),
-  label: z.string().min(2)
+  label: z.string().trim().min(1, "Label is required.")
 });
 
 const updateAccountSchema = z.object({
@@ -44,6 +44,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ id: ref.id });
   } catch (error) {
     console.error("Account store error:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        { error: error.issues[0]?.message || "Please check all fields." },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to store account. Please check all fields." },
       { status: 400 }

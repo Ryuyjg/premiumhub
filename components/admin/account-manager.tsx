@@ -34,11 +34,11 @@ export function AccountManager({
     try {
       const payload = {
         productId: String(formData.get("productId")),
-        provider: String(formData.get("provider")),
-        email: String(formData.get("email")),
-        password: String(formData.get("password")),
+        provider: String(formData.get("provider")).trim(),
+        email: String(formData.get("email")).trim(),
+        password: String(formData.get("password")).trim(),
         maxUsers: Number(formData.get("maxUsers")),
-        label: String(formData.get("label"))
+        label: String(formData.get("label")).trim()
       };
 
       const response = await fetch("/api/admin/accounts", {
