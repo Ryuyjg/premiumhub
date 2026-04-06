@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = await file.arrayBuffer();
-    const bucket = adminStorage.bucket();
+    const bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "website-b4855.firebasestorage.app";
+    const bucket = adminStorage.bucket(bucketName);
+    
     const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
     const fileRef = bucket.file(fileName);
 
@@ -29,8 +31,11 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    await fileRef.makePublic();
-    const url = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    // Generate a long-lived signed URL to securely bypass any bucket rules or public-access blocks.
+    const [url] = await fileRef.getSignedUrl({
+      action: "read",
+      expires: "01-01-2500"
+    });
 
     return NextResponse.json({ url });
   } catch (error) {
