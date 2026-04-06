@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 
+type NotificationDoc = {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt?: string;
+};
+
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) {
@@ -14,7 +23,7 @@ export async function GET() {
     .limit(30)
     .get();
   const notifications = snapshot.docs
-    .map((doc) => ({ id: doc.id, ...doc.data() }))
+    .map((doc) => ({ id: doc.id, ...doc.data() }) as NotificationDoc)
     .sort((a, b) => (String(a.createdAt || "") > String(b.createdAt || "") ? -1 : 1));
   return NextResponse.json(notifications);
 }
