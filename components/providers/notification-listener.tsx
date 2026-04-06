@@ -34,7 +34,7 @@ export function NotificationListener() {
           seenIds.current.add(notification.id);
           if (!notification.read) {
             hasNewUnread = true;
-            toast.message(notification.title, {
+            toast(notification.title, {
               description: notification.message
             });
           }
