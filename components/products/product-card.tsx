@@ -13,6 +13,7 @@ import { useAppStore } from "@/store/use-app-store";
 
 export function ProductCard({ product }: { product: Product }) {
   const addToCart = useAppStore((state) => state.addToCart);
+  const isOutOfStock = Boolean(product.isOutOfStock);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const springX = useSpring(rotateX, { stiffness: 180, damping: 16 });
@@ -40,6 +41,11 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   function handleAddToCart() {
+    if (isOutOfStock) {
+      toast.error("No stock available for this item.");
+      return;
+    }
+
     addToCart({
       productId: product.id,
       slug: product.slug,
@@ -69,7 +75,7 @@ export function ProductCard({ product }: { product: Product }) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/72 via-slate-950/15 to-transparent" />
             <div className="absolute left-5 top-5">
-              <Badge>{product.categoryName}</Badge>
+              <Badge>{isOutOfStock ? "No stock" : product.categoryName}</Badge>
             </div>
             <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
               <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/15 to-transparent blur-xl" />
@@ -98,8 +104,8 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         </Link>
         <div className="px-6 pb-6">
-          <Button type="button" onClick={handleAddToCart} className="w-full">
-            Add to cart
+          <Button type="button" onClick={handleAddToCart} className="w-full" disabled={isOutOfStock}>
+            {isOutOfStock ? "No stock" : "Add to cart"}
           </Button>
         </div>
       </div>

@@ -23,6 +23,30 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
+  const deliveryMode = String(subscription.deliveryMode || "direct_credentials");
+
+  if (deliveryMode === "otp_manual") {
+    return NextResponse.json({
+      mode: "otp_manual",
+      provider: "Manual OTP Login",
+      label: `Use number: ${String(subscription.otpSupportNumber || "configured by admin")}`,
+      email: "",
+      password: "",
+      note: String(subscription.deliveryNotes || "Admin will share OTP manually.")
+    });
+  }
+
+  if (deliveryMode === "email_invite") {
+    return NextResponse.json({
+      mode: "email_invite",
+      provider: "Email/Invitation Activation",
+      label: `Requested email: ${String(subscription.customerDeliveryEmail || user.email || "")}`,
+      email: "",
+      password: "",
+      note: String(subscription.deliveryNotes || "Activation will be completed by admin.")
+    });
+  }
+
   if (!subscription.ottAccountId) {
     return NextResponse.json({ error: "Credentials are pending assignment." }, { status: 404 });
   }
@@ -35,9 +59,11 @@ export async function GET(
   const account = accountDoc.data()!;
 
   return NextResponse.json({
+    mode: "direct_credentials",
     provider: account.provider,
     label: account.label,
     email: decryptSensitiveValue(account.emailCiphertext),
-    password: decryptSensitiveValue(account.passwordCiphertext)
+    password: decryptSensitiveValue(account.passwordCiphertext),
+    note: ""
   });
 }

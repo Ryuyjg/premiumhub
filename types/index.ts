@@ -31,6 +31,10 @@ export type Product = {
   features: string[];
   featured?: boolean;
   stockStatus: "active" | "draft" | "archived";
+  deliveryMode?: "direct_credentials" | "otp_manual" | "email_invite";
+  otpSupportNumber?: string;
+  deliveryNotes?: string;
+  isOutOfStock?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   createdAt?: string;
@@ -72,6 +76,8 @@ export type Order = {
   razorpayPaymentId?: string;
   paymentMethod?: "razorpay" | "wallet";
   walletDeducted?: number;
+  deliveryMode?: "direct_credentials" | "otp_manual" | "email_invite";
+  customerDeliveryEmail?: string;
   couponCode?: string;
   discountAmount?: number;
   createdAt: string;
@@ -93,6 +99,10 @@ export type Subscription = {
   expiresAt: string;
   ottAccountId?: string;
   assignedCredentialLabel?: string;
+  deliveryMode?: "direct_credentials" | "otp_manual" | "email_invite";
+  otpSupportNumber?: string;
+  customerDeliveryEmail?: string;
+  deliveryNotes?: string;
 };
 
 export type OttAccount = {

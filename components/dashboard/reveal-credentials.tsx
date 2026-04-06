@@ -5,10 +5,12 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 type CredentialState = {
+  mode?: "direct_credentials" | "otp_manual" | "email_invite";
   provider: string;
   label: string;
   email: string;
   password: string;
+  note?: string;
 };
 
 export function RevealCredentials({ subscriptionId }: { subscriptionId: string }) {
@@ -52,18 +54,23 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
         <div className="rounded-2xl border border-border bg-background/50 p-4 text-sm">
           <p className="font-semibold">{credentials.provider}</p>
           <p className="mt-2 text-muted-foreground">{credentials.label}</p>
-          <div className="mt-3 flex items-center justify-between gap-2">
-            <p className="truncate">Email: {credentials.email}</p>
-            <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.email, "Email")}>
-              Copy
-            </Button>
-          </div>
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <p className="truncate">Password: {credentials.password}</p>
-            <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.password, "Password")}>
-              Copy
-            </Button>
-          </div>
+          {credentials.email ? (
+            <div className="mt-3 flex items-center justify-between gap-2">
+              <p className="truncate">Email: {credentials.email}</p>
+              <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.email, "Email")}>
+                Copy
+              </Button>
+            </div>
+          ) : null}
+          {credentials.password ? (
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <p className="truncate">Password: {credentials.password}</p>
+              <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.password, "Password")}>
+                Copy
+              </Button>
+            </div>
+          ) : null}
+          {credentials.note ? <p className="mt-3 text-xs text-amber-700 dark:text-amber-300">{credentials.note}</p> : null}
         </div>
       )}
     </div>

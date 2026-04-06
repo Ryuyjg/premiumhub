@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
-    const { productId, couponCode } = await request.json();
+    const { productId, couponCode, customerDeliveryEmail } = await request.json();
 
     if (!productId) {
       return NextResponse.json({ error: "Product is required." }, { status: 400 });
@@ -22,6 +22,30 @@ export async function POST(request: Request) {
     }
 
     const product = productDoc.data()!;
+    const deliveryMode = String(product.deliveryMode || "direct_credentials");
+
+    if (deliveryMode === "direct_credentials") {
+      const accountSnapshot = await adminDb
+        .collection("ottAccounts")
+        .where("productId", "==", productId)
+        .where("status", "==", "available")
+        .limit(20)
+        .get();
+
+      const hasSeat = accountSnapshot.docs.some((doc) => {
+        const data = doc.data();
+        return Number(data.activeUsers || 0) < Number(data.maxUsers || 0);
+      });
+
+      if (!hasSeat) {
+        return NextResponse.json({ error: "No stock available for this item." }, { status: 400 });
+      }
+    }
+
+    if (deliveryMode === "email_invite" && !String(customerDeliveryEmail || "").trim()) {
+      return NextResponse.json({ error: "Please enter your email for invitation delivery." }, { status: 400 });
+    }
+
     let finalAmount = Number(product.salePrice || product.price);
     let discountAmount = 0;
 
@@ -62,6 +86,8 @@ export async function POST(request: Request) {
       productId,
       productName: product.name,
       productSlug: product.slug,
+      deliveryMode,
+      customerDeliveryEmail: String(customerDeliveryEmail || "").trim() || null,
       amount: finalAmount,
       status: "created",
       razorpayOrderId: razorpayOrder.id,

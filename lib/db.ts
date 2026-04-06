@@ -17,6 +17,36 @@ function withId<T>(id: string, data: FirebaseFirestore.DocumentData) {
   return { id, ...data } as T;
 }
 
+async function getDirectStockSeatMap() {
+  const snapshot = await adminDb.collection("ottAccounts").where("status", "!=", "disabled").get();
+  const seatMap = new Map<string, number>();
+
+  snapshot.docs.forEach((doc) => {
+    const data = doc.data();
+    const productId = String(data.productId || "");
+    if (!productId) {
+      return;
+    }
+    const remaining = Math.max(Number(data.maxUsers || 0) - Number(data.activeUsers || 0), 0);
+    seatMap.set(productId, (seatMap.get(productId) || 0) + remaining);
+  });
+
+  return seatMap;
+}
+
+function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): Product {
+  const deliveryMode = product.deliveryMode || "direct_credentials";
+  const isOutOfStock = deliveryMode === "direct_credentials" && (seatMap.get(product.id) || 0) <= 0;
+
+  return {
+    ...product,
+    deliveryMode,
+    otpSupportNumber: product.otpSupportNumber || "",
+    deliveryNotes: product.deliveryNotes || "",
+    isOutOfStock
+  };
+}
+
 export async function expireOverdueSubscriptions() {
   const snapshot = await adminDb
     .collection("subscriptions")
@@ -61,35 +91,44 @@ export async function expireOverdueSubscriptions() {
 }
 
 export async function getFeaturedProducts() {
-  const snapshot = await adminDb
-    .collection("products")
-    .where("featured", "==", true)
-    .where("stockStatus", "==", "active")
-    .limit(6)
-    .get();
+  const [snapshot, seatMap] = await Promise.all([
+    adminDb
+      .collection("products")
+      .where("featured", "==", true)
+      .where("stockStatus", "==", "active")
+      .limit(6)
+      .get(),
+    getDirectStockSeatMap()
+  ]);
 
-  return snapshot.docs.map((doc) => withId<Product>(doc.id, doc.data()));
+  return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
 }
 
 export async function getProducts() {
-  const snapshot = await adminDb.collection("products").where("stockStatus", "==", "active").get();
-  return snapshot.docs.map((doc) => withId<Product>(doc.id, doc.data()));
+  const [snapshot, seatMap] = await Promise.all([
+    adminDb.collection("products").where("stockStatus", "==", "active").get(),
+    getDirectStockSeatMap()
+  ]);
+  return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
 }
 
 export async function getAdminProducts() {
-  const snapshot = await adminDb.collection("products").get();
-  return snapshot.docs.map((doc) => withId<Product>(doc.id, doc.data()));
+  const [snapshot, seatMap] = await Promise.all([adminDb.collection("products").get(), getDirectStockSeatMap()]);
+  return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
 }
 
 export async function getProductBySlug(slug: string) {
-  const snapshot = await adminDb
-    .collection("products")
-    .where("slug", "==", slug)
-    .where("stockStatus", "==", "active")
-    .limit(1)
-    .get();
+  const [snapshot, seatMap] = await Promise.all([
+    adminDb
+      .collection("products")
+      .where("slug", "==", slug)
+      .where("stockStatus", "==", "active")
+      .limit(1)
+      .get(),
+    getDirectStockSeatMap()
+  ]);
 
-  return snapshot.empty ? null : withId<Product>(snapshot.docs[0].id, snapshot.docs[0].data());
+  return snapshot.empty ? null : withDeliveryAndStock(withId<Product>(snapshot.docs[0].id, snapshot.docs[0].data()), seatMap);
 }
 
 export async function getCategories() {
@@ -154,15 +193,18 @@ export async function getOttAccounts() {
 }
 
 export async function getRelatedProducts(categoryId: string, excludeProductId: string, limit = 4) {
-  const snapshot = await adminDb
-    .collection("products")
-    .where("stockStatus", "==", "active")
-    .where("categoryId", "==", categoryId)
-    .limit(12)
-    .get();
+  const [snapshot, seatMap] = await Promise.all([
+    adminDb
+      .collection("products")
+      .where("stockStatus", "==", "active")
+      .where("categoryId", "==", categoryId)
+      .limit(12)
+      .get(),
+    getDirectStockSeatMap()
+  ]);
 
   return snapshot.docs
-    .map((doc) => withId<Product>(doc.id, doc.data()))
+    .map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap))
     .filter((item) => item.id !== excludeProductId)
     .slice(0, limit);
 }

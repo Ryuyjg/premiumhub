@@ -1,18 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { toast } from "sonner";
 import { getClientAuth } from "@/lib/firebase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export function AuthCard() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, loading: authLoading } = useAuth();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
+    if (user) {
+      router.replace(searchParams.get("redirect") || "/dashboard");
+    }
+  }, [authLoading, router, searchParams, user]);
 
   async function persistSession() {
     const auth = getClientAuth();
@@ -39,21 +51,6 @@ export function AuthCard() {
 
     setLoading(true);
     try {
-      if (mode === "login") {
-        const adminLoginResponse = await fetch("/api/auth/admin-login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        if (adminLoginResponse.ok) {
-          toast.success("Admin access granted.");
-          router.push("/admin");
-          router.refresh();
-          return;
-        }
-      }
-
       const auth = getClientAuth();
       if (!auth) {
         throw new Error("Firebase client configuration missing.");
@@ -65,12 +62,29 @@ export function AuthCard() {
           await updateProfile(credentials.user, { displayName: name });
         }
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+        } catch (firebaseLoginError) {
+          const adminLoginResponse = await fetch("/api/auth/admin-login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+          });
+
+          if (adminLoginResponse.ok) {
+            toast.success("Admin access granted.");
+            router.replace("/admin");
+            router.refresh();
+            return;
+          }
+
+          throw firebaseLoginError;
+        }
       }
 
       await persistSession();
       toast.success(mode === "register" ? "Account created." : "Welcome back.");
-      router.push(searchParams.get("redirect") || "/dashboard");
+      router.replace(searchParams.get("redirect") || "/dashboard");
       router.refresh();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Authentication failed.";

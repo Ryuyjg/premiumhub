@@ -20,6 +20,7 @@ export function ProductDetail({
   relatedProducts: Product[];
 }) {
   const [activeImage, setActiveImage] = useState(product.imageUrls[0]);
+  const isOutOfStock = Boolean(product.isOutOfStock);
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1.06fr_0.94fr]">
@@ -57,6 +58,11 @@ export function ProductDetail({
       </div>
       <div className="space-y-6">
         <Badge>{product.categoryName}</Badge>
+        {isOutOfStock ? (
+          <p className="w-fit rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-rose-700 dark:text-rose-300">
+            No stock
+          </p>
+        ) : null}
         <div>
           <h1 className="text-4xl font-semibold tracking-tight">{product.name}</h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{product.description}</p>

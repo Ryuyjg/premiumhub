@@ -102,6 +102,10 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
 
   const product = productDoc.data()!;
   const order = orderDoc.data()!;
+  const deliveryMode = String(order.deliveryMode || product.deliveryMode || "direct_credentials") as
+    | "direct_credentials"
+    | "otp_manual"
+    | "email_invite";
 
   if (order.userId !== userId || order.productId !== productId) {
     throw new Error("Order mismatch.");
@@ -117,7 +121,10 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
     return { success: true, idempotent: true };
   }
 
-  const ottAccount = await assignOttAccountSeat(productId);
+  const ottAccount = deliveryMode === "direct_credentials" ? await assignOttAccountSeat(productId) : null;
+  if (deliveryMode === "direct_credentials" && !ottAccount) {
+    throw new Error("No stock available for this item.");
+  }
   const startsAt = new Date();
   const expiresAt = new Date(Date.now() + Number(product.durationInDays || 30) * 24 * 60 * 60 * 1000);
 
@@ -144,10 +151,17 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
     status: "active",
     startsAt: startsAt.toISOString(),
     expiresAt: expiresAt.toISOString(),
+    deliveryMode,
+    otpSupportNumber: String(product.otpSupportNumber || ""),
+    deliveryNotes: String(product.deliveryNotes || ""),
+    customerDeliveryEmail: String(order.customerDeliveryEmail || ""),
     ottAccountId: ottAccount?.id || null,
-    assignedCredentialLabel: ottAccount
-      ? `${ottAccount.label} - ${decryptSensitiveValue(ottAccount.emailCiphertext)}`
-      : "Pending manual assignment"
+    assignedCredentialLabel:
+      deliveryMode === "direct_credentials" && ottAccount
+        ? `${ottAccount.label} - ${decryptSensitiveValue(ottAccount.emailCiphertext)}`
+        : deliveryMode === "otp_manual"
+          ? `OTP login. Contact admin on ${String(product.otpSupportNumber || "configured number")}`
+          : `Invitation will be activated on ${String(order.customerDeliveryEmail || userId)}`
   });
 
   if (ottAccount) {
@@ -176,7 +190,11 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
   await createUserNotification(
     userId,
     "Subscription activated",
-    `Your ${product.name} subscription is active now.`
+    deliveryMode === "direct_credentials"
+      ? `Your ${product.name} subscription is active now.`
+      : deliveryMode === "otp_manual"
+        ? `Your ${product.name} access is ready. OTP will be shared manually by admin.`
+        : `Your ${product.name} invitation request has been received and will be activated soon.`
   );
 
   return { success: true, idempotent: false };

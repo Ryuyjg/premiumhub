@@ -18,6 +18,9 @@ type ProductForm = {
   imageUrl: string;
   price: string;
   discount: string;
+  deliveryMode: "direct_credentials" | "otp_manual" | "email_invite";
+  otpSupportNumber: string;
+  deliveryNotes: string;
 };
 
 const initialForm: ProductForm = {
@@ -26,7 +29,10 @@ const initialForm: ProductForm = {
   categoryId: "",
   imageUrl: "",
   price: "",
-  discount: "0"
+  discount: "0",
+  deliveryMode: "direct_credentials",
+  otpSupportNumber: "",
+  deliveryNotes: ""
 };
 
 export function ProductManager({
@@ -68,6 +74,9 @@ export function ProductManager({
         imageUrl: form.imageUrl.trim(),
         price: Number(form.price),
         discount: Number(form.discount || "0"),
+        deliveryMode: form.deliveryMode,
+        otpSupportNumber: form.otpSupportNumber.trim(),
+        deliveryNotes: form.deliveryNotes.trim(),
         stockStatus: "active"
       };
 
@@ -128,7 +137,10 @@ export function ProductManager({
       categoryId: product.categoryId,
       imageUrl: product.imageUrls[0] || "",
       price: String(product.price),
-      discount: String(discount)
+      discount: String(discount),
+      deliveryMode: product.deliveryMode || "direct_credentials",
+      otpSupportNumber: product.otpSupportNumber || "",
+      deliveryNotes: product.deliveryNotes || ""
     });
   }
 
@@ -195,6 +207,36 @@ export function ProductManager({
               required
             />
           </div>
+          <select
+            value={form.deliveryMode}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                deliveryMode: event.target.value as ProductForm["deliveryMode"]
+              }))
+            }
+            className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm dark:bg-white/5"
+          >
+            <option value="direct_credentials">Direct ID &amp; Password</option>
+            <option value="otp_manual">OTP Login (manual OTP from admin)</option>
+            <option value="email_invite">Email/Invitation Activation</option>
+          </select>
+          {form.deliveryMode === "otp_manual" ? (
+            <Input
+              value={form.otpSupportNumber}
+              onChange={(event) => setForm((current) => ({ ...current, otpSupportNumber: event.target.value }))}
+              placeholder="OTP support number (shown to user)"
+              required
+            />
+          ) : null}
+          {form.deliveryMode !== "direct_credentials" ? (
+            <textarea
+              value={form.deliveryNotes}
+              onChange={(event) => setForm((current) => ({ ...current, deliveryNotes: event.target.value }))}
+              placeholder="Delivery instructions for admin/user"
+              className="min-h-20 rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+            />
+          ) : null}
           <div className="flex gap-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Saving..." : form.id ? "Update product" : "Create product"}

@@ -12,6 +12,9 @@ const productSchema = z.object({
   discount: z.coerce.number().min(0).max(99).optional(),
   categoryId: z.string().min(1),
   imageUrl: z.string().min(1),
+  deliveryMode: z.enum(["direct_credentials", "otp_manual", "email_invite"]).optional(),
+  otpSupportNumber: z.string().optional(),
+  deliveryNotes: z.string().optional(),
   stockStatus: z.enum(["active", "draft", "archived"]).optional()
 });
 
@@ -39,6 +42,9 @@ async function buildProductPayload(parsed: z.infer<typeof productSchema>) {
     imageUrls: [parsed.imageUrl],
     features: ["Instant activation", "Secure payment verification", "Priority support"],
     featured: false,
+    deliveryMode: parsed.deliveryMode || "direct_credentials",
+    otpSupportNumber: (parsed.otpSupportNumber || "").trim() || null,
+    deliveryNotes: (parsed.deliveryNotes || "").trim() || null,
     stockStatus: parsed.stockStatus || "active",
     updatedAt: new Date().toISOString()
   };
