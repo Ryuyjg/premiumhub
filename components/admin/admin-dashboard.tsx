@@ -47,7 +47,7 @@ export function AdminDashboard({
   users,
   reviews,
   tickets,
-  offers
+  offers = []
 }: {
   analytics: AnalyticsSummary;
   products: Product[];
@@ -58,7 +58,7 @@ export function AdminDashboard({
   users: AppUser[];
   reviews: Review[];
   tickets: SupportTicket[];
-  offers: Offer[];
+  offers?: Offer[];
 }) {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 

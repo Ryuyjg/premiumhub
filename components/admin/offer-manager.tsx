@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import { Pencil, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Offer } from "@/types";
@@ -48,7 +49,7 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
     setForm(initialForm);
   }
 
-  async function saveOffer(event: React.FormEvent<HTMLFormElement>) {
+  async function saveOffer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
 

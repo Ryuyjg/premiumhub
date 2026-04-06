@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import { Pencil, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
@@ -64,7 +65,7 @@ export function ProductManager({
     });
   }
 
-  async function saveProduct(event: React.FormEvent<HTMLFormElement>) {
+  async function saveProduct(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
     try {
