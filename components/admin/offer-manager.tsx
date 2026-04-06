@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { Pencil, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Offer } from "@/types";
+import { OFFER_THEMES, resolveOfferTheme } from "@/lib/offer-themes";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,7 +26,7 @@ const initialForm: OfferForm = {
   title: "",
   description: "",
   badge: "",
-  accent: "from-cyan-500 to-blue-600",
+  accent: "ocean",
   ctaLabel: "Explore",
   ctaUrl: "/products",
   order: "0",
@@ -92,12 +93,14 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
   }
 
   function editOffer(offer: Offer) {
+    const theme = resolveOfferTheme(offer.accent);
+
     setForm({
       id: offer.id,
       title: offer.title,
       description: offer.description,
       badge: offer.badge || "",
-      accent: offer.accent || "from-cyan-500 to-blue-600",
+      accent: theme.id,
       ctaLabel: offer.ctaLabel || "Explore",
       ctaUrl: offer.ctaUrl || "/products",
       order: String(offer.order ?? 0),
@@ -172,13 +175,30 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
             />
           </div>
           <label className="grid gap-2 text-sm text-muted-foreground">
-            <span>Gradient accent classes</span>
-            <Input
+            <span>Offer theme</span>
+            <select
               value={form.accent}
               onChange={(event) => setForm((current) => ({ ...current, accent: event.target.value }))}
-              placeholder="from-cyan-500 to-blue-600"
-            />
+              className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+            >
+              {OFFER_THEMES.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.name} - {theme.description}
+                </option>
+              ))}
+            </select>
           </label>
+          <div
+            className="relative overflow-hidden rounded-[1.35rem] border border-white/15 p-4 text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)]"
+            style={{ backgroundImage: resolveOfferTheme(form.accent).gradient }}
+          >
+            <div className="absolute -right-10 top-0 h-24 w-24 rounded-full bg-white/15 blur-2xl" />
+            <p className="relative text-xs font-semibold uppercase tracking-[0.18em] text-white/70">Preview</p>
+            <p className="relative mt-2 text-lg font-semibold">{form.title || "Premium launch offer"}</p>
+            <p className="relative mt-2 text-sm text-white/78">
+              {form.description || "Your selected theme will be used in the storefront offers section."}
+            </p>
+          </div>
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
             <input
               type="checkbox"

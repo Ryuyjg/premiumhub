@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminAuthorized } from "@/lib/auth";
+import { resolveOfferTheme } from "@/lib/offer-themes";
 import { adminDb } from "@/lib/firebase/admin";
 
 const offerSchema = z.object({
@@ -20,7 +21,7 @@ function buildPayload(parsed: z.infer<typeof offerSchema>) {
     title: parsed.title.trim(),
     description: parsed.description.trim(),
     badge: (parsed.badge || "").trim(),
-    accent: (parsed.accent || "").trim() || "from-cyan-500 to-blue-600",
+    accent: resolveOfferTheme(parsed.accent).id,
     ctaLabel: (parsed.ctaLabel || "").trim(),
     ctaUrl: (parsed.ctaUrl || "").trim(),
     active: parsed.active !== false,
