@@ -6,8 +6,7 @@ import { slugify } from "@/lib/utils";
 
 const categorySchema = z.object({
   name: z.string().min(2),
-  description: z.string().optional(),
-  accent: z.string().optional()
+  description: z.string().optional()
 });
 
 export async function POST(request: Request) {

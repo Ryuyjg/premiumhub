@@ -2,15 +2,22 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingCart, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APP_NAME, NAV_LINKS } from "@/lib/constants";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAppStore } from "@/store/use-app-store";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const cartItemsCount = useAppStore((state) => state.cartItems.length);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/20 bg-background/65 backdrop-blur-2xl">
@@ -41,6 +48,13 @@ export function SiteHeader() {
           })}
         </nav>
         <div className="flex items-center gap-3">
+          <Link
+            href="/cart"
+            className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/75 px-3 py-2 text-sm dark:bg-white/5"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            <span>{hydrated ? cartItemsCount : 0}</span>
+          </Link>
           <ThemeToggle />
           <Link
             href="/login"

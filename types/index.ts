@@ -5,7 +5,15 @@ export type Category = {
   name: string;
   slug: string;
   description?: string;
-  accent?: string;
+};
+
+export type CartItem = {
+  productId: string;
+  slug: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  categoryName: string;
 };
 
 export type Product = {

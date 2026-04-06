@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Category, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
@@ -30,9 +30,34 @@ export function ProductCatalog({
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
 
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [search, category]);
+
   return (
     <div className="space-y-8">
       <div className="surface rounded-[1.75rem] p-5">
+        <div className="mb-4 flex flex-wrap gap-2">
+          <motion.button
+            type="button"
+            onClick={() => setCategory("all")}
+            whileTap={{ scale: 0.98 }}
+            className={category === "all" ? "pill-filter-active" : "pill-filter"}
+          >
+            All categories
+          </motion.button>
+          {categories.map((item) => (
+            <motion.button
+              key={item.id}
+              type="button"
+              onClick={() => setCategory(item.id)}
+              whileTap={{ scale: 0.98 }}
+              className={category === item.id ? "pill-filter-active" : "pill-filter"}
+            >
+              {item.name}
+            </motion.button>
+          ))}
+        </div>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative w-full md:max-w-md">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -43,26 +68,8 @@ export function ProductCatalog({
               className="pl-10"
             />
           </div>
-          <div className="flex flex-wrap gap-2">
-            <motion.button
-              type="button"
-              onClick={() => setCategory("all")}
-              whileTap={{ scale: 0.98 }}
-              className={category === "all" ? "pill-filter-active" : "pill-filter"}
-            >
-              All plans
-            </motion.button>
-            {categories.map((item) => (
-              <motion.button
-                key={item.id}
-                type="button"
-                onClick={() => setCategory(item.id)}
-                whileTap={{ scale: 0.98 }}
-                className={category === item.id ? "pill-filter-active" : "pill-filter"}
-              >
-                {item.name}
-              </motion.button>
-            ))}
+          <div className="text-sm text-muted-foreground">
+            Showing <span className="font-semibold text-foreground">{filteredProducts.length}</span> plans
           </div>
         </div>
       </div>

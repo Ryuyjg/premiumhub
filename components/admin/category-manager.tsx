@@ -15,8 +15,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     try {
       const payload = {
         name: String(formData.get("name")),
-        description: String(formData.get("description")),
-        accent: String(formData.get("accent"))
+        description: String(formData.get("description"))
       };
 
       const response = await fetch("/api/admin/categories", {
@@ -41,11 +40,10 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
 
   return (
     <Card className="h-full">
-      <h2 className="text-xl font-semibold">Category architecture</h2>
-      <p className="mt-1 text-sm text-muted-foreground">Organize product families and visual accents for merchandising.</p>
+      <h2 className="text-xl font-semibold">Category management</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Create categories with name and description.</p>
       <form action={createCategory} className="mt-5 grid gap-4">
         <Input name="name" placeholder="Movies and Entertainment" required />
-        <Input name="accent" placeholder="sky" />
         <textarea
           name="description"
           placeholder="Category description"
@@ -56,11 +54,8 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
       <div className="mt-6 grid gap-3">
         {categories.map((category) => (
           <div key={category.id} className="rounded-2xl border border-border/80 px-4 py-3">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold">{category.name}</p>
-              <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">{category.accent || "default"}</span>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">{category.slug}</p>
+            <p className="font-semibold">{category.name}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{category.description || "No description added."}</p>
           </div>
         ))}
       </div>
