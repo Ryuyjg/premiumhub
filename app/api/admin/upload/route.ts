@@ -1,0 +1,43 @@
+import { type NextRequest, NextResponse } from "next/server";
+import { adminStorage } from "@/lib/firebase/admin";
+import { cookies } from "next/headers";
+
+export async function POST(request: NextRequest) {
+  try {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get("admin_session");
+
+    if (!adminSession) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const formData = await request.formData();
+    const file = formData.get("file") as File | null;
+
+    if (!file) {
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    const buffer = await file.arrayBuffer();
+    const bucket = adminStorage.bucket();
+    const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+    const fileRef = bucket.file(fileName);
+
+    await fileRef.save(Buffer.from(buffer), {
+      metadata: {
+        contentType: file.type
+      }
+    });
+
+    await fileRef.makePublic();
+    const url = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+
+    return NextResponse.json({ url });
+  } catch (error) {
+    console.error("Upload error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}

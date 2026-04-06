@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { toast } from "sonner";
-import { getClientStorage } from "@/lib/firebase/client";
+import { UploadCloud } from "lucide-react";
 
 export function ImageUploader({
   onUploaded
@@ -20,18 +19,24 @@ export function ImageUploader({
 
     setUploading(true);
     try {
-      const storage = getClientStorage();
-      if (!storage) {
-        throw new Error("Firebase storage config missing.");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Image upload failed.");
       }
 
-      const fileRef = ref(storage, `products/${Date.now()}-${file.name}`);
-      await uploadBytes(fileRef, file, {
-        contentType: file.type
-      });
-      const url = await getDownloadURL(fileRef);
-      onUploaded(url);
-      toast.success("Image uploaded to Firebase Storage.");
+      const data = await response.json();
+      if (!data.url) throw new Error("No URL returned from server.");
+
+      onUploaded(data.url);
+      toast.success("Image successfully uploaded.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Image upload failed.");
     } finally {
@@ -41,13 +46,12 @@ export function ImageUploader({
 
   return (
     <div className="flex items-center gap-3">
-      <label className="inline-flex cursor-pointer items-center">
-        <input type="file" accept="image/*" className="hidden" onChange={handleChange} />
-        <span className="rounded-full border border-border px-4 py-2 text-sm font-semibold">
-          {uploading ? "Uploading..." : "Upload image"}
-        </span>
+      <label className={`inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-white px-5 py-2 text-sm font-semibold shadow-sm transition hover:bg-muted/50 dark:bg-white/5 ${uploading ? 'opacity-60 cursor-not-allowed' : ''}`}>
+        <input type="file" accept="image/*" className="hidden" onChange={handleChange} disabled={uploading} />
+        <UploadCloud className="h-4 w-4" />
+        {uploading ? "Uploading securely..." : "Upload image"}
       </label>
-      <span className="text-sm text-muted-foreground">Firebase Storage</span>
+      <span className="text-xs text-muted-foreground">Via secure admin server</span>
     </div>
   );
 }
