@@ -4,6 +4,16 @@ import { getCurrentUser } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { createUserNotification } from "@/lib/order-fulfillment";
 
+type SupportTicketDoc = {
+  id: string;
+  userId: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "open" | "in_progress" | "resolved";
+  createdAt?: string;
+};
+
 const ticketSchema = z.object({
   subject: z.string().min(3),
   message: z.string().min(10)
@@ -21,7 +31,7 @@ export async function GET() {
     .limit(50)
     .get();
   const tickets = snapshot.docs
-    .map((doc) => ({ id: doc.id, ...doc.data() }))
+    .map((doc) => ({ id: doc.id, ...doc.data() }) as SupportTicketDoc)
     .sort((a, b) => (String(a.createdAt || "") > String(b.createdAt || "") ? -1 : 1));
 
   return NextResponse.json(tickets);
