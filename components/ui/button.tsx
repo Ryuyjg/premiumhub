@@ -1,17 +1,25 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "danger";
+
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost" | "danger";
+  variant?: ButtonVariant;
 };
 
-const variants: Record<NonNullable<ButtonProps["variant"]>, string> = {
+const variants: Record<ButtonVariant, string> = {
   primary:
-    "relative overflow-hidden border border-primary/10 bg-primary text-primary-foreground shadow-lg shadow-primary/20 before:absolute before:inset-0 before:-translate-x-full before:bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.25),transparent)] before:transition-transform before:duration-700 hover:bg-primary/90 hover:before:translate-x-full dark:shadow-primary/10",
+    "relative overflow-hidden bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25 " +
+    "before:absolute before:inset-0 before:-translate-x-full before:bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.22),transparent)] " +
+    "before:transition-transform before:duration-700 hover:shadow-xl hover:shadow-primary/35 hover:-translate-y-px hover:before:translate-x-full",
   secondary:
-    "relative overflow-hidden border border-foreground/10 bg-foreground text-background hover:bg-foreground/90",
-  ghost: "border border-transparent bg-transparent text-foreground hover:border-border/70 hover:bg-foreground/5",
-  danger: "border border-rose-500/20 bg-rose-600 text-white hover:bg-rose-700"
+    "border border-foreground/10 bg-foreground text-background hover:bg-foreground/90",
+  ghost:
+    "border border-transparent bg-transparent text-foreground hover:border-border/60 hover:bg-foreground/5",
+  outline:
+    "border border-border/70 bg-white/70 text-foreground hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5",
+  danger:
+    "border border-rose-500/20 bg-rose-600 text-white shadow-md shadow-rose-500/20 hover:bg-rose-700"
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -20,7 +28,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold transition duration-300 active:scale-[0.985] disabled:cursor-not-allowed disabled:opacity-60",
+          "inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-all duration-200",
+          "active:scale-[0.975] disabled:cursor-not-allowed disabled:opacity-55",
           variants[variant],
           className
         )}

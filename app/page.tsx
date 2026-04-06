@@ -1,6 +1,7 @@
 import { CtaBanner } from "@/components/marketing/cta-banner";
 import { FeatureGrid } from "@/components/marketing/feature-grid";
 import { HeroSection } from "@/components/marketing/hero-section";
+import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { ProductShowcase } from "@/components/products/product-showcase";
 import { getFeaturedProducts } from "@/lib/db";
 
@@ -14,6 +15,7 @@ export default async function HomePage() {
       <HeroSection />
       <FeatureGrid />
       <ProductShowcase products={featuredProducts} />
+      <TestimonialsSection />
       <CtaBanner />
     </>
   );
