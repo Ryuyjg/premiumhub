@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     console.error("Account store error:", error);
     if (error instanceof ZodError) {
       return NextResponse.json(
-        { error: error.issues[0]?.message || "Please check all fields." },
+        { error: (error as any).issues?.[0]?.message || "Please check all fields." },
         { status: 400 }
       );
     }
