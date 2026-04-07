@@ -17,6 +17,7 @@ import type {
 import { slugify } from "@/lib/utils";
 
 let starterCatalogSeedPromise: Promise<void> | null = null;
+let starterCatalogSeeded = false;
 
 function withId<T>(id: string, data: any) {
   return { id, ...data } as T;
@@ -53,21 +54,16 @@ function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): P
 }
 
 async function ensureStarterCatalogSeeded() {
+  if (starterCatalogSeeded) {
+    return;
+  }
+
   if (starterCatalogSeedPromise) {
     await starterCatalogSeedPromise;
     return;
   }
 
   starterCatalogSeedPromise = (async () => {
-    const [categoryProbe, productProbe] = await Promise.all([
-      adminDb.collection("categories").limit(1).get(),
-      adminDb.collection("products").limit(1).get()
-    ]);
-
-    if (!categoryProbe.empty || !productProbe.empty) {
-      return;
-    }
-
     const categoryIdBySlug = new Map<string, string>();
     const categoryNameBySlug = new Map<string, string>();
 
@@ -130,6 +126,8 @@ async function ensureStarterCatalogSeeded() {
         updatedAt: now
       });
     }
+
+    starterCatalogSeeded = true;
   })();
 
   try {
