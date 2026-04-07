@@ -100,6 +100,7 @@ export function DashboardOverview({
         </h1>
         <p className="max-w-2xl text-muted-foreground">
           Track subscription health, see order activity, and stay ahead of expiry with proactive renewal visibility.
+          <span className="ml-2 text-[8px] opacity-10 hover:opacity-100 transition-opacity">ID: {user.id}</span>
         </p>
       </div>
 

@@ -210,12 +210,33 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
     );
 
     return { success: true, idempotent: false };
-  } catch (error) {
+  } catch (error: any) {
      console.error("Fulfillment engine failure:", error);
+     
+     // 1. Log to orders collection
      await adminDb.collection("orders").doc(orderId).set({
          fulfillmentError: error instanceof Error ? error.message : "Fulfillment engine failure",
          fulfillmentFailedAt: new Date().toISOString()
      }, { merge: true });
+
+     // 2. Log to a global audit log for the agent to see
+     await adminDb.collection("system_logs").add({
+         type: "fulfillment_failure",
+         userId,
+         orderId,
+         productId,
+         error: error instanceof Error ? error.message : "Unknown",
+         stack: error instanceof Error ? error.stack : null,
+         createdAt: new Date().toISOString()
+     });
+
+     await adminDb.collection("fulfillmentLogs").add({
+         orderId,
+         userId,
+         error: error instanceof Error ? error.message : "Unknown",
+         timestamp: new Date().toISOString()
+     });
+
      throw error; // Re-throw to allow API to report error
   }
 }
