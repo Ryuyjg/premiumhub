@@ -2,17 +2,18 @@
 
 import { motion } from "framer-motion";
 import {
-  Clock3,
-  CreditCard,
-  LayoutDashboard,
-  Wallet,
-  TrendingUp,
-  CheckCircle2,
-  AlertCircle,
-  ShoppingBag,
   ArrowRight,
+  CheckCircle2,
+  CreditCard,
+  Headset,
+  LayoutDashboard,
   ShieldCheck,
-  Headset
+  ShoppingBag,
+  TrendingUp,
+  Wallet,
+  AlertCircle,
+  Clock3,
+  Sparkles
 } from "lucide-react";
 import Link from "next/link";
 import type { AppUser, Order, Subscription, SupportTicket } from "@/types";
@@ -22,13 +23,13 @@ import { RevealCredentials } from "@/components/dashboard/reveal-credentials";
 import { SupportCenter } from "@/components/dashboard/support-center";
 
 const statusStyles: Record<string, string> = {
-  active: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  expired: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
-  pending: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-  paid: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  failed: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
-  created: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  cancelled: "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20"
+  active: "bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border-emerald-500/25",
+  expired: "bg-rose-500/12 text-rose-700 dark:text-rose-300 border-rose-500/25",
+  pending: "bg-amber-500/12 text-amber-700 dark:text-amber-300 border-amber-500/25",
+  paid: "bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border-emerald-500/25",
+  failed: "bg-rose-500/12 text-rose-700 dark:text-rose-300 border-rose-500/25",
+  created: "bg-blue-500/12 text-blue-700 dark:text-blue-300 border-blue-500/25",
+  cancelled: "bg-zinc-500/12 text-zinc-700 dark:text-zinc-300 border-zinc-500/25"
 };
 
 export function DashboardOverview({
@@ -42,199 +43,181 @@ export function DashboardOverview({
   orders: Order[];
   tickets: SupportTicket[];
 }) {
+  const firstName = user.displayName?.split(" ")[0] || "there";
   const activeSubCount = subscriptions.filter((s) => s.status === "active").length;
   const paidOrderCount = orders.filter((o) => o.status === "paid").length;
-  const nextExpiry = subscriptions.length
-    ? Math.min(...subscriptions.map((s) => daysUntil(s.expiresAt)))
-    : null;
-  const totalSpent = orders
-    .filter((o) => o.status === "paid")
-    .reduce((acc, o) => acc + o.amount, 0);
+  const nextExpiry = subscriptions.length ? Math.min(...subscriptions.map((s) => daysUntil(s.expiresAt))) : null;
+  const totalSpent = orders.filter((o) => o.status === "paid").reduce((acc, o) => acc + o.amount, 0);
 
   const statCards = [
     {
       icon: LayoutDashboard,
-      label: "Active subscriptions",
+      label: "Active plans",
       value: String(activeSubCount),
-      sub: `${subscriptions.length} total`,
-      gradient: "from-primary/18 to-accent/10",
-      iconColor: "text-primary",
-      iconBg: "bg-primary/15"
+      sub: `${subscriptions.length} total subscriptions`,
+      tone: "from-primary/25 to-cyan-500/10",
+      iconTone: "bg-primary/15 text-primary"
     },
     {
       icon: CreditCard,
       label: "Successful orders",
       value: String(paidOrderCount),
       sub: `${orders.length} total orders`,
-      gradient: "from-blue-500/15 to-cyan-500/10",
-      iconColor: "text-blue-500",
-      iconBg: "bg-blue-500/10"
+      tone: "from-blue-500/20 to-sky-500/10",
+      iconTone: "bg-blue-500/12 text-blue-600"
     },
     {
       icon: Clock3,
       label: "Next renewal",
       value: nextExpiry !== null ? `${nextExpiry}d` : "N/A",
-      sub: nextExpiry !== null ? (nextExpiry <= 3 ? "Renew soon to avoid interruption" : "Days remaining") : "No active plans yet",
-      gradient: nextExpiry !== null && nextExpiry <= 3
-        ? "from-rose-500/15 to-orange-500/10"
-        : "from-emerald-500/15 to-teal-500/10",
-      iconColor: nextExpiry !== null && nextExpiry <= 3 ? "text-rose-500" : "text-emerald-500",
-      iconBg: nextExpiry !== null && nextExpiry <= 3 ? "bg-rose-500/10" : "bg-emerald-500/10"
+      sub: nextExpiry !== null ? (nextExpiry <= 3 ? "Renew now to avoid interruption" : "Days remaining") : "No active plans yet",
+      tone: nextExpiry !== null && nextExpiry <= 3 ? "from-rose-500/20 to-orange-500/10" : "from-emerald-500/20 to-teal-500/10",
+      iconTone: nextExpiry !== null && nextExpiry <= 3 ? "bg-rose-500/12 text-rose-600" : "bg-emerald-500/12 text-emerald-600"
     },
     {
       icon: Wallet,
       label: "Wallet balance",
       value: formatCurrency(user.walletBalance || 0),
-      sub: `Total spent: ${formatCurrency(totalSpent)}`,
-      gradient: "from-amber-500/15 to-orange-500/10",
-      iconColor: "text-amber-500",
-      iconBg: "bg-amber-500/10"
+      sub: `Total spent ${formatCurrency(totalSpent)}`,
+      tone: "from-amber-500/20 to-orange-500/10",
+      iconTone: "bg-amber-500/12 text-amber-600"
     }
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="space-y-4">
-        <p className="text-xs font-bold uppercase tracking-widest text-primary">Client success dashboard</p>
-        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Welcome back, <span className="gradient-text">{user.displayName?.split(" ")[0] || "there"}</span>
-        </h1>
-        <p className="max-w-2xl text-muted-foreground">
-          {APP_NAME} gives you one trusted place for billing, credentials, renewals, and support so your subscriptions stay smooth.
-        </p>
-        <div className="flex flex-wrap gap-2 text-xs">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 font-medium text-emerald-600 dark:text-emerald-400">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Secure payments
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 font-medium text-blue-600 dark:text-blue-400">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            Instant delivery
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 font-medium text-amber-600 dark:text-amber-400">
-            <Headset className="h-3.5 w-3.5" />
-            Fast support
-          </span>
-        </div>
-      </div>
+    <div className="space-y-7">
+      <section className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-gradient-to-br from-primary/90 via-[hsl(var(--gradient-mid))] to-accent p-6 text-white shadow-[0_28px_70px_rgba(13,148,136,0.28)] md:p-8">
+        <div className="absolute -right-16 -top-14 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
+        <div className="absolute -bottom-10 -left-8 h-36 w-36 rounded-full bg-white/10 blur-3xl" />
+        <div className="relative grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="space-y-3">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/80">Client cockpit</p>
+            <h1 className="text-3xl font-black tracking-tight md:text-4xl">
+              Welcome back, {firstName}
+            </h1>
+            <p className="max-w-2xl text-sm text-white/90 md:text-base">
+              {APP_NAME} keeps your billing, credentials, renewals, and support in one high-speed workspace.
+            </p>
+            <div className="flex flex-wrap gap-2 text-xs font-semibold">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
+                <ShieldCheck className="h-3.5 w-3.5" /> Secure payments
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
+                <Sparkles className="h-3.5 w-3.5" /> Instant credentials
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
+                <Headset className="h-3.5 w-3.5" /> Priority support
+              </span>
+            </div>
+          </div>
 
-      {/* Stat cards */}
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-2.5 text-sm sm:grid-cols-2 lg:w-[19rem]">
+            <Link href="/products" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 font-bold text-primary transition hover:bg-white/90">
+              Add new plan <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/cart" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 py-3 font-bold text-white transition hover:bg-white/20">
+              View cart
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map((card, index) => (
           <motion.div
             key={card.label}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 * index, duration: 0.4 }}
-            whileHover={{ y: -4 }}
-            className={`relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br ${card.gradient} p-6 backdrop-blur-sm transition-all dark:border-white/5`}
+            transition={{ delay: index * 0.05 }}
+            className={`relative overflow-hidden rounded-[1.5rem] border border-border/50 bg-gradient-to-br ${card.tone} p-5`}
           >
-            <span className="absolute -right-2 -top-3 text-7xl font-black text-foreground/3 select-none">
-              {index + 1}
-            </span>
-            <div className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${card.iconBg} mb-4`}>
-              <card.icon className={`h-5 w-5 ${card.iconColor}`} />
+            <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl ${card.iconTone}`}>
+              <card.icon className="h-5 w-5" />
             </div>
-            <p className="text-sm text-muted-foreground">{card.label}</p>
-            <p className="mt-1 text-3xl font-bold">{card.value}</p>
-            <p className="mt-1.5 text-xs text-muted-foreground">{card.sub}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{card.label}</p>
+            <p className="mt-1 text-3xl font-black tracking-tight">{card.value}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{card.sub}</p>
           </motion.div>
         ))}
-      </div>
+      </section>
 
-      {/* Subscriptions + Orders */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
-        {/* Active subscriptions */}
-        <div className="surface rounded-[1.75rem] p-6">
+      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-[1.75rem] border border-border/55 bg-white/75 p-5 shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-lg font-bold">Your active plans</h2>
-            <Link href="/products" className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
-              Upgrade or add more <ArrowRight className="h-3 w-3" />
+            <h2 className="text-lg font-black tracking-tight">Your active plans</h2>
+            <Link href="/products" className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.12em] text-primary">
+              Upgrade <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="space-y-3">
+
+          <div className="space-y-3.5">
             {subscriptions.length ? (
               subscriptions.map((sub, i) => (
                 <motion.div
                   key={sub.id}
-                  initial={{ opacity: 0, x: -12 }}
+                  initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="group rounded-2xl border border-border/60 bg-muted/30 p-4 transition-all hover:border-primary/30 hover:bg-primary/5"
+                  className="rounded-2xl border border-border/60 bg-muted/25 p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 space-y-1">
-                      <p className="truncate font-semibold">{sub.productName}</p>
+                    <div className="min-w-0 space-y-1.5">
+                      <p className="truncate text-sm font-black uppercase tracking-[0.06em]">{sub.productName}</p>
                       <p className="text-xs text-muted-foreground">
                         Expires {formatDate(sub.expiresAt)}
-                        {" - "}
-                        <span className={daysUntil(sub.expiresAt) <= 3 ? "font-bold text-rose-500" : ""}>
+                        {" • "}
+                        <span className={daysUntil(sub.expiresAt) <= 3 ? "font-bold text-rose-500" : "font-semibold"}>
                           {daysUntil(sub.expiresAt)} days left
                         </span>
                       </p>
                       {sub.status === "active" ? <RevealCredentials subscriptionId={sub.id} /> : null}
                     </div>
-                    <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles[sub.status] ?? statusStyles.pending}`}>
+                    <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${statusStyles[sub.status] ?? statusStyles.pending}`}>
                       {sub.status}
                     </span>
                   </div>
-                  {/* Expiry progress bar */}
+
                   {sub.status === "active" && (
-                    <div className="mt-3">
-                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-border/60">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all"
-                          style={{ width: `${Math.max(5, Math.min(100, (daysUntil(sub.expiresAt) / 30) * 100))}%` }}
-                        />
-                      </div>
+                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-border/70">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-primary via-[hsl(var(--gradient-mid))] to-accent"
+                        style={{ width: `${Math.max(5, Math.min(100, (daysUntil(sub.expiresAt) / 30) * 100))}%` }}
+                      />
                     </div>
                   )}
                 </motion.div>
               ))
             ) : (
-              <div className="flex flex-col items-center gap-3 py-10 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+              <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 py-10 text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/50">
                   <ShoppingBag className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <p className="max-w-sm text-sm text-muted-foreground">
-                  No active plans yet. Choose a plan and credentials will appear here right after payment.
-                </p>
-                <Link href="/products" className="btn-primary h-9 px-5 text-xs">
-                  Browse plans
-                </Link>
+                <p className="max-w-sm text-sm text-muted-foreground">No active plans yet. Buy your first plan and credentials appear instantly here.</p>
+                <Link href="/products" className="btn-primary h-10 px-5 text-xs">Browse plans</Link>
               </div>
             )}
           </div>
         </div>
 
-        {/* Order history */}
-        <div className="surface rounded-[1.75rem] p-6">
+        <div className="rounded-[1.75rem] border border-border/55 bg-white/75 p-5 shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-lg font-bold">Recent orders</h2>
+            <h2 className="text-lg font-black tracking-tight">Order timeline</h2>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </div>
+
           <div className="space-y-3">
             {orders.length ? (
-              orders.slice(0, 6).map((order, i) => (
+              orders.slice(0, 7).map((order, i) => (
                 <motion.div
                   key={order.id}
-                  initial={{ opacity: 0, x: 12 }}
+                  initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-start justify-between gap-3 rounded-2xl border border-border/60 p-3.5"
+                  transition={{ delay: i * 0.04 }}
+                  className="flex items-start justify-between gap-3 rounded-xl border border-border/60 bg-muted/20 p-3"
                 >
-                  <div className="flex min-w-0 items-start gap-3">
-                    <div
-                      className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                        order.status === "paid" ? "bg-emerald-500/10" : "bg-rose-500/10"
-                      }`}
-                    >
-                      {order.status === "paid" ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                      ) : (
-                        <AlertCircle className="h-4 w-4 text-rose-500" />
-                      )}
+                  <div className="flex min-w-0 items-start gap-2.5">
+                    <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${order.status === "paid" ? "bg-emerald-500/12" : "bg-rose-500/12"}`}>
+                      {order.status === "paid" ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <AlertCircle className="h-4 w-4 text-rose-600" />}
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{order.productName}</p>
@@ -242,29 +225,26 @@ export function DashboardOverview({
                     </div>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-sm font-bold">{formatCurrency(order.amount)}</p>
-                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusStyles[order.status] ?? statusStyles.pending}`}>
+                    <p className="text-sm font-black">{formatCurrency(order.amount)}</p>
+                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] ${statusStyles[order.status] ?? statusStyles.pending}`}>
                       {order.status}
                     </span>
                   </div>
                 </motion.div>
               ))
             ) : (
-              <div className="flex flex-col items-center gap-3 py-10 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+              <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 py-10 text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/50">
                   <CreditCard className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <p className="max-w-sm text-sm text-muted-foreground">
-                  No orders yet. Your successful payments will show up here with status and date.
-                </p>
+                <p className="max-w-sm text-sm text-muted-foreground">No orders yet. Your transactions will appear here with status and timestamps.</p>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </section>
 
       <SupportCenter tickets={tickets} />
     </div>
   );
 }
-
