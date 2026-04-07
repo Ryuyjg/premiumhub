@@ -3,16 +3,19 @@ import { FeatureGrid } from "@/components/marketing/feature-grid";
 import { HeroSection } from "@/components/marketing/hero-section";
 import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { ProductShowcase } from "@/components/products/product-showcase";
-import { getFeaturedProducts } from "@/lib/db";
+import { getFeaturedProducts, getProducts } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const featuredProducts = await getFeaturedProducts().catch(() => []);
+  const [featuredProducts, allProducts] = await Promise.all([
+    getFeaturedProducts().catch(() => []),
+    getProducts().catch(() => [])
+  ]);
 
   return (
     <>
-      <HeroSection products={featuredProducts} />
+      <HeroSection products={allProducts} />
       <FeatureGrid />
       <ProductShowcase products={featuredProducts} />
       <TestimonialsSection />
