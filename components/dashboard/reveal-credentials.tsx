@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+import { Copy, Eye, EyeOff, ShieldCheck, Zap, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type CredentialState = {
@@ -16,18 +18,28 @@ type CredentialState = {
 export function RevealCredentials({ subscriptionId }: { subscriptionId: string }) {
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState<CredentialState | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   async function handleReveal() {
     setLoading(true);
     try {
+      // Small artificial delay to build anticipation
+      const startTime = Date.now();
       const response = await fetch(`/api/subscriptions/${subscriptionId}/credentials`);
       const payload = await response.json();
+      
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 1200) {
+        await new Promise(resolve => setTimeout(resolve, 1200 - elapsed));
+      }
 
       if (!response.ok) {
         throw new Error(payload.error || "Unable to reveal credentials.");
       }
 
       setCredentials(payload);
+      toast.success("Credentials decrypted successfully!");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Credential reveal failed.");
     } finally {
@@ -35,44 +47,170 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
     }
   }
 
-  async function copyValue(value: string, label: string) {
+  async function copyValue(value: string, field: string) {
     try {
       await navigator.clipboard.writeText(value);
-      toast.success(`${label} copied.`);
+      setCopiedField(field);
+      toast.success(`${field} copied to clipboard`);
+      setTimeout(() => setCopiedField(null), 2000);
     } catch {
-      toast.error(`Unable to copy ${label.toLowerCase()}.`);
+      toast.error(`Unable to copy ${field.toLowerCase()}.`);
     }
   }
 
   return (
-    <div className="mt-4 space-y-3">
-      {!credentials ? (
-        <Button type="button" variant="ghost" className="border border-border" onClick={handleReveal} disabled={loading}>
-          {loading ? "Decrypting..." : "Re-access credentials"}
-        </Button>
-      ) : (
-        <div className="rounded-2xl border border-border bg-background/50 p-4 text-sm">
-          <p className="font-semibold">{credentials.provider}</p>
-          <p className="mt-2 text-muted-foreground">{credentials.label}</p>
-          {credentials.email ? (
-            <div className="mt-3 flex items-center justify-between gap-2">
-              <p className="truncate">Email: {credentials.email}</p>
-              <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.email, "Email")}>
-                Copy
-              </Button>
+    <div className="mt-4">
+      <AnimatePresence mode="wait">
+        {!credentials ? (
+          <motion.div
+            key="reveal-button"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loading}
+              onClick={handleReveal}
+              className={`relative h-10 w-full overflow-hidden rounded-xl border-primary/20 bg-primary/5 font-semibold text-primary transition-all hover:bg-primary/10 hover:shadow-md ${
+                loading ? "cursor-wait" : ""
+              }`}
+            >
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.span
+                    key="loading"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <span className="text-xs uppercase tracking-widest font-bold">Decrypting Vault...</span>
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="idle"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Zap className="h-4 w-4 fill-primary/20" />
+                    Reveal login details
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              
+              {loading && (
+                <motion.div
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "100%" }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                />
+              )}
+            </Button>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="credentials-card"
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", damping: 15, stiffness: 150 }}
+            className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/50 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
+          >
+            {/* Header glow */}
+            <div className="absolute -top-12 left-1/2 h-24 w-48 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
+            
+            <div className="relative flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <ShieldCheck className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{credentials.provider}</p>
+                  <p className="text-sm font-semibold">{credentials.label}</p>
+                </div>
+              </div>
+              <div className="flex h-6 items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                </span>
+                VERIFIED
+              </div>
             </div>
-          ) : null}
-          {credentials.password ? (
-            <div className="mt-2 flex items-center justify-between gap-2">
-              <p className="truncate">Password: {credentials.password}</p>
-              <Button type="button" variant="outline" className="h-8 px-3 text-xs" onClick={() => copyValue(credentials.password, "Password")}>
-                Copy
-              </Button>
+
+            <div className="space-y-3">
+              {/* Email Field */}
+              <div className="group relative">
+                <p className="mb-1 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/80">Account ID / Email</p>
+                <div className="flex items-center justify-between gap-2 overflow-hidden rounded-xl border border-border/50 bg-muted/40 p-2 pl-3 transition-colors hover:border-primary/30">
+                  <p className="font-mono text-xs truncate select-all">{credentials.email}</p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0 hover:bg-primary/10 hover:text-primary transition-colors"
+                    onClick={() => copyValue(credentials.email, "Email")}
+                  >
+                    {copiedField === "Email" ? <div className="h-4 w-4 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" /> : <Copy className="h-3.5 w-3.5" />}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Password Field */}
+              <div className="group relative">
+                <p className="mb-1 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/80">Secure Password</p>
+                <div className="flex items-center justify-between gap-2 overflow-hidden rounded-xl border border-border/50 bg-muted/40 p-2 pl-3 transition-colors hover:border-primary/30">
+                  <p className="font-mono text-xs truncate select-all">
+                    {showPassword ? credentials.password : "••••••••••••"}
+                  </p>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-colors"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-colors"
+                      onClick={() => copyValue(credentials.password, "Password")}
+                    >
+                      {copiedField === "Password" ? <div className="h-4 w-4 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" /> : <Copy className="h-3.5 w-3.5" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {credentials.note && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="flex items-start gap-2 rounded-xl bg-amber-500/5 p-3 border border-amber-500/10 dark:bg-amber-500/10"
+                >
+                  <Lock className="mt-0.5 h-3 w-3 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <p className="text-[10px] leading-relaxed text-amber-700 dark:text-amber-300">
+                    <span className="font-bold">Pro Tip:</span> {credentials.note}
+                  </p>
+                </motion.div>
+              )}
             </div>
-          ) : null}
-          {credentials.note ? <p className="mt-3 text-xs text-amber-700 dark:text-amber-300">{credentials.note}</p> : null}
-        </div>
-      )}
+            
+            {/* Background pattern */}
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.03] dark:bg-[radial-gradient(#ffffff_1px,transparent_1px)]" />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
