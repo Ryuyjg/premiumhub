@@ -207,37 +207,40 @@ export function AccountManager({
                   {editingId === account.id ? (
                     <Button
                       type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3"
                       onClick={() => setEditingId(null)}
                     >
-                      <X className="h-4 w-4" />
+                      <X className="mr-1 h-4 w-4" />
+                      Cancel
                     </Button>
                   ) : (
                     <Button
                       type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3"
                       onClick={() => {
                         setEditingId(account.id);
                         setEditForm({ label: account.label, email: "", password: "" });
                       }}
                     >
-                      <Edit className="h-4 w-4" />
+                      <Edit className="mr-1 h-4 w-4" />
+                      Edit
                     </Button>
                   )}
                   
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-all"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-rose-600 hover:text-rose-700"
                     onClick={() => deleteAccount(account.id)}
                     disabled={deletingId === account.id}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="mr-1 h-4 w-4" />
+                    {deletingId === account.id ? "Deleting..." : "Delete"}
                   </Button>
                 </div>
               </div>
