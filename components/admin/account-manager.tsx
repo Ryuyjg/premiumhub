@@ -148,7 +148,7 @@ export function AccountManager({
 
   return (
     <Card className="h-full">
-      <h2 className="text-xl font-semibold">Credential vault</h2>
+      <h2 className="text-xl font-semibold">Credential vault (v2)</h2>
       <p className="mt-1 text-sm text-muted-foreground">Encrypted account inventory with seat-capacity tracking.</p>
       {lowStockCount > 0 ? (
         <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-300">
