@@ -63,7 +63,7 @@ export function SiteHeader() {
     const auth = getClientAuth();
     if (auth) await signOut(auth);
     setOpen(false);
-    router.push("/");
+    router.push("/login");
     router.refresh();
   }
 

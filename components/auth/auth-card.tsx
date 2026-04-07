@@ -22,7 +22,7 @@ export function AuthCard() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (user) router.replace(searchParams.get("redirect") || "/dashboard");
+    if (user) router.replace(searchParams.get("redirect") || "/products");
   }, [authLoading, router, searchParams, user]);
 
   async function persistSession() {
@@ -64,7 +64,7 @@ export function AuthCard() {
       }
       await persistSession();
       toast.success(mode === "register" ? "Account created! Welcome 🎉" : "Welcome back!");
-      router.replace(searchParams.get("redirect") || "/dashboard");
+      router.replace(searchParams.get("redirect") || "/products");
       router.refresh();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Authentication failed.";
