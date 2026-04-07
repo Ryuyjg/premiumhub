@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, ShieldCheck, Sparkles, Zap, Star, TrendingUp, Users, MessageCircleHeart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ShieldCheck, Sparkles, Zap, Star, TrendingUp, Users, MessageCircleHeart, Gamepad2, BrainCircuit, AppWindow } from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types";
@@ -22,12 +23,41 @@ const proofCards = [
 const brands = ["Netflix", "Disney+", "Prime", "Hotstar", "SonyLIV", "ZEE5", "JioCinema", "Crunchyroll"];
 
 export function HeroSection({ products = [] }: { products?: Product[] }) {
-  // Use real products for the "Live orders" ticker
-  const displayProducts = products.length > 0 ? products.slice(0, 3) : [
-    { name: "Netflix 4K", salePrice: 349, price: 349 },
-    { name: "Disney+ Bundle", salePrice: 199, price: 199 },
-    { name: "Prime + Hotstar", salePrice: 449, price: 449 }
+  const [index, setIndex] = useState(0);
+
+  // Diverse fallback data if no products available
+  const allAvailable = products.length > 0 ? products : [
+    { name: "Netflix 4K (Private Account)", salePrice: 349, price: 349, categoryName: "OTT" },
+    { name: "ChatGPT Plus (Shared)", salePrice: 499, price: 599, categoryName: "AI" },
+    { name: "Minecraft Java Edition", salePrice: 399, price: 699, categoryName: "Gaming" },
+    { name: "Windows 11 Pro Key", salePrice: 199, price: 299, categoryName: "Software" },
+    { name: "Adobe Creative Cloud", salePrice: 899, price: 1299, categoryName: "Apps" },
+    { name: "Disney+ Annual Premium", salePrice: 1499, price: 1499, categoryName: "OTT" }
   ];
+
+  // Logic for the sliding window of 3 items
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % allAvailable.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [allAvailable.length]);
+
+  const displayProducts = [
+    allAvailable[index % allAvailable.length],
+    allAvailable[(index + 1) % allAvailable.length],
+    allAvailable[(index + 2) % allAvailable.length]
+  ];
+
+  const getIcon = (category?: string) => {
+    switch (category?.toLowerCase()) {
+        case 'ai': return <BrainCircuit className="h-3.5 w-3.5 text-violet-500" />;
+        case 'gaming': return <Gamepad2 className="h-3.5 w-3.5 text-rose-500" />;
+        case 'software': return <AppWindow className="h-3.5 w-3.5 text-sky-500" />;
+        case 'apps': return <Sparkles className="h-3.5 w-3.5 text-amber-500" />;
+        default: return <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />;
+    }
+  };
 
   return (
     <section className="page-grid relative overflow-hidden py-20 md:py-32">
@@ -230,19 +260,28 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                   </div>
                   <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">VERIFIED</span>
                 </div>
-                <div className="space-y-2">
-                  {displayProducts.map((order, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm">
-                      <span className="font-medium flex items-center gap-1.5">
-                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                        {order.name}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-primary">{formatCurrency(order.salePrice || order.price)}</span>
-                        <span className="text-xs text-muted-foreground">{(i + 1) * 2}m ago</span>
-                      </div>
-                    </div>
-                  ))}
+                <div className="relative h-[88px] overflow-hidden">
+                  <AnimatePresence mode="popLayout">
+                    {displayProducts.map((order, i) => (
+                      <motion.div 
+                        key={`${order.name}-${index + i}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5, delay: i * 0.1 }}
+                        className="flex items-center justify-between text-sm h-[29px]"
+                      >
+                        <span className="font-medium flex items-center gap-1.5 truncate pr-2">
+                          {getIcon(order.categoryName)}
+                          <span className="truncate">{order.name}</span>
+                        </span>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="font-bold text-primary">{formatCurrency(order.salePrice || order.price)}</span>
+                          <span className="text-[10px] text-muted-foreground w-10 text-right">{(i + 1) * 2}m ago</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             </div>

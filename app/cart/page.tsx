@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, ShoppingBag, ArrowRight, ShieldCheck, Zap, Tag, Sparkles, Loader2, TrendingUp } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, ShieldCheck, Zap, Tag, Sparkles, Loader2, TrendingUp, Cpu } from "lucide-react";
 import { useAppStore } from "@/store/use-app-store";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -38,10 +38,22 @@ export default function CartPage() {
   const removeFromCart = useAppStore((state) => state.removeFromCart);
   const clearCart = useAppStore((state) => state.clearCart);
   const [loading, setLoading] = useState(false);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [trending, setTrending] = useState<Product[]>([]);
   const [fetchingTrending, setFetchingTrending] = useState(false);
 
   const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/user/profile`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.walletBalance !== undefined) setWalletBalance(data.walletBalance);
+        })
+        .catch(() => setWalletBalance(0));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (cartItems.length === 0) {
@@ -54,6 +66,45 @@ export default function CartPage() {
         .finally(() => setFetchingTrending(false));
     }
   }, [cartItems.length]);
+
+  async function handleWalletCheckout() {
+    if (!user) {
+      toast.error("Please sign in to proceed.");
+      window.location.href = "/login?redirect=/cart";
+      return;
+    }
+
+    if (walletBalance !== null && walletBalance < total) {
+      toast.error(`Insufficient balance. (Balance: ${formatCurrency(walletBalance)})`);
+      return;
+    }
+
+    setLoading(true);
+    toast.loading("Processing your wallet payment...", { id: "wallet-checkout" });
+
+    try {
+      const response = await fetch("/api/cart/wallet-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productIds: cartItems.map((item) => item.productId)
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || "Wallet checkout failed.");
+      }
+
+      toast.success("Success! Your products are ready on your dashboard.", { id: "wallet-checkout" });
+      clearCart();
+      window.location.href = "/dashboard";
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Checkout failed.", { id: "wallet-checkout" });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleUnifiedCheckout() {
     if (!user) {
@@ -291,22 +342,46 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <Button 
-                onClick={handleUnifiedCheckout} 
-                className="btn-primary w-full h-14 text-base gap-3"
-                disabled={loading}
-              >
-                {loading ? (
-                    <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Processing...
-                    </>
-                ) : (
-                    <>
-                        Securely Checkout All <ArrowRight className="h-5 w-5" />
-                    </>
-                )}
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleUnifiedCheckout} 
+                  className="btn-primary w-full h-14 text-base gap-3"
+                  disabled={loading}
+                >
+                  {loading ? (
+                      <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Processing...
+                      </>
+                  ) : (
+                      <>
+                          Checkout with Razorpay <ArrowRight className="h-5 w-5" />
+                      </>
+                  )}
+                </Button>
+
+                <Button 
+                  onClick={handleWalletCheckout} 
+                  variant="outline"
+                  className="w-full h-14 text-base gap-3 rounded-[1.5rem] border-primary/20 hover:bg-primary/5"
+                  disabled={loading || (walletBalance !== null && walletBalance < total)}
+                >
+                  {loading ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Cpu className="h-5 w-5 text-primary" />
+                  )}
+                  Pay with Wallet
+                </Button>
+
+                {walletBalance !== null ? (
+                  <p className="text-center text-[11px] font-bold text-muted-foreground">
+                    Available Balance: <span className={walletBalance >= total ? "text-emerald-500" : "text-rose-500"}>
+                      {formatCurrency(walletBalance)}
+                    </span>
+                  </p>
+                ) : null}
+              </div>
 
               <div className="mt-8 space-y-3 rounded-[2rem] border border-border/50 bg-muted/30 p-5">
                 {[

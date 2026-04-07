@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Clock3 } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Clock3, ShoppingBag } from "lucide-react";
 import type { MouseEvent } from "react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
