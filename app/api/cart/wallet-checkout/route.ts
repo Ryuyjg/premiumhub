@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     // Fetch products to verify existence and calculate total
-    const productDocs = await Promise.all(productIds.map(id => adminDb.collection("products").doc(id).get()));
+    const productDocs = await Promise.all(productIds.map((id: any) => adminDb.collection("products").doc(id).get()));
     
     const products: Product[] = [];
     let totalAmount = 0;
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const orderIds: string[] = [];
 
     // Atomic transaction for wallet deduction and order creation
-    await adminDb.runTransaction(async (transaction) => {
+    await adminDb.runTransaction(async (transaction: any) => {
       const userRef = adminDb.collection("users").doc(user.id);
       const userDoc = await transaction.get(userRef);
       

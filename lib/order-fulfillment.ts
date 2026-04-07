@@ -34,7 +34,7 @@ type OttAccountDoc = {
 };
 
 export async function releaseOttAccountSeat(accountId: string) {
-  return adminDb.runTransaction(async (transaction) => {
+  return adminDb.runTransaction(async (transaction: any) => {
     const ref = adminDb.collection("ottAccounts").doc(accountId);
     const doc = await transaction.get(ref);
     if (!doc.exists) {
@@ -55,40 +55,38 @@ export async function releaseOttAccountSeat(accountId: string) {
 }
 
 export async function assignOttAccountSeat(productId: string): Promise<OttAccountDoc | null> {
-  const accountsQuery = adminDb
+  const accountsSnapshot = await adminDb
     .collection("ottAccounts")
     .where("productId", "==", productId)
-    .where("status", "==", "available");
+    .where("status", "==", "available")
+    .get();
 
-  return adminDb.runTransaction(async (transaction) => {
-    const snapshot = await transaction.get(accountsQuery);
-    const candidate = snapshot.docs
-      .map((doc) => ({ id: doc.id, ...doc.data() }))
-      .sort((a, b) => Number(a.activeUsers || 0) - Number(b.activeUsers || 0))
-      .find((doc) => Number(doc.activeUsers || 0) < Number(doc.maxUsers || 1));
+  const candidateDoc = accountsSnapshot.docs
+    .map((doc: any) => ({ id: doc.id, ...doc.data() }))
+    .sort((a: any, b: any) => Number(a.activeUsers || 0) - Number(b.activeUsers || 0))
+    .find((doc: any) => Number(doc.activeUsers || 0) < Number(doc.maxUsers || 1));
 
-    if (!candidate) {
-      return null;
-    }
+  if (!candidateDoc) {
+    return null;
+  }
 
-    const nextActiveUsers = Number(candidate.activeUsers || 0) + 1;
-    const maxUsers = Number(candidate.maxUsers || 1);
+  const nextActiveUsers = Number(candidateDoc.activeUsers || 0) + 1;
+  const maxUsers = Number(candidateDoc.maxUsers || 1);
 
-    transaction.update(adminDb.collection("ottAccounts").doc(candidate.id), {
-      activeUsers: nextActiveUsers,
-      status: nextActiveUsers >= maxUsers ? "full" : "available",
-      updatedAt: new Date().toISOString()
-    });
-
-    return {
-      id: candidate.id,
-      label: String(candidate.label || ""),
-      emailCiphertext: String(candidate.emailCiphertext || ""),
-      passwordCiphertext: String(candidate.passwordCiphertext || ""),
-      maxUsers,
-      activeUsers: nextActiveUsers
-    } satisfies OttAccountDoc;
+  await adminDb.collection("ottAccounts").doc(candidateDoc.id).update({
+    activeUsers: nextActiveUsers,
+    status: nextActiveUsers >= maxUsers ? "full" : "available",
+    updatedAt: new Date().toISOString()
   });
+
+  return {
+    id: candidateDoc.id,
+    label: String(candidateDoc.label || ""),
+    emailCiphertext: String(candidateDoc.emailCiphertext || ""),
+    passwordCiphertext: String(candidateDoc.passwordCiphertext || ""),
+    maxUsers,
+    activeUsers: nextActiveUsers
+  } satisfies OttAccountDoc;
 }
 
 export async function fulfillPaidOrder(input: FulfillOrderInput) {
@@ -123,92 +121,101 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
     return { success: true, idempotent: true };
   }
 
-  const ottAccount = deliveryMode === "direct_credentials" ? await assignOttAccountSeat(productId) : null;
-  if (deliveryMode === "direct_credentials" && !ottAccount) {
-    throw new Error("No stock available for this item.");
-  }
-  const startsAt = new Date();
-  const expiresAt = new Date(Date.now() + Number(product.durationInDays || 30) * 24 * 60 * 60 * 1000);
-
-  await adminDb.collection("orders").doc(orderId).set(
-    {
-      status: "paid",
-      paymentMethod,
-      razorpayPaymentId: razorpayPaymentId || null,
-      metadata: {
-        ip: metadata?.ip || "unknown",
-        userAgent: metadata?.userAgent || "unknown",
-        device: metadata?.device || "unknown"
-      },
-      updatedAt: new Date().toISOString()
-    },
-    { merge: true }
-  );
-
-  let credentialsText = "";
-  if (deliveryMode === "direct_credentials" && ottAccount) {
-    try {
-      const email = decryptSensitiveValue(ottAccount.emailCiphertext);
-      const password = decryptSensitiveValue(ottAccount.passwordCiphertext);
-      credentialsText = `ID: ${ottAccount.label}\nEmail: ${email}\nPassword: ${password}`;
-    } catch (err) {
-      console.error("Fulfillment decryption error:", err);
-      credentialsText = `${ottAccount.label} - Assigned (View in dashboard)`;
+  try {
+    const ottAccount = deliveryMode === "direct_credentials" ? await assignOttAccountSeat(productId) : null;
+    if (deliveryMode === "direct_credentials" && !ottAccount) {
+      throw new Error("No stock available for this item.");
     }
-  } else if (deliveryMode === "otp_manual") {
-    credentialsText = `OTP login. Contact admin on ${String(product.otpSupportNumber || "configured number")}`;
-  } else {
-    credentialsText = `Invitation will be activated on ${String(order.customerDeliveryEmail || userId)}`;
-  }
+    const startsAt = new Date();
+    const expiresAt = new Date(Date.now() + Number(product.durationInDays || 30) * 24 * 60 * 60 * 1000);
 
-  await adminDb.collection("subscriptions").add({
-    userId,
-    productId,
-    orderId,
-    productName: product.name,
-    status: "active",
-    startsAt: startsAt.toISOString(),
-    expiresAt: expiresAt.toISOString(),
-    deliveryMode,
-    otpSupportNumber: String(product.otpSupportNumber || ""),
-    deliveryNotes: String(product.deliveryNotes || ""),
-    customerDeliveryEmail: String(order.customerDeliveryEmail || userId),
-    ottAccountId: ottAccount?.id || null,
-    assignedCredentialLabel: credentialsText
-  });
+    await adminDb.collection("orders").doc(orderId).set(
+      {
+        status: "paid",
+        paymentMethod,
+        razorpayPaymentId: razorpayPaymentId || null,
+        metadata: {
+          ip: metadata?.ip || "unknown",
+          userAgent: metadata?.userAgent || "unknown",
+          device: metadata?.device || "unknown"
+        },
+        updatedAt: new Date().toISOString()
+      },
+      { merge: true }
+    );
 
-  if (ottAccount) {
-    await adminDb.collection("orderFulfillments").add({
+    let credentialsText = "";
+    if (deliveryMode === "direct_credentials" && ottAccount) {
+      try {
+        const email = decryptSensitiveValue(ottAccount.emailCiphertext);
+        const password = decryptSensitiveValue(ottAccount.passwordCiphertext);
+        credentialsText = `ID: ${ottAccount.label}\nEmail: ${email}\nPassword: ${password}`;
+      } catch (err) {
+        console.error("Fulfillment decryption error:", err);
+        credentialsText = `${ottAccount.label} - Assigned (View in dashboard)`;
+      }
+    } else if (deliveryMode === "otp_manual") {
+      credentialsText = `OTP login. Contact admin on ${String(product.otpSupportNumber || "configured number")}`;
+    } else {
+      credentialsText = `Invitation will be activated on ${String(order.customerDeliveryEmail || userId)}`;
+    }
+
+    await adminDb.collection("subscriptions").add({
       userId,
+      productId,
       orderId,
-      ottAccountId: ottAccount.id,
-      deliveredAt: new Date().toISOString()
+      productName: product.name,
+      status: "active",
+      startsAt: startsAt.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      deliveryMode,
+      otpSupportNumber: String(product.otpSupportNumber || ""),
+      deliveryNotes: String(product.deliveryNotes || ""),
+      customerDeliveryEmail: String(order.customerDeliveryEmail || userId),
+      ottAccountId: ottAccount?.id || null,
+      assignedCredentialLabel: credentialsText
     });
-  }
 
-  if (order.couponCode) {
-    const couponSnapshot = await adminDb
-      .collection("coupons")
-      .where("code", "==", order.couponCode)
-      .limit(1)
-      .get();
-
-    if (!couponSnapshot.empty) {
-      await couponSnapshot.docs[0].ref.update({
-        usedCount: (couponSnapshot.docs[0].data().usedCount || 0) + 1
+    if (ottAccount) {
+      await adminDb.collection("orderFulfillments").add({
+        userId,
+        orderId,
+        ottAccountId: ottAccount.id,
+        deliveredAt: new Date().toISOString()
       });
     }
+
+    if (order.couponCode) {
+      const couponSnapshot = await adminDb
+        .collection("coupons")
+        .where("code", "==", order.couponCode)
+        .limit(1)
+        .get();
+
+      if (!couponSnapshot.empty) {
+        await couponSnapshot.docs[0].ref.update({
+          usedCount: (couponSnapshot.docs[0].data().usedCount || 0) + 1
+        });
+      }
+    }
+
+    await createUserNotification(
+      userId,
+      "Subscription activated",
+      deliveryMode === "direct_credentials"
+        ? `Your ${product.name} subscription is active now.`
+        : deliveryMode === "otp_manual"
+          ? `Your ${product.name} access is ready. OTP will be shared manually by admin.`
+          : `Your ${product.name} invitation request has been received and will be activated soon.`
+    );
+
+    return { success: true, idempotent: false };
+  } catch (error) {
+     console.error("Fulfillment engine failure:", error);
+     await adminDb.collection("orders").doc(orderId).set({
+         fulfillmentError: error instanceof Error ? error.message : "Fulfillment engine failure",
+         fulfillmentFailedAt: new Date().toISOString()
+     }, { merge: true });
+     throw error; // Re-throw to allow API to report error
   }
-
-  await createUserNotification(
-    userId,
-    "Subscription activated",
-    deliveryMode === "direct_credentials"
-      ? `Your ${product.name} subscription is active now.`
-      : deliveryMode === "otp_manual"
-        ? `Your ${product.name} access is ready. OTP will be shared manually by admin.`
-        : `Your ${product.name} invitation request has been received and will be activated soon.`
-  );
-
-  return { success: true, idempotent: false };
 }
