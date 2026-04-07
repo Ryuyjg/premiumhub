@@ -36,7 +36,7 @@ export const useAppStore = create<AppStore>()(
       clearCart: () => set({ cartItems: [] })
     }),
     {
-      name: "streamvault-app-store"
+      name: "ott-shoppy-app-store"
     }
   )
 );

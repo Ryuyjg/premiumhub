@@ -21,7 +21,7 @@ export default function LoginPage() {
         {/* Left — feature pitch */}
         <div className="hidden space-y-10 lg:block">
           <div className="space-y-4">
-            <span className="glow-badge">StreamVault Portal</span>
+            <span className="glow-badge">{APP_NAME} Portal</span>
             <h1 className="text-4xl font-bold tracking-tight xl:text-5xl">
               Your subscriptions,{" "}
               <span className="gradient-text">fully in control.</span>

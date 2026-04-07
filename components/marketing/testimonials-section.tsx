@@ -10,8 +10,8 @@ const reviews = [
     handle: "@priya_s",
     avatar: "PS",
     rating: 5,
-    text: "Honestly shocked at how fast the delivery was. Got my Netflix credentials literally 10 seconds after payment. This is the real deal.",
-    plan: "Netflix 4K · 1 month",
+    text: "Honestly shocked at how fast the delivery was. Got my ChatGPT Plus shared account credentials literally 10 seconds after payment. This is the real deal.",
+    plan: "ChatGPT Plus · 1 month",
     gradient: "from-violet-500 to-purple-600"
   },
   {
@@ -19,8 +19,8 @@ const reviews = [
     handle: "@rahulmehta",
     avatar: "RM",
     rating: 5,
-    text: "Clean UI, no nonsense. The dashboard shows my subscription status and expiry clearly. Way better than WhatsApp group sellers.",
-    plan: "Disney+ · 3 months",
+    text: "Clean UI, no nonsense. Need a virtual number for WhatsApp and it worked flawlessly on the first try. Way better than sketchy sellers.",
+    plan: "Virtual Number · WhatsApp",
     gradient: "from-blue-500 to-cyan-600"
   },
   {
@@ -28,8 +28,8 @@ const reviews = [
     handle: "@ananya.r",
     avatar: "AR",
     rating: 5,
-    text: "Used the coupon code and got 20% off. Checkout was smooth, got a confirmation email instantly. Will definitely buy again.",
-    plan: "Prime Video · 6 months",
+    text: "Used the coupon code and got 20% off my Adobe Creative Cloud license. Checked out smoothly, got a confirmation email instantly.",
+    plan: "Creative Cloud · 1 year",
     gradient: "from-amber-500 to-orange-600"
   },
   {
@@ -37,8 +37,8 @@ const reviews = [
     handle: "@kiranp",
     avatar: "KP",
     rating: 5,
-    text: "I run a small reselling business and this platform handles everything. The admin panel is incredibly detailed.",
-    plan: "Bundle Pack · 1 year",
+    text: "I bought Minecraft Java edition and the key was instantly sent to my dashboard. Claimed it on Microsoft within seconds.",
+    plan: "Minecraft Java Edition",
     gradient: "from-emerald-500 to-teal-600"
   },
   {
@@ -46,8 +46,8 @@ const reviews = [
     handle: "@deepanair",
     avatar: "DN",
     rating: 5,
-    text: "Payment was super secure, I can see the Razorpay badge. Credentials came with the email exactly as promised. 10/10.",
-    plan: "Hotstar Premium",
+    text: "Payment was super secure, I can see the Razorpay badge. The Telegram premium number came with the email exactly as promised. 10/10.",
+    plan: "Telegram Premium Number",
     gradient: "from-pink-500 to-rose-600"
   },
   {
@@ -55,8 +55,8 @@ const reviews = [
     handle: "@sanjayk",
     avatar: "SK",
     rating: 5,
-    text: "The support team responded in minutes through the dashboard. Most platforms don't even have a support system this polished.",
-    plan: "ZEE5 · 3 months",
+    text: "The platform's UI is incredibly premium. Used it to grab a Netflix screen and it has been working perfectly without any drops.",
+    plan: "Netflix 4K · 3 months",
     gradient: "from-indigo-500 to-blue-600"
   }
 ];
@@ -72,7 +72,7 @@ export function TestimonialsSection() {
             <span className="gradient-text">thousands of customers.</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real people, real subscriptions — see what they say about StreamVault.
+            Real people, real results — see what they say about OTT Shoppy.
           </p>
         </div>
       </Reveal>

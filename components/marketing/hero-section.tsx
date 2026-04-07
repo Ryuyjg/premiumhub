@@ -20,19 +20,19 @@ const proofCards = [
   { icon: Sparkles, label: "Premium SaaS-grade UI", color: "from-violet-500/20 to-purple-500/10", iconColor: "text-violet-500" }
 ];
 
-const brands = ["Netflix", "Disney+", "Prime", "Hotstar", "SonyLIV", "ZEE5", "JioCinema", "Crunchyroll"];
+const brands = ["ChatGPT Plus", "Creative Cloud", "Midjourney", "Telegram", "WhatsApp", "Netflix", "Xbox", "Canva Pro"];
 
 export function HeroSection({ products = [] }: { products?: Product[] }) {
   const [index, setIndex] = useState(0);
 
   // Diverse fallback data if no products available
   const allAvailable = products.length > 0 ? products : [
-    { name: "Netflix 4K (Private Account)", salePrice: 349, price: 349, categoryName: "OTT" },
     { name: "ChatGPT Plus (Shared)", salePrice: 499, price: 599, categoryName: "AI" },
+    { name: "Telegram Premium Number", salePrice: 199, price: 299, categoryName: "Apps" },
+    { name: "Adobe Creative Cloud", salePrice: 899, price: 1299, categoryName: "Software" },
     { name: "Minecraft Java Edition", salePrice: 399, price: 699, categoryName: "Gaming" },
-    { name: "Windows 11 Pro Key", salePrice: 199, price: 299, categoryName: "Software" },
-    { name: "Adobe Creative Cloud", salePrice: 899, price: 1299, categoryName: "Apps" },
-    { name: "Disney+ Annual Premium", salePrice: 1499, price: 1499, categoryName: "OTT" }
+    { name: "Midjourney Private", salePrice: 799, price: 999, categoryName: "AI" },
+    { name: "Netflix 4K (Private Account)", salePrice: 349, price: 349, categoryName: "OTT" }
   ];
 
   // Logic for the sliding window of 3 items
@@ -113,9 +113,9 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
               className="space-y-4 relative"
             >
               <h1 className="text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl leading-[1.08]">
-                Everything you love to watch, for a{" "}
+                The world best multi{" "}
                 <span className="gradient-text relative inline-block">
-                  fraction of the cost.
+                  subscription store.
                   <motion.span 
                     className="absolute -right-12 -top-10"
                     initial={{ opacity: 0, scale: 0 }}
@@ -127,8 +127,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                 </span>
               </h1>
               <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-                Get instant access to Netflix, Disney+, Prime Video, and more. 
-                Secure payments, 24/7 support, and guaranteed uptime for every account.
+                Get instant access to AI tools, software licenses, premium games, editing tools, and virtual WhatsApp/Telegram numbers securely.
               </p>
             </motion.div>
 

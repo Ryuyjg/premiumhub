@@ -1,77 +1,77 @@
 "use client";
 
 import {
-  BadgeCheck,
-  CreditCard,
-  DatabaseZap,
-  LockKeyhole,
-  MonitorSmartphone,
-  Search,
-  Rocket,
-  HeadphonesIcon
+  Gamepad2,
+  BrainCircuit,
+  AppWindow,
+  Phone,
+  ShieldCheck,
+  Zap,
+  HeadphonesIcon,
+  CreditCard
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/marketing/reveal";
 
 const features = [
   {
-    icon: CreditCard,
-    title: "Live-ready Razorpay",
-    description: "Backend-created orders, signature verification, failure recovery, and retry-safe persistence.",
+    icon: AppWindow,
+    title: "Software Licenses",
+    description: "Original license keys for Windows, Office, Adobe, and professional editing tools delivered instantly.",
     gradient: "from-blue-500/15 to-cyan-500/10",
     iconBg: "bg-blue-500/10",
     iconColor: "text-blue-500",
     number: "01"
   },
   {
-    icon: LockKeyhole,
-    title: "Encrypted credential vault",
-    description: "OTT account emails and passwords are AES-encrypted before storage and only decrypted on secure reads.",
+    icon: BrainCircuit,
+    title: "Premium AI Subscriptions",
+    description: "Access shared or private accounts for ChatGPT Plus, Midjourney, Claude, and more AI assistants.",
     gradient: "from-violet-500/15 to-purple-500/10",
     iconBg: "bg-violet-500/10",
     iconColor: "text-violet-500",
     number: "02"
   },
   {
-    icon: DatabaseZap,
-    title: "Firebase-native scale",
-    description: "Firestore, Auth, and Storage wired for modular growth across catalog, orders, and fulfillment.",
+    icon: Gamepad2,
+    title: "Gaming Accounts",
+    description: "Premium access to Minecraft, Xbox Game Pass, PlayStation Plus, and other popular gaming networks.",
     gradient: "from-amber-500/15 to-orange-500/10",
     iconBg: "bg-amber-500/10",
     iconColor: "text-amber-500",
     number: "03"
   },
   {
-    icon: Search,
-    title: "Smart discovery",
-    description: "Search, category filters, animated cards, and fast product navigation for higher conversion.",
+    icon: Phone,
+    title: "Virtual Numbers",
+    description: "Verified active numbers for Telegram, WhatsApp, and SMS bypass, ready for immediate use.",
     gradient: "from-emerald-500/15 to-teal-500/10",
     iconBg: "bg-emerald-500/10",
     iconColor: "text-emerald-500",
     number: "04"
   },
   {
-    icon: MonitorSmartphone,
-    title: "Responsive by default",
-    description: "Mobile-first layouts, sticky CTAs, skeleton states, and polished motion on every screen size.",
+    icon: ShieldCheck,
+    title: "Encrypted credential vault",
+    description: "All purchased accounts, keys, and credentials are AES-encrypted before storage and decrypted on read.",
     gradient: "from-pink-500/15 to-rose-500/10",
     iconBg: "bg-pink-500/10",
     iconColor: "text-pink-500",
     number: "05"
   },
   {
-    icon: BadgeCheck,
-    title: "Admin command center",
-    description: "Analytics, coupons, product management, and OTT account allocation in one high-end workspace.",
+    icon: Zap,
+    title: "Instant delivery engine",
+    description: "Subscriptions activate in under 15 seconds with automated credential allocation and delivery.",
     gradient: "from-indigo-500/15 to-blue-500/10",
     iconBg: "bg-indigo-500/10",
     iconColor: "text-indigo-500",
     number: "06"
   },
   {
-    icon: Rocket,
-    title: "Instant delivery engine",
-    description: "Subscriptions activate in under 15 seconds with automated credential assignment and email delivery.",
+    icon: CreditCard,
+    title: "Secure Payments",
+    description: "Guaranteed failure recovery and secure wallet balance system for safe and reliable checkouts.",
     gradient: "from-sky-500/15 to-blue-500/10",
     iconBg: "bg-sky-500/10",
     iconColor: "text-sky-500",
@@ -80,7 +80,7 @@ const features = [
   {
     icon: HeadphonesIcon,
     title: "Built-in support center",
-    description: "Customers can raise tickets directly from their dashboard. Admins resolve from one command panel.",
+    description: "Direct 24/7 access to customer support and ticket resolution tools directly from your user dashboard.",
     gradient: "from-fuchsia-500/15 to-pink-500/10",
     iconBg: "bg-fuchsia-500/10",
     iconColor: "text-fuchsia-500",

@@ -1,6 +1,6 @@
-export const APP_NAME = "StreamVault";
+export const APP_NAME = "OTT Shoppy";
 export const APP_DESCRIPTION =
-  "Premium OTT subscription commerce platform with automated delivery, secure payments, and delightful SaaS-grade UX.";
+  "The world best multi subscription store. Securely purchase AI, software, games, editing tools, and virtual numbers.";
 
 export const NAV_LINKS = [
   { href: "/products", label: "Plans" },

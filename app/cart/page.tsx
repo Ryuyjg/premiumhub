@@ -137,7 +137,7 @@ export default function CartPage() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
-        name: "StreamVault",
+        name: "OTT Shoppy",
         description: `${cartItems.length} plans in cart`,
         order_id: order.id,
         modal: {

@@ -29,9 +29,9 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`
   },
   description: APP_DESCRIPTION,
-  keywords: ["OTT subscriptions", "Netflix", "Disney+", "Prime Video", "streaming", "India"],
+  keywords: ["OTT Shoppy", "multi subscription store", "AI subscriptions", "software license keys", "gaming accounts", "virtual numbers", "WhatsApp numbers", "Telegram numbers"],
   openGraph: {
-    title: `${APP_NAME} — Premium OTT Subscriptions`,
+    title: `${APP_NAME} — The World Best Multi Subscription Store`,
     description: APP_DESCRIPTION,
     type: "website",
     siteName: APP_NAME
