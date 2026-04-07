@@ -68,7 +68,7 @@ export function OrderManager({ orders }: { orders: Order[] }) {
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search by product, user id, or razorpay order id"
+          placeholder="Search by product, user id, or payment order id"
           className="pl-10"
         />
       </div>
@@ -86,7 +86,7 @@ export function OrderManager({ orders }: { orders: Order[] }) {
               <div>
                 <p className="font-semibold">{order.productName}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{formatDate(order.createdAt)}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">{order.paymentMethod || "razorpay"}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">{order.paymentMethod || "crypto"}</p>
                 {order.deliveryMode ? (
                   <p className="mt-1 text-xs text-muted-foreground">
                     Delivery: {order.deliveryMode === "direct_credentials" ? "ID/Password" : order.deliveryMode === "otp_manual" ? "OTP manual" : "Email invite"}
