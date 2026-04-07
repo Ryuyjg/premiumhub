@@ -10,10 +10,13 @@ import {
   CheckCircle2,
   AlertCircle,
   ShoppingBag,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  Headset
 } from "lucide-react";
 import Link from "next/link";
 import type { AppUser, Order, Subscription, SupportTicket } from "@/types";
+import { APP_NAME } from "@/lib/constants";
 import { daysUntil, formatCurrency, formatDate } from "@/lib/utils";
 import { RevealCredentials } from "@/components/dashboard/reveal-credentials";
 import { SupportCenter } from "@/components/dashboard/support-center";
@@ -60,7 +63,7 @@ export function DashboardOverview({
     },
     {
       icon: CreditCard,
-      label: "Paid orders",
+      label: "Successful orders",
       value: String(paidOrderCount),
       sub: `${orders.length} total orders`,
       gradient: "from-blue-500/15 to-cyan-500/10",
@@ -69,9 +72,9 @@ export function DashboardOverview({
     },
     {
       icon: Clock3,
-      label: "Next expiry",
+      label: "Next renewal",
       value: nextExpiry !== null ? `${nextExpiry}d` : "N/A",
-      sub: nextExpiry !== null ? (nextExpiry <= 3 ? "⚠ Expiring soon!" : "Days remaining") : "No active subs",
+      sub: nextExpiry !== null ? (nextExpiry <= 3 ? "Renew soon to avoid interruption" : "Days remaining") : "No active plans yet",
       gradient: nextExpiry !== null && nextExpiry <= 3
         ? "from-rose-500/15 to-orange-500/10"
         : "from-emerald-500/15 to-teal-500/10",
@@ -92,16 +95,28 @@ export function DashboardOverview({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="space-y-2">
-        <p className="text-xs font-bold uppercase tracking-widest text-primary">Customer workspace</p>
+      <div className="space-y-4">
+        <p className="text-xs font-bold uppercase tracking-widest text-primary">Client success dashboard</p>
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Welcome back,{" "}
-          <span className="gradient-text">{user.displayName?.split(" ")[0] || "there"} 👋</span>
+          Welcome back, <span className="gradient-text">{user.displayName?.split(" ")[0] || "there"}</span>
         </h1>
         <p className="max-w-2xl text-muted-foreground">
-          Track subscription health, see order activity, and stay ahead of expiry with proactive renewal visibility.
-          <span className="ml-2 text-[8px] opacity-10 hover:opacity-100 transition-opacity">ID: {user.id}</span>
+          {APP_NAME} gives you one trusted place for billing, credentials, renewals, and support so your subscriptions stay smooth.
         </p>
+        <div className="flex flex-wrap gap-2 text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 font-medium text-emerald-600 dark:text-emerald-400">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Secure payments
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 font-medium text-blue-600 dark:text-blue-400">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            Instant delivery
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 font-medium text-amber-600 dark:text-amber-400">
+            <Headset className="h-3.5 w-3.5" />
+            Fast support
+          </span>
+        </div>
       </div>
 
       {/* Stat cards */}
@@ -132,10 +147,10 @@ export function DashboardOverview({
       <div className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
         {/* Active subscriptions */}
         <div className="surface rounded-[1.75rem] p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold">Active subscriptions</h2>
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-lg font-bold">Your active plans</h2>
             <Link href="/products" className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
-              Browse more <ArrowRight className="h-3 w-3" />
+              Upgrade or add more <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           <div className="space-y-3">
@@ -149,18 +164,16 @@ export function DashboardOverview({
                   className="group rounded-2xl border border-border/60 bg-muted/30 p-4 transition-all hover:border-primary/30 hover:bg-primary/5"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1 min-w-0">
-                      <p className="font-semibold truncate">{sub.productName}</p>
+                    <div className="min-w-0 space-y-1">
+                      <p className="truncate font-semibold">{sub.productName}</p>
                       <p className="text-xs text-muted-foreground">
                         Expires {formatDate(sub.expiresAt)}
-                        {" · "}
+                        {" - "}
                         <span className={daysUntil(sub.expiresAt) <= 3 ? "font-bold text-rose-500" : ""}>
                           {daysUntil(sub.expiresAt)} days left
                         </span>
                       </p>
-                      {sub.status === "active" ? (
-                        <RevealCredentials subscriptionId={sub.id} />
-                      ) : null}
+                      {sub.status === "active" ? <RevealCredentials subscriptionId={sub.id} /> : null}
                     </div>
                     <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles[sub.status] ?? statusStyles.pending}`}>
                       {sub.status}
@@ -169,7 +182,7 @@ export function DashboardOverview({
                   {/* Expiry progress bar */}
                   {sub.status === "active" && (
                     <div className="mt-3">
-                      <div className="h-1.5 w-full rounded-full bg-border/60 overflow-hidden">
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-border/60">
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all"
                           style={{ width: `${Math.max(5, Math.min(100, (daysUntil(sub.expiresAt) / 30) * 100))}%` }}
@@ -184,8 +197,10 @@ export function DashboardOverview({
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
                   <ShoppingBag className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <p className="text-sm text-muted-foreground">No subscriptions yet.</p>
-                <Link href="/products" className="btn-primary text-xs h-9 px-5">
+                <p className="max-w-sm text-sm text-muted-foreground">
+                  No active plans yet. Choose a plan and credentials will appear here right after payment.
+                </p>
+                <Link href="/products" className="btn-primary h-9 px-5 text-xs">
                   Browse plans
                 </Link>
               </div>
@@ -195,8 +210,8 @@ export function DashboardOverview({
 
         {/* Order history */}
         <div className="surface rounded-[1.75rem] p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold">Order history</h2>
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-lg font-bold">Recent orders</h2>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="space-y-3">
@@ -209,21 +224,24 @@ export function DashboardOverview({
                   transition={{ delay: i * 0.05 }}
                   className="flex items-start justify-between gap-3 rounded-2xl border border-border/60 p-3.5"
                 >
-                  <div className="flex items-start gap-3 min-w-0">
-                    <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                      order.status === "paid" ? "bg-emerald-500/10" : "bg-rose-500/10"
-                    }`}>
-                      {order.status === "paid"
-                        ? <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        : <AlertCircle className="h-4 w-4 text-rose-500" />
-                      }
+                  <div className="flex min-w-0 items-start gap-3">
+                    <div
+                      className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+                        order.status === "paid" ? "bg-emerald-500/10" : "bg-rose-500/10"
+                      }`}
+                    >
+                      {order.status === "paid" ? (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-rose-500" />
+                      )}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold truncate">{order.productName}</p>
+                      <p className="truncate text-sm font-semibold">{order.productName}</p>
                       <p className="text-xs text-muted-foreground">{formatDate(order.createdAt)}</p>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="shrink-0 text-right">
                     <p className="text-sm font-bold">{formatCurrency(order.amount)}</p>
                     <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusStyles[order.status] ?? statusStyles.pending}`}>
                       {order.status}
@@ -236,7 +254,9 @@ export function DashboardOverview({
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
                   <CreditCard className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <p className="text-sm text-muted-foreground">No orders yet.</p>
+                <p className="max-w-sm text-sm text-muted-foreground">
+                  No orders yet. Your successful payments will show up here with status and date.
+                </p>
               </div>
             )}
           </div>

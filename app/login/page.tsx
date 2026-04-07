@@ -4,9 +4,9 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { ShieldCheck, Zap, Star } from "lucide-react";
 
 const features = [
-  { icon: ShieldCheck, title: "Secure checkout", desc: "Razorpay-powered payments with HMAC verification" },
-  { icon: Zap, title: "Instant delivery", desc: "Credentials assigned in under 15 seconds" },
-  { icon: Star, title: "Premium support", desc: "Raise tickets directly from your dashboard" }
+  { icon: ShieldCheck, title: "Verified billing", desc: "Razorpay checkout with server-side payment verification" },
+  { icon: Zap, title: "Instant credentials", desc: "Get account access quickly after successful payment" },
+  { icon: Star, title: "Real human support", desc: "Raise a ticket from dashboard and get guided help fast" }
 ];
 
 export default function LoginPage() {
@@ -19,16 +19,15 @@ export default function LoginPage() {
       </div>
 
       <div className="container grid min-h-[calc(100vh-5rem)] items-center gap-12 py-20 lg:grid-cols-[1fr_1fr]">
-        {/* Left — feature pitch */}
+        {/* Left - feature pitch */}
         <div className="hidden space-y-10 lg:block">
           <div className="space-y-4">
-            <span className="glow-badge">{APP_NAME} Portal</span>
+            <span className="glow-badge">{APP_NAME} Client Portal</span>
             <h1 className="text-4xl font-bold tracking-tight xl:text-5xl">
-              Your subscriptions,{" "}
-              <span className="gradient-text">fully in control.</span>
+              Trusted access to <span className="gradient-text">premium subscriptions.</span>
             </h1>
             <p className="max-w-md text-lg text-muted-foreground">
-              Sign in to manage all your OTT plans, view credentials, track expiry, and raise support tickets — all from one dashboard.
+              Sign in to manage plans, view credentials, track renewals, and get support from one secure workspace.
             </p>
           </div>
 
@@ -56,12 +55,12 @@ export default function LoginPage() {
               ))}
             </div>
             <p className="text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">10,000+</span> customers already signed in
+              Trusted by <span className="font-semibold text-foreground">10,000+</span> paying customers
             </p>
           </div>
         </div>
 
-        {/* Right — auth form */}
+        {/* Right - auth form */}
         <div className="flex justify-center lg:justify-end">
           <Suspense>
             <AuthCard />
