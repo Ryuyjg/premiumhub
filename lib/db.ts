@@ -14,7 +14,7 @@ import type {
   Subscription
 } from "@/types";
 
-function withId<T>(id: string, data: FirebaseFirestore.DocumentData) {
+function withId<T>(id: string, data: any) {
   return { id, ...data } as T;
 }
 
@@ -49,46 +49,50 @@ function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): P
 }
 
 export async function expireOverdueSubscriptions() {
-  const snapshot = await adminDb
-    .collection("subscriptions")
-    .where("status", "==", "active")
-    .where("expiresAt", "<=", new Date().toISOString())
-    .get();
+  try {
+    const snapshot = await adminDb
+      .collection("subscriptions")
+      .where("status", "==", "active")
+      .where("expiresAt", "<=", new Date().toISOString())
+      .get();
 
-  if (snapshot.empty) {
-    return;
-  }
-
-  const batch = adminDb.batch();
-  const affectedAccountIds = new Set<string>();
-  snapshot.docs.forEach((doc) => {
-    const data = doc.data();
-    batch.update(doc.ref, { status: "expired" });
-
-    if (data.ottAccountId) {
-      affectedAccountIds.add(String(data.ottAccountId));
-      batch.update(adminDb.collection("ottAccounts").doc(String(data.ottAccountId)), {
-        activeUsers: FieldValue.increment(-1)
-      });
+    if (snapshot.empty) {
+      return;
     }
-  });
 
-  await batch.commit();
+    const batch = adminDb.batch();
+    const affectedAccountIds = new Set<string>();
+    snapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      batch.update(doc.ref, { status: "expired" });
 
-  await Promise.all(
-    Array.from(affectedAccountIds).map(async (accountId) => {
-      const accountRef = adminDb.collection("ottAccounts").doc(accountId);
-      const accountDoc = await accountRef.get();
-      if (!accountDoc.exists) {
-        return;
+      if (data.ottAccountId) {
+        affectedAccountIds.add(String(data.ottAccountId));
+        batch.update(adminDb.collection("ottAccounts").doc(String(data.ottAccountId)), {
+          activeUsers: FieldValue.increment(-1)
+        });
       }
-      const account = accountDoc.data()!;
-      const activeUsers = Math.max(Number(account.activeUsers || 0), 0);
-      const maxUsers = Math.max(Number(account.maxUsers || 1), 1);
-      const status = account.status === "disabled" ? "disabled" : activeUsers >= maxUsers ? "full" : "available";
-      await accountRef.update({ activeUsers, status, updatedAt: new Date().toISOString() });
-    })
-  );
+    });
+
+    await batch.commit();
+
+    await Promise.all(
+      Array.from(affectedAccountIds).map(async (accountId) => {
+        const accountRef = adminDb.collection("ottAccounts").doc(accountId);
+        const accountDoc = await accountRef.get();
+        if (!accountDoc.exists) {
+          return;
+        }
+        const account = accountDoc.data()!;
+        const activeUsers = Math.max(Number(account.activeUsers || 0), 0);
+        const maxUsers = Math.max(Number(account.maxUsers || 1), 1);
+        const status = account.status === "disabled" ? "disabled" : activeUsers >= maxUsers ? "full" : "available";
+        await accountRef.update({ activeUsers, status, updatedAt: new Date().toISOString() });
+      })
+    );
+  } catch (error) {
+    console.error("Subscription expiry task failed (likely missing index):", error);
+  }
 }
 
 export async function getFeaturedProducts() {
@@ -154,9 +158,11 @@ export async function getOrdersForUser(userId: string) {
   const snapshot = await adminDb
     .collection("orders")
     .where("userId", "==", userId)
-    .orderBy("createdAt", "desc")
     .get();
-  return snapshot.docs.map((doc) => withId<Order>(doc.id, doc.data()));
+    
+  return snapshot.docs
+    .map((doc) => withId<Order>(doc.id, doc.data()))
+    .sort((a: any, b: any) => (String(b.createdAt || "") > String(a.createdAt || "") ? 1 : -1));
 }
 
 export async function getAdminAnalytics(): Promise<AnalyticsSummary> {
