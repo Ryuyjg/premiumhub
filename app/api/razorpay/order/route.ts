@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     const session = await createMaxelPaySession({
       orderId: orderToken,
       amount: Number(finalAmount.toFixed(2)),
-      currency: "USDT",
+      currency: "USD",
       description: `${product.name} purchase`,
       successUrl: `${appOrigin}/checkout/success`,
       cancelUrl: `${appOrigin}/checkout/cancel`,
