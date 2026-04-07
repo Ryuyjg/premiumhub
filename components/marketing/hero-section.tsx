@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Sparkles, Zap, Star, TrendingUp, Users, MessageCircleHeart } from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
+import { formatCurrency } from "@/lib/utils";
+import type { Product } from "@/types";
 
 const stats = [
   { icon: Users, value: "10,000+", label: "Happy customers" },
@@ -19,7 +21,14 @@ const proofCards = [
 
 const brands = ["Netflix", "Disney+", "Prime", "Hotstar", "SonyLIV", "ZEE5", "JioCinema", "Crunchyroll"];
 
-export function HeroSection() {
+export function HeroSection({ products = [] }: { products?: Product[] }) {
+  // Use real products for the "Live orders" ticker
+  const displayProducts = products.length > 0 ? products.slice(0, 3) : [
+    { name: "Netflix 4K", salePrice: 349, price: 349 },
+    { name: "Disney+ Bundle", salePrice: 199, price: 199 },
+    { name: "Prime + Hotstar", salePrice: 449, price: 449 }
+  ];
+
   return (
     <section className="page-grid relative overflow-hidden py-20 md:py-32">
       {/* Background orbs */}
@@ -52,16 +61,6 @@ export function HeroSection() {
         <span>24/7 Premium Support</span>
       </motion.div>
 
-      <motion.div 
-        className="absolute left-1/4 top-10 hidden lg:flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 shadow-lg backdrop-blur-md"
-        initial={{ opacity: 0, rotate: -20 }}
-        animate={{ opacity: 1, rotate: 10 }}
-        transition={{ delay: 0.9, duration: 0.8 }}
-        style={{ animation: "float 5s ease-in-out infinite 1s" }}
-      >
-        <Star className="h-6 w-6 fill-amber-400 text-amber-500 drop-shadow-md" />
-      </motion.div>
-
       <div className="container relative grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr]">
         <Reveal>
           <div className="space-y-10">
@@ -73,7 +72,7 @@ export function HeroSection() {
               className="glow-badge w-fit"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
-              Live-ready OTT commerce platform
+               🔥 Over 10,000+ Verified Subscriptions Delivered
             </motion.div>
 
             {/* Headline */}
@@ -84,9 +83,9 @@ export function HeroSection() {
               className="space-y-4 relative"
             >
               <h1 className="text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl leading-[1.08]">
-                Sell OTT subs like a{" "}
+                Everything you love to watch, for a{" "}
                 <span className="gradient-text relative inline-block">
-                  real SaaS brand.
+                  fraction of the cost.
                   <motion.span 
                     className="absolute -right-12 -top-10"
                     initial={{ opacity: 0, scale: 0 }}
@@ -98,8 +97,8 @@ export function HeroSection() {
                 </span>
               </h1>
               <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-                Automated credential delivery, secure Razorpay checkout, highly-trusted access control,
-                and a conversion-first storefront built for scale.
+                Get instant access to Netflix, Disney+, Prime Video, and more. 
+                Secure payments, 24/7 support, and guaranteed uptime for every account.
               </p>
             </motion.div>
 
@@ -118,36 +117,6 @@ export function HeroSection() {
                   My dashboard
                 </Link>
               </div>
-              
-              {/* Trust Indicators */}
-              <div className="flex items-center gap-4">
-                <div className="flex -space-x-3">
-                  {[
-                    "https://i.pravatar.cc/100?img=1",
-                    "https://i.pravatar.cc/100?img=2",
-                    "https://i.pravatar.cc/100?img=3",
-                    "https://i.pravatar.cc/100?img=4",
-                    "https://i.pravatar.cc/100?img=5",
-                  ].map((url, i) => (
-                    <img 
-                      key={i} 
-                      src={url} 
-                      alt="User avatar" 
-                      className="h-10 w-10 rounded-full border-2 border-background shadow-sm"
-                    />
-                  ))}
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
-                    ))}
-                  </div>
-                  <p className="text-xs font-medium text-muted-foreground mt-0.5">
-                    Trusted by <span className="font-bold text-foreground">10,000+</span> users
-                  </p>
-                </div>
-              </div>
             </motion.div>
 
             {/* Stats */}
@@ -157,28 +126,6 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="grid grid-cols-3 gap-4 border-t border-border/50 pt-8 relative"
             >
-              <motion.div 
-                className="absolute -right-6 top-4 hidden lg:flex surface rounded-xl p-3 shadow-lg"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.2 }}
-                style={{ animation: "float 7s ease-in-out infinite 2s" }}
-              >
-                <div className="flex items-center gap-3">
-                  <img src="https://i.pravatar.cc/100?img=9" className="h-8 w-8 rounded-full" />
-                  <div>
-                    <div className="flex gap-0.5">
-                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-500" />
-                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-500" />
-                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-500" />
-                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-500" />
-                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-500" />
-                    </div>
-                    <p className="text-[10px] font-medium leading-tight">"Instant delivery!"</p>
-                  </div>
-                </div>
-              </motion.div>
-
               {stats.map((stat) => (
                 <div key={stat.label} className="space-y-1">
                   <p className="text-2xl font-bold gradient-text">{stat.value}</p>
@@ -233,9 +180,9 @@ export function HeroSection() {
                 </motion.div>
 
                 <div className="mb-5 flex items-center justify-between">
-                  <p className="text-sm font-medium text-muted-foreground">Revenue pulse</p>
+                  <p className="text-sm font-medium text-muted-foreground">Premium Pulse</p>
                   <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                    ↑ 24.6%
+                    SLA 99.9%
                   </span>
                 </div>
                 <div className="flex items-end gap-2">
@@ -257,20 +204,20 @@ export function HeroSection() {
                     </motion.div>
                   ))}
                 </div>
-                <p className="mt-3 text-xs text-muted-foreground">Last 7 months · All time high this month</p>
+                <p className="mt-3 text-xs text-muted-foreground">Instant fulfillment across all plans</p>
               </motion.div>
 
               {/* Two small stat cards */}
               <div className="grid gap-4 md:grid-cols-2">
                 <motion.div whileHover={{ y: -3 }} className="surface rounded-[1.5rem] p-5">
-                  <p className="text-sm text-muted-foreground">Conversion</p>
-                  <p className="mt-2 text-3xl font-bold gradient-text-warm">+32%</p>
-                  <p className="mt-1.5 text-xs text-muted-foreground">vs last quarter</p>
+                  <p className="text-sm text-muted-foreground">Uptime</p>
+                  <p className="mt-2 text-3xl font-bold gradient-text-warm">100%</p>
+                  <p className="mt-1.5 text-xs text-muted-foreground">Verified Daily</p>
                 </motion.div>
                 <motion.div whileHover={{ y: -3 }} className="surface rounded-[1.5rem] p-5">
-                  <p className="text-sm text-muted-foreground">Fulfillment</p>
+                  <p className="text-sm text-muted-foreground">Delivery</p>
                   <p className="mt-2 text-3xl font-bold gradient-text">&lt;15s</p>
-                  <p className="mt-1.5 text-xs text-muted-foreground">Instant delivery</p>
+                  <p className="mt-1.5 text-xs text-muted-foreground">Auto-triggered</p>
                 </motion.div>
               </div>
 
@@ -284,19 +231,15 @@ export function HeroSection() {
                   <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">VERIFIED</span>
                 </div>
                 <div className="space-y-2">
-                  {[
-                    { plan: "Netflix 4K", amount: "₹349", time: "2m ago" },
-                    { plan: "Disney+ Bundle", amount: "₹199", time: "8m ago" },
-                    { plan: "Prime + Hotstar", amount: "₹449", time: "15m ago" }
-                  ].map((order, i) => (
+                  {displayProducts.map((order, i) => (
                     <div key={i} className="flex items-center justify-between text-sm">
                       <span className="font-medium flex items-center gap-1.5">
                         <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                        {order.plan}
+                        {order.name}
                       </span>
                       <div className="flex items-center gap-3">
-                        <span className="font-bold text-primary">{order.amount}</span>
-                        <span className="text-xs text-muted-foreground">{order.time}</span>
+                        <span className="font-bold text-primary">{formatCurrency(order.salePrice || order.price)}</span>
+                        <span className="text-xs text-muted-foreground">{(i + 1) * 2}m ago</span>
                       </div>
                     </div>
                   ))}
