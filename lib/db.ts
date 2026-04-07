@@ -242,7 +242,8 @@ export async function getAllUsers() {
       displayName: String(data.displayName || ""),
       role: (data.role || "user") as AppUser["role"],
       walletBalance: Number(data.walletBalance || 0),
-      createdAt: String(data.createdAt || "")
+      createdAt: String(data.createdAt || ""),
+      suspended: data.suspended === true
     });
   });
 
@@ -257,7 +258,8 @@ export async function getAllUsers() {
         displayName: userRecord.displayName || existing?.displayName || "",
         role: existing?.role || "user",
         walletBalance: Number(existing?.walletBalance || 0),
-        createdAt: existing?.createdAt || userRecord.metadata.creationTime || ""
+        createdAt: existing?.createdAt || userRecord.metadata.creationTime || "",
+        suspended: userRecord.disabled || existing?.suspended || false
       });
     });
   } catch {
