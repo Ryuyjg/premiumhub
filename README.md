@@ -7,7 +7,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - Premium SaaS-grade landing page with glassmorphism, gradients, motion, and responsive sections
 - Product catalog with search, filters, animated cards, and plan detail views
 - Firebase Auth login and secure server-side session cookies
-- INR pricing, wallet purchases, and checkout surfaces prepared for UroPay integration
+- INR pricing, wallet purchases, and UroPay QR checkout with webhook-ready settlement
 - Firestore-backed orders, subscriptions, coupons, analytics, and OTT account assignment
 - Admin workspace for analytics, products, coupons, orders, and credential vault management
 - AES-encrypted OTT credentials, Firestore rules, and Storage rules
@@ -20,7 +20,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - Tailwind CSS
 - Framer Motion
 - Firebase Auth, Firestore, Storage, Admin SDK
-- UroPay (planned)
+- UroPay
 - Zustand
 - Zod
 
@@ -45,6 +45,9 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
 - `UROPAY_API_KEY`
 - `UROPAY_BASE_URL`
+- `UROPAY_SECRET`
+- `UROPAY_VPA`
+- `UROPAY_VPA_NAME`
 
 ### Server secrets
 
@@ -78,6 +81,8 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - Currency and final order creation should stay server-side.
 - Connect the upcoming UroPay success and webhook callbacks to fulfillment.
 - Keep gateway secrets on server environment variables only.
+- Configure your UroPay dashboard webhook to point at `/api/uropay/webhook`.
+- UroPay order generation needs your receiving `UROPAY_VPA` and display name `UROPAY_VPA_NAME`.
 
 ## Deployment
 
