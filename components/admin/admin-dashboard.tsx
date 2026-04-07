@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BarChart3, Boxes, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type {
   AnalyticsSummary,
   AppUser,
@@ -60,7 +62,9 @@ export function AdminDashboard({
   tickets: SupportTicket[];
   offers?: Offer[];
 }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+  const [seedingCatalog, setSeedingCatalog] = useState(false);
 
   const paidOrders = useMemo(() => orders.filter((order) => order.status === "paid").length, [orders]);
   const failedOrders = useMemo(() => orders.filter((order) => order.status === "failed").length, [orders]);
@@ -80,6 +84,28 @@ export function AdminDashboard({
     { icon: TicketPercent, label: "Live Subscriptions", value: String(analytics.activeSubscriptions), gradient: "from-amber-500/15 to-orange-500/8", iconBg: "bg-amber-500/10", iconColor: "text-amber-500" }
   ], [analytics]);
 
+  async function handleSeedCatalog() {
+    try {
+      setSeedingCatalog(true);
+      const response = await fetch("/api/admin/seed-catalog", { method: "POST" });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload?.error || "Unable to seed catalog.");
+      }
+
+      toast.success(
+        `Starter catalog ready: ${payload.categoriesCreated} categories and ${payload.productsCreated} products added.`
+      );
+      setActiveTab("catalog");
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to seed catalog.");
+    } finally {
+      setSeedingCatalog(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Admin hero header */}
@@ -95,6 +121,14 @@ export function AdminDashboard({
             </span>
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Admin Dashboard</h1>
             <p className="max-w-xl text-white/75 text-sm">Manage catalog, orders, users, and growth tools from one place.</p>
+            <button
+              type="button"
+              onClick={handleSeedCatalog}
+              disabled={seedingCatalog}
+              className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-primary transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {seedingCatalog ? "Seeding starter catalog..." : "Seed all categories and products"}
+            </button>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {[
