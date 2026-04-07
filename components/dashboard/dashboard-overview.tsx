@@ -57,9 +57,9 @@ export function DashboardOverview({
       label: "Active subscriptions",
       value: String(activeSubCount),
       sub: `${subscriptions.length} total`,
-      gradient: "from-violet-500/15 to-purple-500/10",
-      iconColor: "text-violet-500",
-      iconBg: "bg-violet-500/10"
+      gradient: "from-primary/18 to-accent/10",
+      iconColor: "text-primary",
+      iconBg: "bg-primary/15"
     },
     {
       icon: CreditCard,
@@ -267,3 +267,4 @@ export function DashboardOverview({
     </div>
   );
 }
+

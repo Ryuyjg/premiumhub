@@ -16,8 +16,8 @@ const PRODUCTS = [
   { name: "Spotify Premium", icon: ShoppingBag, color: "text-emerald-500" },
   // AI
   { name: "ChatGPT Plus (GPT-4)", icon: Sparkles, color: "text-teal-500" },
-  { name: "Midjourney Pro", icon: Sparkles, color: "text-indigo-500" },
-  { name: "Claude 3.5 Opus", icon: Sparkles, color: "text-purple-500" },
+  { name: "Midjourney Pro", icon: Sparkles, color: "text-cyan-600" },
+  { name: "Claude 3.5 Opus", icon: Sparkles, color: "text-cyan-500" },
   // Games
   { name: "GTA V Premium Edition", icon: Gamepad2, color: "text-amber-500" },
   { name: "Minecraft Java + Bedrock", icon: Gamepad2, color: "text-green-500" },
@@ -115,3 +115,4 @@ export function LivePurchaseToast() {
     </AnimatePresence>
   );
 }
+

@@ -17,7 +17,7 @@ const stats = [
 const proofCards = [
   { icon: ShieldCheck, label: "Secure backend verification", color: "from-emerald-500/20 to-teal-500/10", iconColor: "text-emerald-500" },
   { icon: Zap, label: "Instant account delivery", color: "from-amber-500/20 to-orange-500/10", iconColor: "text-amber-500" },
-  { icon: Sparkles, label: "Premium SaaS-grade UI", color: "from-violet-500/20 to-purple-500/10", iconColor: "text-violet-500" }
+  { icon: Sparkles, label: "Premium SaaS-grade UI", color: "from-primary/20 to-accent/10", iconColor: "text-primary" }
 ];
 
 const brands = ["ChatGPT Plus", "Creative Cloud", "Midjourney", "Telegram", "WhatsApp", "Netflix", "Xbox", "Canva Pro"];
@@ -51,7 +51,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
 
   const getIcon = (category?: string) => {
     switch (category?.toLowerCase()) {
-        case 'ai': return <BrainCircuit className="h-3.5 w-3.5 text-violet-500" />;
+        case 'ai': return <BrainCircuit className="h-3.5 w-3.5 text-primary" />;
         case 'gaming': return <Gamepad2 className="h-3.5 w-3.5 text-rose-500" />;
         case 'software': return <AppWindow className="h-3.5 w-3.5 text-sky-500" />;
         case 'apps': return <Sparkles className="h-3.5 w-3.5 text-amber-500" />;
@@ -64,7 +64,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
       {/* Background orbs */}
       <div className="orb -left-32 -top-32 h-[600px] w-[600px] bg-primary/10" />
       <div className="orb -right-32 top-0 h-[500px] w-[500px] bg-accent/8" />
-      <div className="orb bottom-0 left-1/2 h-[400px] w-[800px] -translate-x-1/2 bg-violet-500/5" />
+      <div className="orb bottom-0 left-1/2 h-[400px] w-[800px] -translate-x-1/2 bg-primary/8" />
 
       {/* Floating Elements */}
       <motion.div 
@@ -312,3 +312,4 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
     </section>
   );
 }
+

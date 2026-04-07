@@ -53,8 +53,8 @@ const config: Config = {
       boxShadow: {
         premium: "0 24px 80px rgba(15, 23, 42, 0.14)",
         glass: "0 16px 60px rgba(15, 23, 42, 0.10)",
-        glow: "0 0 40px rgba(124, 58, 237, 0.35)",
-        "glow-sm": "0 0 20px rgba(124, 58, 237, 0.25)",
+        glow: "0 0 40px rgba(13, 148, 136, 0.35)",
+        "glow-sm": "0 0 20px rgba(13, 148, 136, 0.25)",
         "inner-glow": "inset 0 1px 0 rgba(255,255,255,0.15)"
       },
       backdropBlur: {

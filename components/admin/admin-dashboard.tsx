@@ -74,7 +74,7 @@ export function AdminDashboard({
   );
   
   const kpiCards = useMemo(() => [
-    { icon: Wallet, label: "Total Revenue", value: formatCurrency(analytics.revenue), gradient: "from-violet-500/15 to-purple-500/8", iconBg: "bg-violet-500/10", iconColor: "text-violet-500" },
+    { icon: Wallet, label: "Total Revenue", value: formatCurrency(analytics.revenue), gradient: "from-primary/20 to-accent/10", iconBg: "bg-primary/15", iconColor: "text-primary" },
     { icon: BarChart3, label: "Total Orders", value: String(analytics.orders), gradient: "from-blue-500/15 to-cyan-500/8", iconBg: "bg-blue-500/10", iconColor: "text-blue-500" },
     { icon: Users2, label: "Active Users", value: String(analytics.activeUsers), gradient: "from-emerald-500/15 to-teal-500/8", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500" },
     { icon: TicketPercent, label: "Live Subscriptions", value: String(analytics.activeSubscriptions), gradient: "from-amber-500/15 to-orange-500/8", iconBg: "bg-amber-500/10", iconColor: "text-amber-500" }
@@ -83,7 +83,7 @@ export function AdminDashboard({
   return (
     <div className="space-y-8">
       {/* Admin hero header */}
-      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary/90 via-accent to-violet-600 p-8 md:p-10 text-white">
+      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary/90 via-accent to-[hsl(var(--gradient-mid))] p-8 md:p-10 text-white">
         <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-white/8 blur-3xl" />
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "36px 36px" }} />
@@ -138,7 +138,7 @@ export function AdminDashboard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * index }}
             whileHover={{ y: -4 }}
-            className={`relative overflow-hidden rounded-[1.75rem] border border-border bg-gradient-to-br ${item.gradient} p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_16px_48px_rgba(124,58,237,0.12)] dark:border-white/5`}
+            className={`relative overflow-hidden rounded-[1.75rem] border border-border bg-gradient-to-br ${item.gradient} p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_16px_48px_rgba(13,148,136,0.16)] dark:border-white/5`}
           >
             <span className="absolute -right-2 -top-3 text-7xl font-black text-foreground/3 select-none">{index + 1}</span>
             <div className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${item.iconBg} mb-4`}>
@@ -242,3 +242,4 @@ export function AdminDashboard({
     </div>
   );
 }
+

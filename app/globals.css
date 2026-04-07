@@ -5,44 +5,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --background: 210 38% 98%;
-  --foreground: 222 42% 11%;
+  --background: 174 44% 97%;
+  --foreground: 197 46% 14%;
   --card: 0 0% 100%;
-  --border: 222 23% 88%;
-  --input: 222 23% 88%;
-  --ring: 250 89% 62%;
-  --muted: 210 24% 95%;
-  --muted-foreground: 220 11% 46%;
-  --primary: 250 89% 62%;
+  --border: 182 22% 84%;
+  --input: 182 22% 84%;
+  --ring: 174 88% 33%;
+  --muted: 175 30% 93%;
+  --muted-foreground: 194 16% 38%;
+  --primary: 174 88% 33%;
   --primary-foreground: 0 0% 100%;
-  --accent: 214 94% 56%;
+  --accent: 31 94% 54%;
   --accent-foreground: 0 0% 100%;
-  --success: 146 61% 40%;
+  --success: 152 72% 32%;
   --warning: 35 92% 51%;
   --surface: 0 0% 100%;
-  --surface-foreground: 224 38% 12%;
-  --gradient-start: 250 89% 62%;
-  --gradient-mid: 214 94% 56%;
-  --gradient-end: 190 92% 48%;
+  --surface-foreground: 197 46% 14%;
+  --gradient-start: 174 88% 33%;
+  --gradient-mid: 187 93% 41%;
+  --gradient-end: 31 94% 54%;
 }
 
 .dark {
-  --background: 240 10% 5%;
-  --foreground: 210 40% 98%;
-  --card: 240 10% 8%;
-  --border: 240 8% 16%;
-  --input: 240 8% 16%;
-  --ring: 250 89% 65%;
-  --muted: 240 8% 12%;
-  --muted-foreground: 216 16% 65%;
-  --primary: 250 89% 65%;
+  --background: 186 40% 8%;
+  --foreground: 178 30% 95%;
+  --card: 186 33% 10%;
+  --border: 186 18% 19%;
+  --input: 186 18% 19%;
+  --ring: 174 74% 45%;
+  --muted: 186 20% 13%;
+  --muted-foreground: 182 16% 72%;
+  --primary: 174 74% 45%;
   --primary-foreground: 0 0% 100%;
-  --accent: 214 90% 60%;
+  --accent: 31 90% 58%;
   --accent-foreground: 0 0% 100%;
-  --success: 146 61% 42%;
-  --warning: 35 92% 51%;
-  --surface: 240 10% 8%;
-  --surface-foreground: 210 40% 98%;
+  --success: 152 72% 40%;
+  --warning: 35 92% 56%;
+  --surface: 186 33% 10%;
+  --surface-foreground: 178 30% 95%;
 }
 
 html {
@@ -56,17 +56,18 @@ body {
 
 .dark body {
   background:
-    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(124, 58, 237, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 80% 5%, rgba(59, 130, 246, 0.14) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(99, 102, 241, 0.08) 0%, transparent 55%),
-    hsl(240 10% 5%);
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(15, 157, 138, 0.24) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 80% 5%, rgba(8, 145, 178, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(249, 115, 22, 0.12) 0%, transparent 55%),
+    hsl(186 40% 8%);
 }
 
 body:not(.dark) {
   background:
-    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(139, 92, 246, 0.07) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 80% 5%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-    hsl(210 38% 98%);
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(13, 148, 136, 0.11) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 80% 5%, rgba(8, 145, 178, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 45% 35% at 50% 100%, rgba(249, 115, 22, 0.06) 0%, transparent 60%),
+    hsl(174 44% 97%);
 }
 
 ::selection {
@@ -81,7 +82,7 @@ body:not(.dark) {
 
 @layer components {
 
-  /* ── Glass ── */
+  /* Glass */
   .glass-panel {
     @apply border border-white/20 bg-white/60 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
   }
@@ -91,23 +92,23 @@ body:not(.dark) {
            dark:border-white/10 dark:bg-white/5;
   }
 
-  /* ── Surface ── */
+  /* Surface */
   .surface {
     @apply rounded-3xl border border-border/60 bg-[hsl(var(--surface)/0.9)]
            text-[hsl(var(--surface-foreground))]
-           shadow-[0_8px_32px_rgba(15,23,42,0.06)]
+           shadow-[0_8px_32px_rgba(6,78,59,0.08)]
            backdrop-blur-xl
-           dark:shadow-[0_8px_40px_rgba(0,0,0,0.3)];
+           dark:shadow-[0_8px_40px_rgba(0,0,0,0.35)];
   }
 
   .surface-interactive {
     @apply surface transition-all duration-300
            hover:-translate-y-2
-           hover:shadow-[0_24px_64px_rgba(124,58,237,0.15)]
-           dark:hover:shadow-[0_24px_72px_rgba(124,58,237,0.25)];
+           hover:shadow-[0_24px_64px_rgba(13,148,136,0.18)]
+           dark:hover:shadow-[0_24px_72px_rgba(13,148,136,0.28)];
   }
 
-  /* ── Pill filters ── */
+  /* Pill filters */
   .pill-filter {
     @apply rounded-full border border-border/70 bg-white/60 px-4 py-2 text-sm font-medium
            text-muted-foreground transition-all duration-200
@@ -121,25 +122,25 @@ body:not(.dark) {
            shadow-lg shadow-primary/30;
   }
 
-  /* ── Gradient text ── */
+  /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-br from-primary via-accent to-[hsl(var(--gradient-end))]
+    @apply bg-gradient-to-br from-primary via-[hsl(var(--gradient-mid))] to-[hsl(var(--gradient-end))]
            bg-clip-text text-transparent;
   }
 
   .gradient-text-warm {
-    @apply bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-500
+    @apply bg-gradient-to-br from-amber-500 via-orange-500 to-red-500
            bg-clip-text text-transparent;
   }
 
-  /* ── Badge ── */
+  /* Badge */
   .glow-badge {
     @apply inline-flex items-center gap-2 rounded-full border border-primary/25
            bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest
            text-primary shadow-inner shadow-primary/10;
   }
 
-  /* ── Buttons ── */
+  /* Buttons */
   .btn-primary {
     @apply inline-flex h-12 items-center justify-center gap-2 rounded-full
            bg-gradient-to-r from-primary to-accent px-7 text-sm font-semibold
@@ -156,28 +157,28 @@ body:not(.dark) {
            dark:bg-white/5;
   }
 
-  /* ── Grid patterns ── */
+  /* Grid patterns */
   .page-grid {
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+      linear-gradient(rgba(56, 189, 161, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56, 189, 161, 0.08) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 
   .dot-grid {
-    background-image: radial-gradient(circle, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(56, 189, 161, 0.24) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
   .admin-grid-bg {
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+      linear-gradient(rgba(56, 189, 161, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56, 189, 161, 0.12) 1px, transparent 1px);
     background-size: 24px 24px;
     mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent);
   }
 
-  /* ── Shimmer ── */
+  /* Shimmer */
   .shimmer-line {
     position: relative;
     overflow: hidden;
@@ -192,13 +193,13 @@ body:not(.dark) {
     animation: shimmer 2.2s infinite;
   }
 
-  /* ── Stat card ── */
+  /* Stat card */
   .stat-card {
     @apply surface relative overflow-hidden p-6 transition-all duration-300
-           hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(124,58,237,0.12)];
+           hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(13,148,136,0.16)];
   }
 
-  /* ── Input ── */
+  /* Input */
   .field {
     @apply h-11 w-full rounded-2xl border border-border/70 bg-white/80
            px-4 text-sm text-foreground outline-none
@@ -208,13 +209,13 @@ body:not(.dark) {
            dark:bg-white/5 dark:focus:bg-white/10;
   }
 
-  /* ── Gradient orb ── */
+  /* Gradient orb */
   .orb {
     @apply pointer-events-none absolute rounded-full blur-3xl;
   }
 }
 
-/* ── Keyframes ── */
+/* Keyframes */
 @keyframes shimmer {
   100% { transform: translateX(100%); }
 }

@@ -12,7 +12,7 @@ const reviews = [
     rating: 5,
     text: "Honestly shocked at how fast the delivery was. Got my ChatGPT Plus shared account credentials literally 10 seconds after payment. This is the real deal.",
     plan: "ChatGPT Plus · 1 month",
-    gradient: "from-violet-500 to-purple-600"
+    gradient: "from-primary to-accent"
   },
   {
     name: "Rahul Mehta",
@@ -57,7 +57,7 @@ const reviews = [
     rating: 5,
     text: "The platform's UI is incredibly premium. Used it to grab a Netflix screen and it has been working perfectly without any drops.",
     plan: "Netflix 4K · 3 months",
-    gradient: "from-indigo-500 to-blue-600"
+    gradient: "from-cyan-500 to-sky-600"
   }
 ];
 
@@ -138,3 +138,4 @@ export function TestimonialsSection() {
     </section>
   );
 }
+

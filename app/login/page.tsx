@@ -48,7 +48,7 @@ export default function LoginPage() {
           {/* Social proof strip */}
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
-              {["from-violet-500 to-purple-600", "from-blue-500 to-cyan-600", "from-amber-500 to-orange-600", "from-emerald-500 to-teal-600"].map((g, i) => (
+              {["from-primary to-accent", "from-blue-500 to-cyan-600", "from-amber-500 to-orange-600", "from-emerald-500 to-teal-600"].map((g, i) => (
                 <div key={i} className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${g} text-xs font-bold text-white ring-2 ring-background`}>
                   {["P", "R", "A", "K"][i]}
                 </div>
@@ -70,3 +70,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

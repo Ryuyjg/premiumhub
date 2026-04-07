@@ -19,12 +19,12 @@ export function CtaBanner() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.55 }}
-        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-accent to-violet-600 p-[1px]"
+        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-accent to-[hsl(var(--gradient-mid))] p-[1px]"
       >
-        <div className="relative overflow-hidden rounded-[calc(2.5rem-1px)] bg-gradient-to-br from-primary/90 via-accent to-violet-600 px-8 py-14 md:px-14 md:py-16">
+        <div className="relative overflow-hidden rounded-[calc(2.5rem-1px)] bg-gradient-to-br from-primary/90 via-accent to-[hsl(var(--gradient-mid))] px-8 py-14 md:px-14 md:py-16">
           {/* Background decorations */}
           <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/8 blur-3xl" />
-          <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-violet-400/15 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
           <div
             className="absolute inset-0 opacity-10"
             style={{
@@ -72,3 +72,4 @@ export function CtaBanner() {
     </section>
   );
 }
+

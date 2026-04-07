@@ -27,9 +27,9 @@ const features = [
     icon: BrainCircuit,
     title: "Premium AI Subscriptions",
     description: "Access shared or private accounts for ChatGPT Plus, Midjourney, Claude, and more AI assistants.",
-    gradient: "from-violet-500/15 to-purple-500/10",
-    iconBg: "bg-violet-500/10",
-    iconColor: "text-violet-500",
+    gradient: "from-primary/18 to-accent/10",
+    iconBg: "bg-primary/15",
+    iconColor: "text-primary",
     number: "02"
   },
   {
@@ -63,9 +63,9 @@ const features = [
     icon: Zap,
     title: "Instant delivery engine",
     description: "Subscriptions activate in under 15 seconds with automated credential allocation and delivery.",
-    gradient: "from-indigo-500/15 to-blue-500/10",
-    iconBg: "bg-indigo-500/10",
-    iconColor: "text-indigo-500",
+    gradient: "from-cyan-500/18 to-primary/10",
+    iconBg: "bg-cyan-500/10",
+    iconColor: "text-cyan-600",
     number: "06"
   },
   {
@@ -131,3 +131,4 @@ export function FeatureGrid() {
     </section>
   );
 }
+
