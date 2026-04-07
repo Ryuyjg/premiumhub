@@ -11,7 +11,7 @@ type FulfillOrderInput = {
     device?: string;
   };
   razorpayPaymentId?: string;
-  paymentMethod?: "razorpay" | "wallet";
+  paymentMethod?: "maxelpay" | "wallet" | "razorpay";
 };
 
 export async function createUserNotification(userId: string, title: string, message: string) {
@@ -90,7 +90,7 @@ export async function assignOttAccountSeat(productId: string): Promise<OttAccoun
 }
 
 export async function fulfillPaidOrder(input: FulfillOrderInput) {
-  const { orderId, productId, userId, metadata, razorpayPaymentId, paymentMethod = "razorpay" } = input;
+  const { orderId, productId, userId, metadata, razorpayPaymentId, paymentMethod = "maxelpay" } = input;
   const [productDoc, orderDoc] = await Promise.all([
     adminDb.collection("products").doc(productId).get(),
     adminDb.collection("orders").doc(orderId).get()

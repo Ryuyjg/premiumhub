@@ -13,25 +13,6 @@ import { useAuth } from "@/components/providers/auth-provider";
 import type { Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 
-declare global {
-  interface Window {
-    Razorpay: new (options: Record<string, unknown>) => {
-      open: () => void;
-    };
-  }
-}
-
-async function ensureRazorpay() {
-  if (window.Razorpay) return;
-  await new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Unable to load crypto checkout."));
-    document.body.appendChild(script);
-  });
-}
-
 export default function CartPage() {
   const { user } = useAuth();
   const cartItems = useAppStore((state) => state.cartItems);
@@ -117,7 +98,6 @@ export default function CartPage() {
 
     setLoading(true);
     try {
-      await ensureRazorpay();
       const response = await fetch("/api/cart/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,50 +112,13 @@ export default function CartPage() {
       }
 
       const order = await response.json();
-      
-      const razorpay = new window.Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: "OTT Shoppy",
-        description: `${cartItems.length} plans in cart`,
-        order_id: order.id,
-        modal: {
-          ondismiss: () => toast.error("Checkout cancelled.")
-        },
-        handler: async (paymentResponse: Record<string, string>) => {
-          setLoading(true);
-          toast.loading("Verifying your payment...", { id: "checkout-verify" });
-          
-          try {
-              // Note: Single verification for multiple products (backend handles it)
-              const verification = await fetch("/api/razorpay/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    razorpay_order_id: paymentResponse.razorpay_order_id,
-                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                    razorpay_signature: paymentResponse.razorpay_signature,
-                    isCart: true // Flag to tell backend this is a cart checkout
-                })
-              });
 
-              if (!verification.ok) throw new Error("Payment verification failed.");
-              
-              toast.success("Success! Your subscriptions are being activated.", { id: "checkout-verify" });
-              clearCart();
-              window.location.href = "/dashboard";
-          } catch (e) {
-              toast.error("Verification failed. Please contact support.", { id: "checkout-verify" });
-          } finally {
-              setLoading(false);
-          }
-        },
-        prefill: { email: user.email || undefined },
-        theme: { color: "#2563eb" }
-      });
+      if (!order.checkoutUrl) {
+        throw new Error("Checkout URL missing from MaxelPay response.");
+      }
 
-      razorpay.open();
+      toast.success("Redirecting to secure USDT checkout...");
+      window.location.href = order.checkoutUrl;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Checkout failed.");
     } finally {

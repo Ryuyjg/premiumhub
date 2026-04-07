@@ -6,31 +6,9 @@ import type { Product } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/providers/auth-provider";
 
-declare global {
-  interface Window {
-    Razorpay: new (options: Record<string, unknown>) => {
-      open: () => void;
-    };
-  }
-}
-
-async function ensureRazorpay() {
-  if (window.Razorpay) {
-    return;
-  }
-
-  await new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Unable to load crypto checkout."));
-    document.body.appendChild(script);
-  });
-}
-
 export function CheckoutButton({ product }: { product: Product }) {
   const { user } = useAuth();
-  const [loading, setLoading] = useState<"none" | "razorpay" | "wallet">("none");
+  const [loading, setLoading] = useState<"none" | "checkout" | "wallet">("none");
   const [couponCode, setCouponCode] = useState("");
   const [customerDeliveryEmail, setCustomerDeliveryEmail] = useState("");
 
@@ -54,9 +32,8 @@ export function CheckoutButton({ product }: { product: Product }) {
       return;
     }
 
-    setLoading("razorpay");
+    setLoading("checkout");
     try {
-      await ensureRazorpay();
       const orderResponse = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -69,48 +46,16 @@ export function CheckoutButton({ product }: { product: Product }) {
 
       if (!orderResponse.ok) {
         const orderError = await orderResponse.json().catch(() => ({}));
-        throw new Error(orderError.error || "Unable to create USDT payment order.");
+        throw new Error(orderError.error || "Unable to create MaxelPay checkout session.");
       }
 
       const order = await orderResponse.json();
-      const razorpay = new window.Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: "StreamVault",
-        description: product.name,
-        order_id: order.id,
-        modal: {
-          ondismiss: () => toast.error("Payment cancelled. You can retry anytime.")
-        },
-        handler: async (response: Record<string, string>) => {
-          const verificationResponse = await fetch("/api/razorpay/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...response,
-              orderId: order.internalOrderId,
-              productId: product.id
-            })
-          });
+      if (!order.checkoutUrl) {
+        throw new Error("Checkout URL missing from MaxelPay response.");
+      }
 
-          if (!verificationResponse.ok) {
-            toast.error("Payment verification failed. Please contact support.");
-            return;
-          }
-
-          toast.success("Payment verified and subscription activated.");
-          window.location.href = "/dashboard";
-        },
-        prefill: {
-          email: user.email || customerDeliveryEmail || undefined
-        },
-        theme: {
-          color: "#2563eb"
-        }
-      });
-
-      razorpay.open();
+      toast.success("Redirecting to secure USDT checkout...");
+      window.location.href = order.checkoutUrl;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Checkout failed.");
     } finally {
@@ -194,7 +139,7 @@ export function CheckoutButton({ product }: { product: Product }) {
         className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
       />
       <Button onClick={handleCheckout} className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
-        {loading === "razorpay" ? "Preparing USDT checkout..." : "Pay with USDT"}
+        {loading === "checkout" ? "Preparing USDT checkout..." : "Pay with USDT"}
       </Button>
       <Button onClick={handleWalletCheckout} variant="outline" className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
         {loading === "wallet" ? "Processing wallet payment..." : "Pay with wallet balance"}

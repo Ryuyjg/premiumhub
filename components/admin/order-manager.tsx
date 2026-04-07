@@ -23,7 +23,7 @@ export function OrderManager({ orders }: { orders: Order[] }) {
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const matchStatus = status === "all" || order.status === status;
-      const searchTarget = `${order.productName} ${order.userId} ${order.razorpayOrderId}`.toLowerCase();
+      const searchTarget = `${order.productName} ${order.userId} ${order.maxelpaySessionId || order.razorpayOrderId || ""}`.toLowerCase();
       const matchQuery = query.length === 0 || searchTarget.includes(query.toLowerCase());
       return matchStatus && matchQuery;
     });

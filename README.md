@@ -1,13 +1,13 @@
 # StreamVault
 
-Premium OTT subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, Firebase, and Razorpay.
+Premium OTT subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, Firebase, and MaxelPay.
 
 ## What is included
 
 - Premium SaaS-grade landing page with glassmorphism, gradients, motion, and responsive sections
 - Product catalog with search, filters, animated cards, and plan detail views
 - Firebase Auth login and secure server-side session cookies
-- Razorpay order creation and backend signature verification
+- MaxelPay hosted checkout session creation with backend confirmation/webhook handling
 - Firestore-backed orders, subscriptions, coupons, analytics, and OTT account assignment
 - Admin workspace for analytics, products, coupons, orders, and credential vault management
 - AES-encrypted OTT credentials, Firestore rules, and Storage rules
@@ -20,7 +20,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - Tailwind CSS
 - Framer Motion
 - Firebase Auth, Firestore, Storage, Admin SDK
-- Razorpay
+- MaxelPay
 - Zustand
 - Zod
 
@@ -29,7 +29,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 1. Install Node.js 20+ and npm 10+.
 2. Run `npm install`.
 3. Copy `.env.example` to `.env.local`.
-4. Fill all Firebase and Razorpay values.
+4. Fill all Firebase and MaxelPay values.
 5. Start the app with `npm run dev`.
 
 ## Environment variables
@@ -43,15 +43,14 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
 - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
-- `NEXT_PUBLIC_RAZORPAY_KEY_ID`
+- `MAXELPAY_API_KEY`
+- `MAXELPAY_BASE_URL`
 
 ### Server secrets
 
 - `FIREBASE_PROJECT_ID`
 - `FIREBASE_CLIENT_EMAIL`
 - `FIREBASE_PRIVATE_KEY`
-- `RAZORPAY_KEY_ID`
-- `RAZORPAY_KEY_SECRET`
 - `SESSION_COOKIE_NAME`
 - `SESSION_COOKIE_MAX_AGE`
 - `OTT_CREDENTIAL_SECRET`
@@ -74,12 +73,12 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 3. Add category documents first.
 4. Add products and OTT accounts from `/admin`.
 
-## Razorpay notes
+## MaxelPay notes
 
 - Use LIVE keys in production and TEST keys locally.
-- Orders are created only on the backend.
-- Payment signatures are verified only on the backend.
-- Never expose `RAZORPAY_KEY_SECRET` to the client.
+- Checkout sessions are created only on the backend.
+- Enable webhook URL: `/api/maxelpay/webhook` in your gateway panel.
+- Set `MAXELPAY_API_KEY` only on server environment variables.
 
 ## Deployment
 

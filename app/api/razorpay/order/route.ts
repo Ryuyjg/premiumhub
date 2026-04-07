@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
-import { getRazorpayClient } from "@/lib/razorpay";
+import { createMaxelPaySession } from "@/lib/maxelpay";
 
 export async function POST(request: Request) {
   try {
@@ -73,13 +73,21 @@ export async function POST(request: Request) {
       }
     }
 
-    const amountInPaise = Math.max(Math.round(finalAmount * 100), 100);
-    const razorpay = getRazorpayClient();
-    const razorpayOrder = await razorpay.orders.create({
-      amount: amountInPaise,
+    const appOrigin = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
+    const orderToken = `order_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    const session = await createMaxelPaySession({
+      orderId: orderToken,
+      amount: Number(finalAmount.toFixed(2)),
       currency: "USDT",
-      receipt: `receipt_${Date.now()}`
+      description: `${product.name} purchase`,
+      successUrl: `${appOrigin}/checkout/success`,
+      cancelUrl: `${appOrigin}/checkout/cancel`,
+      callbackUrl: `${appOrigin}/api/maxelpay/webhook`
     });
+
+    if (!session.sessionId || !session.checkoutUrl) {
+      return NextResponse.json({ error: "MaxelPay session created but response was incomplete." }, { status: 502 });
+    }
 
     const orderRef = await adminDb.collection("orders").add({
       userId: user.id,
@@ -90,20 +98,23 @@ export async function POST(request: Request) {
       customerDeliveryEmail: String(customerDeliveryEmail || "").trim() || null,
       amount: finalAmount,
       status: "created",
-      razorpayOrderId: razorpayOrder.id,
+      razorpayOrderId: session.sessionId,
+      maxelpaySessionId: session.sessionId,
+      paymentMethod: "maxelpay",
       couponCode: couponCode || null,
       discountAmount,
       createdAt: new Date().toISOString()
     });
 
     return NextResponse.json({
-      id: razorpayOrder.id,
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency,
+      id: session.sessionId,
+      amount: finalAmount,
+      currency: "USDT",
+      checkoutUrl: session.checkoutUrl,
       internalOrderId: orderRef.id
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to create USDT payment order.";
+    const message = error instanceof Error ? error.message : "Unable to create MaxelPay checkout session.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

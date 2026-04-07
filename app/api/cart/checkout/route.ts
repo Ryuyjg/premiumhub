@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
-import { getRazorpayClient } from "@/lib/razorpay";
+import { createMaxelPaySession } from "@/lib/maxelpay";
 import type { Product } from "@/types";
 
 export async function POST(request: Request) {
@@ -51,13 +51,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid total amount." }, { status: 400 });
     }
 
-    const amountInPaise = Math.round(totalAmount * 100);
-    const razorpay = getRazorpayClient();
-    const razorpayOrder = await razorpay.orders.create({
-      amount: amountInPaise,
+    const appOrigin = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
+    const orderToken = `cart_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    const session = await createMaxelPaySession({
+      orderId: orderToken,
+      amount: Number(totalAmount.toFixed(2)),
       currency: "USDT",
-      receipt: `cart_receipt_${Date.now()}`
+      description: `${products.length} plans in cart`,
+      successUrl: `${appOrigin}/checkout/success`,
+      cancelUrl: `${appOrigin}/checkout/cancel`,
+      callbackUrl: `${appOrigin}/api/maxelpay/webhook`
     });
+
+    if (!session.sessionId || !session.checkoutUrl) {
+      return NextResponse.json({ error: "MaxelPay session created but response was incomplete." }, { status: 502 });
+    }
 
     // Create individual orders in Firestore
     const batch = adminDb.batch();
@@ -74,7 +82,9 @@ export async function POST(request: Request) {
             customerDeliveryEmail: String(customerDeliveryEmail || "").trim() || null,
             amount: p.salePrice || p.price,
             status: "created",
-            razorpayOrderId: razorpayOrder.id,
+            razorpayOrderId: session.sessionId,
+            maxelpaySessionId: session.sessionId,
+            paymentMethod: "maxelpay",
             createdAt: new Date().toISOString()
         });
         orderIds.push(orderRef.id);
@@ -83,9 +93,10 @@ export async function POST(request: Request) {
     await batch.commit();
 
     return NextResponse.json({
-      id: razorpayOrder.id,
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency,
+      id: session.sessionId,
+      amount: totalAmount,
+      currency: "USDT",
+      checkoutUrl: session.checkoutUrl,
       internalOrderIds: orderIds
     });
   } catch (error) {

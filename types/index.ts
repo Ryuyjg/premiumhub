@@ -89,7 +89,8 @@ export type Order = {
   status: OrderStatus;
   razorpayOrderId?: string | null;
   razorpayPaymentId?: string;
-  paymentMethod?: "razorpay" | "wallet";
+  maxelpaySessionId?: string | null;
+  paymentMethod?: "maxelpay" | "wallet" | "razorpay";
   walletDeducted?: number;
   deliveryMode?: "direct_credentials" | "otp_manual" | "email_invite";
   customerDeliveryEmail?: string;
