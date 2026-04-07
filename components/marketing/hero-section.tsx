@@ -15,9 +15,9 @@ const stats = [
 ];
 
 const proofCards = [
-  { icon: ShieldCheck, label: "Verified payment workflow", color: "from-emerald-500/20 to-teal-500/10", iconColor: "text-emerald-500" },
-  { icon: Zap, label: "Instant credential delivery", color: "from-amber-500/20 to-orange-500/10", iconColor: "text-amber-500" },
-  { icon: Sparkles, label: "Premium dashboard UX", color: "from-primary/20 to-accent/10", iconColor: "text-primary" }
+  { icon: ShieldCheck, label: "Safe and verified payments", color: "from-emerald-500/20 to-teal-500/10", iconColor: "text-emerald-500" },
+  { icon: Zap, label: "Instant credentials after checkout", color: "from-amber-500/20 to-orange-500/10", iconColor: "text-amber-500" },
+  { icon: Sparkles, label: "Best-in-class client dashboard", color: "from-primary/20 to-accent/10", iconColor: "text-primary" }
 ];
 
 const brands = ["ChatGPT Plus", "Creative Cloud", "Midjourney", "Telegram", "WhatsApp", "Netflix", "Xbox", "Canva Pro"];
