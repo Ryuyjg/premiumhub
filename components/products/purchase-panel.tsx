@@ -23,7 +23,7 @@ async function ensureRazorpay() {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Unable to load Razorpay."));
+    script.onerror = () => reject(new Error("Unable to load crypto checkout."));
     document.body.appendChild(script);
   });
 }
@@ -69,7 +69,7 @@ export function CheckoutButton({ product }: { product: Product }) {
 
       if (!orderResponse.ok) {
         const orderError = await orderResponse.json().catch(() => ({}));
-        throw new Error(orderError.error || "Unable to create Razorpay order.");
+        throw new Error(orderError.error || "Unable to create USDT payment order.");
       }
 
       const order = await orderResponse.json();
@@ -194,7 +194,7 @@ export function CheckoutButton({ product }: { product: Product }) {
         className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
       />
       <Button onClick={handleCheckout} className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
-        {loading === "razorpay" ? "Preparing secure checkout..." : "Buy with Razorpay"}
+        {loading === "razorpay" ? "Preparing USDT checkout..." : "Pay with USDT"}
       </Button>
       <Button onClick={handleWalletCheckout} variant="outline" className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
         {loading === "wallet" ? "Processing wallet payment..." : "Pay with wallet balance"}
@@ -202,3 +202,4 @@ export function CheckoutButton({ product }: { product: Product }) {
     </div>
   );
 }
+

@@ -48,7 +48,7 @@ export function SiteFooter() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground md:text-right">
-            Payments secured by <span className="font-semibold text-foreground">Razorpay</span>
+            Payments secured by <span className="font-semibold text-foreground">USDT Gateway</span>
           </p>
         </div>
       </div>
@@ -112,3 +112,4 @@ export function SiteFooter() {
     </footer>
   );
 }
+

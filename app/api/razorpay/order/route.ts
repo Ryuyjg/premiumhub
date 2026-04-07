@@ -103,7 +103,7 @@ export async function POST(request: Request) {
       internalOrderId: orderRef.id
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to create Razorpay order.";
+    const message = error instanceof Error ? error.message : "Unable to create USDT payment order.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

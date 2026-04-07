@@ -27,7 +27,7 @@ async function ensureRazorpay() {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Unable to load Razorpay checkout."));
+    script.onerror = () => reject(new Error("Unable to load crypto checkout."));
     document.body.appendChild(script);
   });
 }
@@ -355,7 +355,7 @@ export default function CartPage() {
                       </>
                   ) : (
                       <>
-                          Checkout with Razorpay <ArrowRight className="h-5 w-5" />
+                          Checkout with USDT <ArrowRight className="h-5 w-5" />
                       </>
                   )}
                 </Button>
@@ -385,7 +385,7 @@ export default function CartPage() {
 
               <div className="mt-8 space-y-3 rounded-[2rem] border border-border/50 bg-muted/30 p-5">
                 {[
-                  { icon: ShieldCheck, text: "Verified Razorpay Gateway", color: "text-emerald-500" },
+                  { icon: ShieldCheck, text: "Verified USDT checkout gateway", color: "text-emerald-500" },
                   { icon: Zap, text: "Instant Credentials Auto-delivery", color: "text-amber-500" }
                 ].map((t) => (
                   <div key={t.text} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">
@@ -401,3 +401,4 @@ export default function CartPage() {
     </div>
   );
 }
+

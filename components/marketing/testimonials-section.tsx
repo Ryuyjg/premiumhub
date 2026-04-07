@@ -46,7 +46,7 @@ const reviews = [
     handle: "@deepanair",
     avatar: "DN",
     rating: 5,
-    text: "Payment was super secure, I can see the Razorpay badge. The Telegram premium number came with the email exactly as promised. 10/10.",
+    text: "Payment was super secure, I can see the secure payment badge. The Telegram premium number came with the email exactly as promised. 10/10.",
     plan: "Telegram Premium Number",
     gradient: "from-pink-500 to-rose-600"
   },
@@ -138,4 +138,5 @@ export function TestimonialsSection() {
     </section>
   );
 }
+
 

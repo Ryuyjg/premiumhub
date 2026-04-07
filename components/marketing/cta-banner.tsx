@@ -6,7 +6,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 const perks = [
   "Instant delivery after payment",
-  "Secure Razorpay checkout",
+  "Secure USDT checkout",
   "24/7 customer support",
   "AES-encrypted account vault"
 ];
@@ -72,4 +72,5 @@ export function CtaBanner() {
     </section>
   );
 }
+
 

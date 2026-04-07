@@ -4,7 +4,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { ShieldCheck, Zap, Star } from "lucide-react";
 
 const features = [
-  { icon: ShieldCheck, title: "Verified billing", desc: "Razorpay checkout with server-side payment verification" },
+  { icon: ShieldCheck, title: "Verified billing", desc: "USDT checkout with secure server-side payment verification" },
   { icon: Zap, title: "Instant credentials", desc: "Get account access quickly after successful payment" },
   { icon: Star, title: "Real human support", desc: "Raise a ticket from dashboard and get guided help fast" }
 ];
@@ -65,3 +65,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
