@@ -47,19 +47,19 @@ export function ProductCatalog({
               key={offer.id}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className={`relative overflow-hidden rounded-[1.5rem] border border-white/20 bg-gradient-to-r ${offer.accent || "from-cyan-500 to-blue-600"} p-5 text-white shadow-xl`}
+              transition={{ delay: index * 0.06 }}
+              className={`relative overflow-hidden rounded-[1.75rem] border border-white/25 bg-gradient-to-br ${offer.accent || "from-primary to-accent"} p-5 text-white shadow-2xl`}
             >
-              <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/20 blur-2xl" />
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/25 blur-2xl" />
               {offer.badge ? (
-                <p className="relative inline-flex rounded-full border border-white/40 bg-white/15 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em]">
+                <p className="relative inline-flex rounded-full border border-white/40 bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em]">
                   {offer.badge}
                 </p>
               ) : null}
-              <h3 className="relative mt-3 text-lg font-semibold">{offer.title}</h3>
-              <p className="relative mt-2 text-sm text-white/85">{offer.description}</p>
+              <h3 className="relative mt-3 text-lg font-black">{offer.title}</h3>
+              <p className="relative mt-2 text-sm text-white/90">{offer.description}</p>
               {offer.ctaLabel && offer.ctaUrl ? (
-                <Link href={offer.ctaUrl} className="relative mt-4 inline-flex text-sm font-semibold text-white underline-offset-4 hover:underline">
+                <Link href={offer.ctaUrl} className="relative mt-4 inline-flex text-sm font-semibold underline-offset-4 hover:underline">
                   {offer.ctaLabel}
                 </Link>
               ) : null}
@@ -68,7 +68,7 @@ export function ProductCatalog({
         </div>
       ) : null}
 
-      <div className="surface rounded-[1.75rem] p-5">
+      <div className="rounded-[2rem] border border-border/55 bg-white/72 p-5 shadow-[0_22px_54px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
         <div className="mb-4 overflow-x-auto pb-1">
           <div className="flex min-w-max gap-2">
             <motion.button
@@ -92,8 +92,9 @@ export function ProductCatalog({
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="relative w-full md:max-w-md">
+
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="relative w-full">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
@@ -102,11 +103,13 @@ export function ProductCatalog({
               className="pl-10"
             />
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
             <button
               type="button"
               onClick={() => setLayout("grid")}
               className={layout === "grid" ? "pill-filter-active !px-3 !py-1.5" : "pill-filter !px-3 !py-1.5"}
+              aria-label="Grid view"
             >
               <Grid2X2 className="h-4 w-4" />
             </button>
@@ -114,15 +117,17 @@ export function ProductCatalog({
               type="button"
               onClick={() => setLayout("list")}
               className={layout === "list" ? "pill-filter-active !px-3 !py-1.5" : "pill-filter !px-3 !py-1.5"}
+              aria-label="List view"
             >
               <List className="h-4 w-4" />
             </button>
-            <div className="text-sm text-muted-foreground">
-              Showing <span className="font-semibold text-foreground">{filteredProducts.length}</span> plans
+            <div className="rounded-full border border-border/60 bg-white/75 px-3 py-1.5 text-sm text-muted-foreground dark:bg-white/5">
+              Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> plans
             </div>
           </div>
         </div>
       </div>
+
       <motion.div layout className={layout === "grid" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : "grid gap-5"}>
         <AnimatePresence mode="popLayout">
           {visibleProducts.map((product) => (
@@ -139,6 +144,7 @@ export function ProductCatalog({
           ))}
         </AnimatePresence>
       </motion.div>
+
       {visibleProducts.length < filteredProducts.length ? (
         <div className="flex justify-center">
           <motion.button
@@ -146,7 +152,7 @@ export function ProductCatalog({
             whileTap={{ scale: 0.98 }}
             whileHover={{ y: -2 }}
             onClick={() => setVisibleCount((count) => count + 6)}
-            className="rounded-full border border-border bg-white/75 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/30 dark:bg-white/5"
+            className="rounded-full border border-border/65 bg-white/75 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5"
           >
             Load more plans
           </motion.button>

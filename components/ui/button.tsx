@@ -9,9 +9,9 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "relative overflow-hidden bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25 " +
+    "relative overflow-hidden bg-gradient-to-r from-primary via-[hsl(var(--gradient-mid))] to-accent text-white shadow-[0_16px_32px_rgba(13,148,136,0.28)] " +
     "before:absolute before:inset-0 before:-translate-x-full before:bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.22),transparent)] " +
-    "before:transition-transform before:duration-700 hover:shadow-xl hover:shadow-primary/35 hover:-translate-y-px hover:before:translate-x-full",
+    "before:transition-transform before:duration-700 hover:shadow-[0_20px_40px_rgba(13,148,136,0.34)] hover:-translate-y-px hover:before:translate-x-full",
   secondary:
     "border border-foreground/10 bg-foreground text-background hover:bg-foreground/90",
   ghost:
@@ -28,7 +28,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-all duration-200",
+          "inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-bold tracking-[0.01em] transition-all duration-200",
           "active:scale-[0.975] disabled:cursor-not-allowed disabled:opacity-55",
           variants[variant],
           className

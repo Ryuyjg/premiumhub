@@ -11,29 +11,29 @@ export function ProductShowcase({ products }: { products: Product[] }) {
   if (!products.length) return null;
 
   return (
-    <section className="container py-16 md:py-24">
+    <section className="container py-18 md:py-24">
       <Reveal>
-        <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-3">
-            <span className="glow-badge">
-              <Sparkles className="h-3 w-3" />
-              Featured inventory
-            </span>
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-              Top plans, ready to{" "}
-              <span className="gradient-text">sell instantly.</span>
-            </h2>
-            <p className="max-w-xl text-muted-foreground">
-              Handpicked subscriptions with verified stock, instant delivery, and secure checkout.
-            </p>
+        <div className="mb-10 rounded-[2rem] border border-border/55 bg-white/70 p-7 shadow-[0_20px_55px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-8">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3">
+              <span className="glow-badge">
+                <Sparkles className="h-3 w-3" />
+                Featured inventory
+              </span>
+              <h2 className="text-3xl font-black tracking-tight md:text-4xl lg:text-5xl">
+                Top plans curated for
+                <span className="gradient-text block">high conversion.</span>
+              </h2>
+              <p className="max-w-xl text-muted-foreground">
+                These plans have strong demand, verified stock, and proven checkout performance.
+              </p>
+            </div>
+
+            <Link href="/products" className="btn-ghost inline-flex shrink-0 items-center gap-2 self-start md:self-auto">
+              Browse all plans
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
           </div>
-          <Link
-            href="/products"
-            className="btn-ghost inline-flex shrink-0 items-center gap-2 self-start md:self-auto"
-          >
-            Browse all plans
-            <ArrowUpRight className="h-4 w-4" />
-          </Link>
         </div>
       </Reveal>
 
@@ -51,7 +51,6 @@ export function ProductShowcase({ products }: { products: Product[] }) {
         ))}
       </div>
 
-      {/* Bottom CTA */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -18,13 +18,14 @@ export default async function ProductsPage() {
 
   return (
     <div className="container py-12 md:py-16">
-      <div className="mb-10 max-w-3xl space-y-4">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Premium digital catalog</p>
-        <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-          Discover accounts with a fast, premium buying experience.
+      <div className="mb-10 rounded-[2rem] border border-border/55 bg-white/70 p-7 shadow-[0_22px_58px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-8">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Premium digital catalog</p>
+        <h1 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
+          Discover plans with a cleaner,
+          <span className="gradient-text block">faster buying flow.</span>
         </h1>
-        <p className="text-lg text-muted-foreground">
-          Scroll categories at the top, switch layouts instantly, and grab the best deals from curated offers.
+        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+          Filter by category, search instantly, compare in grid or list mode, and complete checkout with confidence.
         </p>
       </div>
       <ProductCatalog products={products} categories={categories} offers={offers} />

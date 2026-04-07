@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useState } from "react";
-import { ArrowRight, Clock3, ShoppingBag } from "lucide-react";
+import { ArrowRight, Clock3, ShoppingBag, Sparkles } from "lucide-react";
 import type { MouseEvent } from "react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
@@ -30,7 +30,7 @@ export function ProductCard({
   const shadow = useTransform(
     springY,
     [-8, 8],
-    ["0 18px 45px rgba(14, 116, 216, 0.1)", "0 18px 45px rgba(14, 116, 216, 0.2)"]
+    ["0 20px 45px rgba(13, 148, 136, 0.10)", "0 20px 45px rgba(13, 148, 136, 0.22)"]
   );
 
   function onMove(event: MouseEvent<HTMLElement>) {
@@ -56,8 +56,7 @@ export function ProductCard({
     }
 
     setIsAdding(true);
-    // Simulate a bit of loading for tactile feel
-    await new Promise(r => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 400));
 
     addToCart({
       productId: product.id,
@@ -67,11 +66,11 @@ export function ProductCard({
       imageUrl: product.imageUrls[0] || "",
       categoryName: product.categoryName
     });
-    
+
     toast.success(`${product.name} ready in your bag!`, {
-        description: "Review and checkout when you're ready.",
-        icon: <ShoppingBag className="h-4 w-4 text-primary" />,
-        duration: 3000
+      description: "Review and checkout when you're ready.",
+      icon: <ShoppingBag className="h-4 w-4 text-primary" />,
+      duration: 3000
     });
     setIsAdding(false);
   }
@@ -83,7 +82,7 @@ export function ProductCard({
       style={{ rotateX: springX, rotateY: springY, boxShadow: shadow, transformStyle: "preserve-3d" }}
       className="relative"
     >
-      <div className={`surface-interactive group overflow-hidden rounded-[1.75rem] ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
+      <div className={`group overflow-hidden rounded-[1.75rem] border border-border/55 bg-white/78 shadow-[0_16px_44px_rgba(2,6,23,0.06)] backdrop-blur-xl transition-all hover:-translate-y-1 dark:bg-white/4 ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
         <Link href={`/products/${product.slug}`} className="block">
           <div className={`relative overflow-hidden ${variant === "list" ? "aspect-[16/8] md:aspect-[16/6]" : "aspect-[16/10]"}`}>
             <Image
@@ -92,46 +91,45 @@ export function ProductCard({
               fill
               className="object-cover transition duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/72 via-slate-950/15 to-transparent" />
-            <div className="absolute left-5 top-5">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/20 to-transparent" />
+            <div className="absolute left-4 top-4">
               <Badge>{isOutOfStock ? "No stock" : product.categoryName}</Badge>
             </div>
             {product.bestSelling ? (
-              <div className="absolute right-5 top-5 rounded-full border border-amber-400/25 bg-amber-500/90 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-amber-500/25">
+              <div className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-500/90 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-amber-500/25">
+                <Sparkles className="h-3 w-3" />
                 Best seller
               </div>
             ) : null}
-            <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
-              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/15 to-transparent blur-xl" />
-            </div>
           </div>
+
           <div className={`space-y-4 ${variant === "list" ? "p-5 md:p-6" : "p-6"}`}>
             <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className={`${variant === "list" ? "text-lg md:text-xl" : "text-xl"} font-semibold`}>{product.name}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  {product.shortDescription}
-                </p>
+              <div className="space-y-2">
+                <h3 className={`${variant === "list" ? "text-lg md:text-xl" : "text-xl"} font-black tracking-tight`}>{product.name}</h3>
+                <p className="text-sm leading-6 text-muted-foreground">{product.shortDescription}</p>
               </div>
               <ArrowRight className="h-5 w-5 shrink-0 text-primary transition group-hover:translate-x-1" />
             </div>
-            <div className="flex items-center justify-between">
+
+            <div className="flex items-center justify-between rounded-xl border border-border/55 bg-muted/30 px-3 py-2.5">
               <div>
-                <p className="text-2xl font-semibold">{formatCurrency(product.salePrice || product.price)}</p>
+                <p className="text-2xl font-black">{formatCurrency(product.salePrice || product.price)}</p>
                 {product.salePrice ? (
                   <p className="text-sm text-muted-foreground line-through">{formatCurrency(product.price)}</p>
                 ) : null}
               </div>
-              <div className="flex items-center gap-2 rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 rounded-full border border-border/70 bg-white/80 px-3 py-1 text-xs text-muted-foreground dark:bg-white/5">
                 <Clock3 className="h-3.5 w-3.5" />
                 {product.durationInDays} days
               </div>
             </div>
           </div>
         </Link>
+
         <div className="px-6 pb-6">
-          <Button type="button" onClick={handleAddToCart} className="w-full" disabled={isOutOfStock}>
-            {isOutOfStock ? "No stock" : "Add to cart"}
+          <Button type="button" onClick={handleAddToCart} className="w-full" disabled={isOutOfStock || isAdding}>
+            {isOutOfStock ? "No stock" : isAdding ? "Adding..." : "Add to cart"}
           </Button>
         </div>
       </div>
