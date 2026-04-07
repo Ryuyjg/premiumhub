@@ -53,6 +53,27 @@ function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): P
   };
 }
 
+function dedupeProducts(items: Product[]) {
+  const byKey = new Map<string, Product>();
+
+  for (const item of items) {
+    const key = slugify(item.slug || item.name || item.id);
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, item);
+      continue;
+    }
+
+    const existingTime = Date.parse(String(existing.updatedAt || existing.createdAt || 0));
+    const nextTime = Date.parse(String(item.updatedAt || item.createdAt || 0));
+    if (Number.isFinite(nextTime) && nextTime > existingTime) {
+      byKey.set(key, item);
+    }
+  }
+
+  return Array.from(byKey.values());
+}
+
 async function ensureStarterCatalogSeeded() {
   if (starterCatalogSeeded) {
     return;
@@ -196,7 +217,7 @@ export async function getFeaturedProducts() {
     getDirectStockSeatMap()
   ]);
 
-  return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
+  return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
 }
 
 export async function getProducts() {
@@ -205,13 +226,13 @@ export async function getProducts() {
     adminDb.collection("products").where("stockStatus", "==", "active").get(),
     getDirectStockSeatMap()
   ]);
-  return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
+  return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
 }
 
 export async function getAdminProducts() {
   await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([adminDb.collection("products").get(), getDirectStockSeatMap()]);
-  return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
+  return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
 }
 
 export async function getProductBySlug(slug: string) {
