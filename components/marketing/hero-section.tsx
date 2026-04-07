@@ -9,9 +9,9 @@ import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types";
 
 const stats = [
-  { icon: Users, value: "10,000+", label: "Active customers" },
-  { icon: TrendingUp, value: "50L+", label: "Orders processed" },
-  { icon: Star, value: "4.9/5", label: "Average rating" }
+  { icon: Users, value: "8000+", label: "Active customers" },
+  { icon: Star, value: "600+", label: "Resellers" },
+  { icon: TrendingUp, value: "12000+", label: "Orders delivered" }
 ];
 
 const proofCards = [
