@@ -28,6 +28,7 @@ type OttAccountDoc = {
   id: string;
   label: string;
   emailCiphertext: string;
+  passwordCiphertext: string;
   maxUsers: number;
   activeUsers: number;
 };
@@ -83,6 +84,7 @@ export async function assignOttAccountSeat(productId: string): Promise<OttAccoun
       id: candidate.id,
       label: String(candidate.label || ""),
       emailCiphertext: String(candidate.emailCiphertext || ""),
+      passwordCiphertext: String(candidate.passwordCiphertext || ""),
       maxUsers,
       activeUsers: nextActiveUsers
     } satisfies OttAccountDoc;
@@ -143,6 +145,22 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
     { merge: true }
   );
 
+  let credentialsText = "";
+  if (deliveryMode === "direct_credentials" && ottAccount) {
+    try {
+      const email = decryptSensitiveValue(ottAccount.emailCiphertext);
+      const password = decryptSensitiveValue(ottAccount.passwordCiphertext);
+      credentialsText = `ID: ${ottAccount.label}\nEmail: ${email}\nPassword: ${password}`;
+    } catch (err) {
+      console.error("Fulfillment decryption error:", err);
+      credentialsText = `${ottAccount.label} - Assigned (View in dashboard)`;
+    }
+  } else if (deliveryMode === "otp_manual") {
+    credentialsText = `OTP login. Contact admin on ${String(product.otpSupportNumber || "configured number")}`;
+  } else {
+    credentialsText = `Invitation will be activated on ${String(order.customerDeliveryEmail || userId)}`;
+  }
+
   await adminDb.collection("subscriptions").add({
     userId,
     productId,
@@ -154,14 +172,9 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
     deliveryMode,
     otpSupportNumber: String(product.otpSupportNumber || ""),
     deliveryNotes: String(product.deliveryNotes || ""),
-    customerDeliveryEmail: String(order.customerDeliveryEmail || ""),
+    customerDeliveryEmail: String(order.customerDeliveryEmail || userId),
     ottAccountId: ottAccount?.id || null,
-    assignedCredentialLabel:
-      deliveryMode === "direct_credentials" && ottAccount
-        ? `${ottAccount.label} - ${decryptSensitiveValue(ottAccount.emailCiphertext)}`
-        : deliveryMode === "otp_manual"
-          ? `OTP login. Contact admin on ${String(product.otpSupportNumber || "configured number")}`
-          : `Invitation will be activated on ${String(order.customerDeliveryEmail || userId)}`
+    assignedCredentialLabel: credentialsText
   });
 
   if (ottAccount) {
