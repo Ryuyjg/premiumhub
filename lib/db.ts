@@ -43,9 +43,15 @@ async function getDirectStockSeatMap() {
 function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): Product {
   const deliveryMode = product.deliveryMode || "direct_credentials";
   const isOutOfStock = deliveryMode === "direct_credentials" && (seatMap.get(product.id) || 0) <= 0;
+  const firstValidImage = (product.imageUrls || []).find((url) => typeof url === "string" && url.trim().length > 0);
+  const fallbackSeed = slugify(product.slug || product.name || product.id || "product-image");
+  const imageUrls = firstValidImage
+    ? [firstValidImage, ...(product.imageUrls || []).filter((url) => typeof url === "string" && url.trim().length > 0 && url !== firstValidImage)]
+    : [`https://picsum.photos/seed/${fallbackSeed}/1600/900`];
 
   return {
     ...product,
+    imageUrls,
     deliveryMode,
     otpSupportNumber: product.otpSupportNumber || "",
     deliveryNotes: product.deliveryNotes || "",
@@ -61,6 +67,16 @@ function dedupeProducts(items: Product[]) {
     const existing = byKey.get(key);
     if (!existing) {
       byKey.set(key, item);
+      continue;
+    }
+
+    const existingHasImage = Boolean(existing.imageUrls?.[0]);
+    const nextHasImage = Boolean(item.imageUrls?.[0]);
+    if (!existingHasImage && nextHasImage) {
+      byKey.set(key, item);
+      continue;
+    }
+    if (existingHasImage && !nextHasImage) {
       continue;
     }
 
