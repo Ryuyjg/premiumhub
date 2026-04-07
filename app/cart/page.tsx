@@ -87,45 +87,6 @@ export default function CartPage() {
     }
   }
 
-  async function handleUnifiedCheckout() {
-    if (!user) {
-      toast.error("Please sign in to proceed with checkout.");
-      window.location.href = "/login?redirect=/cart";
-      return;
-    }
-
-    if (cartItems.length === 0) return;
-
-    setLoading(true);
-    try {
-      const response = await fetch("/api/cart/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productIds: cartItems.map((item) => item.productId)
-        })
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.error || "Unable to initiate checkout.");
-      }
-
-      const order = await response.json();
-
-      if (!order.checkoutUrl) {
-        throw new Error("Checkout URL missing from MaxelPay response.");
-      }
-
-      toast.success("Redirecting to secure USDT checkout...");
-      window.location.href = order.checkoutUrl;
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Checkout failed.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <div className="container py-16">
       <div className="mb-10 space-y-2">
@@ -286,22 +247,9 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
-                <Button 
-                  onClick={handleUnifiedCheckout} 
-                  className="btn-primary w-full h-14 text-base gap-3"
-                  disabled={loading}
-                >
-                  {loading ? (
-                      <>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Processing...
-                      </>
-                  ) : (
-                      <>
-                          Checkout with USDT <ArrowRight className="h-5 w-5" />
-                      </>
-                  )}
-                </Button>
+                <div className="rounded-[1.5rem] border border-dashed border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground">
+                  Online INR checkout is being prepared for UroPay integration. Wallet checkout is active right now.
+                </div>
 
                 <Button 
                   onClick={handleWalletCheckout} 
@@ -328,7 +276,7 @@ export default function CartPage() {
 
               <div className="mt-8 space-y-3 rounded-[2rem] border border-border/50 bg-muted/30 p-5">
                 {[
-                  { icon: ShieldCheck, text: "Verified USDT checkout gateway", color: "text-emerald-500" },
+                  { icon: ShieldCheck, text: "INR checkout flow being prepared for UroPay", color: "text-emerald-500" },
                   { icon: Zap, text: "Instant Credentials Auto-delivery", color: "text-amber-500" }
                 ].map((t) => (
                   <div key={t.text} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">

@@ -6,7 +6,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 const perks = [
   "Instant delivery after payment",
-  "Secure USDT checkout",
+  "INR-ready purchase flow",
   "24/7 customer support",
   "AES-encrypted account vault"
 ];

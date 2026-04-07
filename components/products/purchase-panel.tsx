@@ -8,60 +8,13 @@ import { useAuth } from "@/components/providers/auth-provider";
 
 export function CheckoutButton({ product }: { product: Product }) {
   const { user } = useAuth();
-  const [loading, setLoading] = useState<"none" | "checkout" | "wallet">("none");
+  const [loading, setLoading] = useState<"none" | "wallet">("none");
   const [couponCode, setCouponCode] = useState("");
   const [customerDeliveryEmail, setCustomerDeliveryEmail] = useState("");
 
   const deliveryMode = product.deliveryMode || "direct_credentials";
   const requiresCustomerEmail = deliveryMode === "email_invite";
   const isOutOfStock = Boolean(product.isOutOfStock);
-
-  async function handleCheckout() {
-    if (!user) {
-      window.location.href = `/login?redirect=/products/${product.slug}`;
-      return;
-    }
-
-    if (isOutOfStock) {
-      toast.error("No stock available for this item.");
-      return;
-    }
-
-    if (requiresCustomerEmail && !customerDeliveryEmail.trim()) {
-      toast.error("Please enter your email for invitation delivery.");
-      return;
-    }
-
-    setLoading("checkout");
-    try {
-      const orderResponse = await fetch("/api/razorpay/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product.id,
-          couponCode: couponCode.trim() || undefined,
-          customerDeliveryEmail: customerDeliveryEmail.trim() || undefined
-        })
-      });
-
-      if (!orderResponse.ok) {
-        const orderError = await orderResponse.json().catch(() => ({}));
-        throw new Error(orderError.error || "Unable to create MaxelPay checkout session.");
-      }
-
-      const order = await orderResponse.json();
-      if (!order.checkoutUrl) {
-        throw new Error("Checkout URL missing from MaxelPay response.");
-      }
-
-      toast.success("Redirecting to secure USDT checkout...");
-      window.location.href = order.checkoutUrl;
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Checkout failed.");
-    } finally {
-      setLoading("none");
-    }
-  }
 
   async function handleWalletCheckout() {
     if (!user) {
@@ -138,9 +91,9 @@ export function CheckoutButton({ product }: { product: Product }) {
         placeholder="Coupon code (optional)"
         className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
       />
-      <Button onClick={handleCheckout} className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
-        {loading === "checkout" ? "Preparing USDT checkout..." : "Pay with USDT"}
-      </Button>
+      <div className="rounded-xl border border-dashed border-border/70 bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
+        INR gateway checkout will return here after UroPay integration.
+      </div>
       <Button onClick={handleWalletCheckout} variant="outline" className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
         {loading === "wallet" ? "Processing wallet payment..." : "Pay with wallet balance"}
       </Button>

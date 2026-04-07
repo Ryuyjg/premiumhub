@@ -120,7 +120,7 @@ export async function POST(request: Request) {
         status: "paid",
         paymentMethod: "wallet",
         walletDeducted: finalAmount,
-        razorpayOrderId: null,
+        gatewayOrderId: null,
         couponCode: couponCode || null,
         discountAmount,
         createdAt: new Date().toISOString(),

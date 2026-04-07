@@ -23,7 +23,7 @@ export function OrderManager({ orders }: { orders: Order[] }) {
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const matchStatus = status === "all" || order.status === status;
-      const searchTarget = `${order.productName} ${order.userId} ${order.maxelpaySessionId || order.razorpayOrderId || ""}`.toLowerCase();
+      const searchTarget = `${order.productName} ${order.userId} ${order.paymentMethod || ""} ${order.gatewayOrderId || ""}`.toLowerCase();
       const matchQuery = query.length === 0 || searchTarget.includes(query.toLowerCase());
       return matchStatus && matchQuery;
     });
@@ -86,7 +86,7 @@ export function OrderManager({ orders }: { orders: Order[] }) {
               <div>
                 <p className="font-semibold">{order.productName}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{formatDate(order.createdAt)}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">{order.paymentMethod || "crypto"}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">{order.paymentMethod || "manual"}</p>
                 {order.deliveryMode ? (
                   <p className="mt-1 text-xs text-muted-foreground">
                     Delivery: {order.deliveryMode === "direct_credentials" ? "ID/Password" : order.deliveryMode === "otp_manual" ? "OTP manual" : "Email invite"}

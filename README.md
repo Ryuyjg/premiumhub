@@ -1,13 +1,13 @@
 # StreamVault
 
-Premium OTT subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, Firebase, and MaxelPay.
+Premium OTT subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, Firebase, and an INR-first checkout flow.
 
 ## What is included
 
 - Premium SaaS-grade landing page with glassmorphism, gradients, motion, and responsive sections
 - Product catalog with search, filters, animated cards, and plan detail views
 - Firebase Auth login and secure server-side session cookies
-- MaxelPay hosted checkout session creation with backend confirmation/webhook handling
+- INR pricing, wallet purchases, and checkout surfaces prepared for UroPay integration
 - Firestore-backed orders, subscriptions, coupons, analytics, and OTT account assignment
 - Admin workspace for analytics, products, coupons, orders, and credential vault management
 - AES-encrypted OTT credentials, Firestore rules, and Storage rules
@@ -20,7 +20,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - Tailwind CSS
 - Framer Motion
 - Firebase Auth, Firestore, Storage, Admin SDK
-- MaxelPay
+- UroPay (planned)
 - Zustand
 - Zod
 
@@ -29,7 +29,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 1. Install Node.js 20+ and npm 10+.
 2. Run `npm install`.
 3. Copy `.env.example` to `.env.local`.
-4. Fill all Firebase and MaxelPay values.
+4. Fill all Firebase values and add UroPay values when you integrate the INR gateway.
 5. Start the app with `npm run dev`.
 
 ## Environment variables
@@ -43,8 +43,8 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
 - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
-- `MAXELPAY_API_KEY`
-- `MAXELPAY_BASE_URL`
+- `UROPAY_API_KEY`
+- `UROPAY_BASE_URL`
 
 ### Server secrets
 
@@ -73,12 +73,11 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 3. Add category documents first.
 4. Add products and OTT accounts from `/admin`.
 
-## MaxelPay notes
+## INR gateway notes
 
-- Use LIVE keys in production and TEST keys locally.
-- Checkout sessions are created only on the backend.
-- Enable webhook URL: `/api/maxelpay/webhook` in your gateway panel.
-- Set `MAXELPAY_API_KEY` only on server environment variables.
+- Currency and final order creation should stay server-side.
+- Connect the upcoming UroPay success and webhook callbacks to fulfillment.
+- Keep gateway secrets on server environment variables only.
 
 ## Deployment
 

@@ -48,7 +48,7 @@ export function SiteFooter() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground md:text-right">
-            Payments secured by <span className="font-semibold text-foreground">USDT Gateway</span>
+            Payments and order flows are being refreshed for <span className="font-semibold text-foreground">INR checkout</span>
           </p>
         </div>
       </div>
