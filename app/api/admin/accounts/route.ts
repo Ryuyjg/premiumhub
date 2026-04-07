@@ -16,7 +16,10 @@ const accountSchema = z.object({
 const updateAccountSchema = z.object({
   id: z.string().min(1),
   maxUsers: z.number().int().positive().optional(),
-  status: z.enum(["available", "full", "disabled"]).optional()
+  status: z.enum(["available", "full", "disabled"]).optional(),
+  label: z.string().trim().min(1).optional(),
+  email: z.string().email().optional(),
+  password: z.string().min(4).optional()
 });
 
 export async function POST(request: Request) {
@@ -76,12 +79,18 @@ export async function PUT(request: Request) {
     const nextStatus =
       parsed.status ||
       (Number(current.activeUsers || 0) >= nextMaxUsers ? "full" : "available");
-
-    await accountRef.update({
+      
+    const updatePayload: any = {
       maxUsers: nextMaxUsers,
       status: nextStatus,
       updatedAt: new Date().toISOString()
-    });
+    };
+    
+    if (parsed.label !== undefined) updatePayload.label = parsed.label;
+    if (parsed.email !== undefined) updatePayload.emailCiphertext = encryptSensitiveValue(parsed.email);
+    if (parsed.password !== undefined) updatePayload.passwordCiphertext = encryptSensitiveValue(parsed.password);
+
+    await accountRef.update(updatePayload);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -91,3 +100,27 @@ export async function PUT(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  const allowed = await isAdminAuthorized();
+  if (!allowed) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "Missing account ID." }, { status: 400 });
+    }
+
+    await adminDb.collection("ottAccounts").doc(id).delete();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to delete account." },
+      { status: 400 }
+    );
+  }
+}
+
