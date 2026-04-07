@@ -165,7 +165,7 @@ export function DashboardOverview({
                       <p className="truncate text-sm font-black uppercase tracking-[0.06em]">{sub.productName}</p>
                       <p className="text-xs text-muted-foreground">
                         Expires {formatDate(sub.expiresAt)}
-                        {" • "}
+                        {" - "}
                         <span className={daysUntil(sub.expiresAt) <= 3 ? "font-bold text-rose-500" : "font-semibold"}>
                           {daysUntil(sub.expiresAt)} days left
                         </span>
@@ -248,3 +248,4 @@ export function DashboardOverview({
     </div>
   );
 }
+
