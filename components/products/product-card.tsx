@@ -20,6 +20,7 @@ export function ProductCard({
   variant?: "grid" | "list";
 }) {
   const addToCart = useAppStore((state) => state.addToCart);
+  const [isAdding, setIsAdding] = useState(false);
   const isOutOfStock = Boolean(product.isOutOfStock);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -47,11 +48,15 @@ export function ProductCard({
     rotateY.set(0);
   }
 
-  function handleAddToCart() {
+  async function handleAddToCart() {
     if (isOutOfStock) {
       toast.error("No stock available for this item.");
       return;
     }
+
+    setIsAdding(true);
+    // Simulate a bit of loading for tactile feel
+    await new Promise(r => setTimeout(r, 400));
 
     addToCart({
       productId: product.id,
@@ -61,7 +66,13 @@ export function ProductCard({
       imageUrl: product.imageUrls[0] || "",
       categoryName: product.categoryName
     });
-    toast.success(`${product.name} added to cart.`);
+    
+    toast.success(`${product.name} ready in your bag!`, {
+        description: "Review and checkout when you're ready.",
+        icon: <ShoppingBag className="h-4 w-4 text-primary" />,
+        duration: 3000
+    });
+    setIsAdding(false);
   }
 
   return (
