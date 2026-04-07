@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { STARTER_CATEGORIES, STARTER_PRODUCTS } from "@/lib/starter-catalog";
 import type {
   AppUser,
   AnalyticsSummary,
@@ -13,6 +14,9 @@ import type {
   SupportTicket,
   Subscription
 } from "@/types";
+import { slugify } from "@/lib/utils";
+
+let starterCatalogSeedPromise: Promise<void> | null = null;
 
 function withId<T>(id: string, data: any) {
   return { id, ...data } as T;
@@ -46,6 +50,93 @@ function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): P
     deliveryNotes: product.deliveryNotes || "",
     isOutOfStock
   };
+}
+
+async function ensureStarterCatalogSeeded() {
+  if (starterCatalogSeedPromise) {
+    await starterCatalogSeedPromise;
+    return;
+  }
+
+  starterCatalogSeedPromise = (async () => {
+    const [categoryProbe, productProbe] = await Promise.all([
+      adminDb.collection("categories").limit(1).get(),
+      adminDb.collection("products").limit(1).get()
+    ]);
+
+    if (!categoryProbe.empty || !productProbe.empty) {
+      return;
+    }
+
+    const categoryIdBySlug = new Map<string, string>();
+    const categoryNameBySlug = new Map<string, string>();
+
+    for (const category of STARTER_CATEGORIES) {
+      const slug = slugify(category.name);
+      const existing = await adminDb.collection("categories").where("slug", "==", slug).limit(1).get();
+      if (!existing.empty) {
+        categoryIdBySlug.set(slug, existing.docs[0].id);
+        categoryNameBySlug.set(slug, String(existing.docs[0].data().name || category.name));
+        continue;
+      }
+
+      const ref = await adminDb.collection("categories").add({
+        name: category.name,
+        slug,
+        description: category.description
+      });
+      categoryIdBySlug.set(slug, ref.id);
+      categoryNameBySlug.set(slug, category.name);
+    }
+
+    const now = new Date().toISOString();
+
+    for (const product of STARTER_PRODUCTS) {
+      const categorySlug = slugify(product.categoryName);
+      const categoryId = categoryIdBySlug.get(categorySlug);
+      const categoryName = categoryNameBySlug.get(categorySlug) || product.categoryName;
+      if (!categoryId) continue;
+
+      const slug = slugify(product.name);
+      const existing = await adminDb.collection("products").where("slug", "==", slug).limit(1).get();
+      if (!existing.empty) continue;
+
+      const salePrice = product.salePrice && product.salePrice > 0 ? product.salePrice : null;
+      const discount =
+        salePrice && salePrice < product.price
+          ? Math.round(((product.price - salePrice) / product.price) * 100)
+          : 0;
+
+      await adminDb.collection("products").add({
+        name: product.name,
+        slug,
+        shortDescription: product.description.slice(0, 120),
+        description: product.description,
+        price: product.price,
+        salePrice,
+        discount,
+        categoryId,
+        categoryName,
+        durationInDays: product.durationInDays,
+        imageUrls: [product.imageUrl],
+        features: product.features || ["Fast delivery", "Secure checkout", "Support included"],
+        featured: Boolean(product.featured),
+        bestSelling: Boolean(product.bestSelling),
+        deliveryMode: product.deliveryMode || "email_invite",
+        otpSupportNumber: null,
+        deliveryNotes: null,
+        stockStatus: "active",
+        createdAt: now,
+        updatedAt: now
+      });
+    }
+  })();
+
+  try {
+    await starterCatalogSeedPromise;
+  } finally {
+    starterCatalogSeedPromise = null;
+  }
 }
 
 export async function expireOverdueSubscriptions() {
@@ -96,6 +187,7 @@ export async function expireOverdueSubscriptions() {
 }
 
 export async function getFeaturedProducts() {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([
     adminDb
       .collection("products")
@@ -110,6 +202,7 @@ export async function getFeaturedProducts() {
 }
 
 export async function getProducts() {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([
     adminDb.collection("products").where("stockStatus", "==", "active").get(),
     getDirectStockSeatMap()
@@ -118,11 +211,13 @@ export async function getProducts() {
 }
 
 export async function getAdminProducts() {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([adminDb.collection("products").get(), getDirectStockSeatMap()]);
   return snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap));
 }
 
 export async function getProductBySlug(slug: string) {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([
     adminDb
       .collection("products")
@@ -137,6 +232,7 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function getCategories() {
+  await ensureStarterCatalogSeeded();
   const snapshot = await adminDb.collection("categories").get();
   return snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
 }
