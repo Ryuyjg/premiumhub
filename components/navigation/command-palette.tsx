@@ -6,6 +6,7 @@ import { Search, ShoppingCart, Zap, TrendingUp, X, Command } from "lucide-react"
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types";
 import { formatCurrency } from "@/lib/utils";
+import { APP_NAME } from "@/lib/constants";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);

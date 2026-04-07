@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { APP_NAME } from "@/lib/constants";
 import { AuthCard } from "@/components/auth/auth-card";
 import { ShieldCheck, Zap, Star } from "lucide-react";
 
