@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Ban, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import type { AppUser } from "@/types";
 import { formatCurrency } from "@/lib/utils";
@@ -14,6 +14,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
   const [amountByUser, setAmountByUser] = useState<Record<string, string>>({});
   const [actionByUser, setActionByUser] = useState<Record<string, "add" | "deduct">>({});
   const [submittingUserId, setSubmittingUserId] = useState<string | null>(null);
+  const [suspendingUserId, setSuspendingUserId] = useState<string | null>(null);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) =>
@@ -51,6 +52,29 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
     }
   }
 
+  async function toggleSuspension(user: AppUser) {
+    const isSuspending = !user.suspended;
+    if (!window.confirm(`Are you sure you want to ${isSuspending ? "suspend" : "unsuspend"} this user?`)) return;
+
+    setSuspendingUserId(user.id);
+    try {
+      const response = await fetch("/api/admin/users/suspend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, suspend: isSuspending })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Failed to alter suspension status.");
+
+      toast.success(isSuspending ? "User suspended." : "User unsuspended.");
+      window.location.reload();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Action failed.");
+    } finally {
+      setSuspendingUserId(null);
+    }
+  }
+
   return (
     <Card className="xl:col-span-2">
       <div className="flex items-center justify-between gap-3">
@@ -62,16 +86,19 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
         <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by email or uid" className="pl-10" />
       </div>
       <div className="mt-5 overflow-hidden rounded-2xl border border-border/80">
-        <div className="grid grid-cols-[1.2fr_0.5fr_1fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid grid-cols-[1fr_0.5fr_1fr_0.5fr] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <p>User</p>
           <p>Balance</p>
           <p>Wallet action</p>
+          <p className="text-right">Status</p>
         </div>
         <div className="max-h-[24rem] divide-y divide-border/70 overflow-y-auto">
           {filteredUsers.map((user) => (
-            <div key={user.id} className="grid grid-cols-[1.2fr_0.5fr_1fr] items-center gap-3 px-4 py-3">
+            <div key={user.id} className={`grid grid-cols-[1fr_0.5fr_1fr_0.5fr] items-center gap-3 px-4 py-3 ${user.suspended ? "bg-rose-500/5" : ""}`}>
               <div>
-                <p className="truncate text-sm font-medium">{user.email || "unknown"}</p>
+                <p className={`truncate text-sm font-medium ${user.suspended ? "text-rose-600 dark:text-rose-400 line-through opacity-70" : ""}`}>
+                  {user.email || "unknown"}
+                </p>
                 <p className="truncate text-xs text-muted-foreground">{user.id}</p>
               </div>
               <p className="text-sm font-semibold">{formatCurrency(user.walletBalance || 0)}</p>
@@ -99,6 +126,31 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
                 <Button type="button" disabled={submittingUserId === user.id} onClick={() => addBalance(user.id)}>
                   {submittingUserId === user.id ? "..." : "Apply"}
                 </Button>
+              </div>
+              <div className="flex justify-end">
+                {user.suspended ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 gap-1.5 border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-700"
+                    disabled={suspendingUserId === user.id}
+                    onClick={() => toggleSuspension(user)}
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    Unsuspend
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="h-9 gap-1.5 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600"
+                    disabled={suspendingUserId === user.id}
+                    onClick={() => toggleSuspension(user)}
+                  >
+                    <Ban className="h-4 w-4" />
+                    Suspend
+                  </Button>
+                )}
               </div>
             </div>
           ))}

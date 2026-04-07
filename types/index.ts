@@ -139,6 +139,7 @@ export type AppUser = {
   role: UserRole;
   walletBalance?: number;
   createdAt?: string;
+  suspended?: boolean;
 };
 
 export type SupportTicket = {
