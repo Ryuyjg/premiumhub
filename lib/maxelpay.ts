@@ -1,4 +1,5 @@
 const MAXELPAY_BASE_URL = (process.env.MAXELPAY_BASE_URL || "https://api.maxelpay.com").replace(/\/$/, "");
+const DEFAULT_MAXELPAY_KEY = "pk_live_xreswxwzuwO3uBepzuoGv6KqCwn6cQQv";
 
 type MaxelPaySessionPayload = {
   orderId: string;
@@ -11,9 +12,13 @@ type MaxelPaySessionPayload = {
 };
 
 function getApiKey() {
-  const apiKey = process.env.MAXELPAY_API_KEY;
+  const apiKey =
+    process.env.MAXELPAY_API_KEY ||
+    process.env.NEXT_PUBLIC_MAXELPAY_API_KEY ||
+    process.env.MAXELPAY_PUBLIC_KEY ||
+    DEFAULT_MAXELPAY_KEY;
   if (!apiKey) {
-    throw new Error("MaxelPay API key is missing. Set MAXELPAY_API_KEY.");
+    throw new Error("MaxelPay API key is missing.");
   }
   return apiKey;
 }
@@ -127,4 +132,3 @@ export async function getMaxelPaySessionStatus(sessionId: string) {
     status: readPaymentStatus(json)
   };
 }
-

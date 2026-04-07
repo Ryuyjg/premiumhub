@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const appOrigin = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
+    const appOrigin = new URL(request.url).origin;
     const orderToken = `order_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
     const session = await createMaxelPaySession({
       orderId: orderToken,

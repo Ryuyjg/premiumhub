@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid total amount." }, { status: 400 });
     }
 
-    const appOrigin = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
+    const appOrigin = new URL(request.url).origin;
     const orderToken = `cart_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
     const session = await createMaxelPaySession({
       orderId: orderToken,
