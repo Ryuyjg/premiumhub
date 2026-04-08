@@ -136,7 +136,7 @@ export function ProductCatalog({
                 onClick={() => setCategory(featuredCategory.id)}
                 className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/16"
               >
-                Focus this category <ArrowRight className="h-4 w-4" />
+                Check now <ArrowRight className="h-4 w-4" />
               </button>
             </div>
 
