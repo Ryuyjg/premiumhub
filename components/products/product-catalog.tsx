@@ -33,6 +33,7 @@ export function ProductCatalog({
     [categories]
   );
   const featuredMeta = featuredCategory ? getStarterCategoryMeta(featuredCategory.slug) : null;
+
   const categoryStats = useMemo(() => {
     return categories.map((item) => {
       const matchingProducts = products.filter((product) => product.categoryId === item.id);
@@ -43,10 +44,19 @@ export function ProductCatalog({
       return {
         category: item,
         count: matchingProducts.length,
-        startingPrice
+        startingPrice,
+        bestSellingCount: matchingProducts.filter((product) => product.bestSelling).length
       };
     });
   }, [categories, products]);
+
+  const selectedCategoryStat = useMemo(
+    () => categoryStats.find((item) => item.category.id === category) || null,
+    [category, categoryStats]
+  );
+  const selectedCategoryMeta = selectedCategoryStat
+    ? getStarterCategoryMeta(selectedCategoryStat.category.slug)
+    : null;
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -70,116 +80,144 @@ export function ProductCatalog({
     setCategory("all");
   }
 
+  function scrollToResults() {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document.getElementById("catalog-results")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
   return (
     <div className="space-y-8">
       {categoryStats.length ? (
-        <div className="section-shell p-5 md:p-6">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                Swipe on mobile or scroll sideways on desktop to jump between categories fast.
-              </p>
+        <div className="sticky top-[5.4rem] z-30">
+          <div className="section-shell border border-border/70 bg-background/90 p-4 shadow-[0_18px_42px_rgba(15,23,42,0.08)] backdrop-blur-2xl md:p-5">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  Swipe on mobile or scroll sideways on desktop to move across the catalog.
+                </p>
+              </div>
+              {category !== "all" ? (
+                <button type="button" onClick={resetFilters} className="pill-filter whitespace-nowrap">
+                  View all categories
+                </button>
+              ) : null}
             </div>
-            {category !== "all" ? (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="pill-filter whitespace-nowrap"
-              >
-                Reset filter
-              </button>
-            ) : null}
-          </div>
 
-          <div className="overflow-x-auto pb-2">
-            <div className="flex min-w-max gap-3">
-              <motion.button
-                type="button"
-                onClick={() => setCategory("all")}
-                whileTap={{ scale: 0.98 }}
-                className={`w-[220px] shrink-0 rounded-[1.6rem] border p-4 text-left transition-all duration-300 ${
-                  category === "all"
-                    ? "border-primary/30 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
-                    : "border-border/70 bg-[hsl(var(--surface)/0.88)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
-                }`}
-              >
-                <p className={`text-xs font-black uppercase tracking-[0.16em] ${category === "all" ? "text-white/68" : "text-muted-foreground"}`}>
-                  All categories
-                </p>
-                <p className="mt-3 text-xl font-black tracking-tight">Everything live</p>
-                <p className={`mt-2 text-sm leading-6 ${category === "all" ? "text-white/82" : "text-muted-foreground"}`}>
-                  View the full catalog without limiting the results to one category.
-                </p>
-                <div className={`mt-4 inline-flex items-center gap-1 text-sm font-semibold ${category === "all" ? "text-white" : "text-primary"}`}>
-                  Open all <ArrowRight className="h-4 w-4" />
-                </div>
-              </motion.button>
-
-              {categoryStats.map(({ category: item, count, startingPrice }, index) => {
-                const highlighted = isFeaturedCategory(item);
-                const active = category === item.id;
-
-                return (
-                  <motion.button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setCategory(item.id)}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                    whileTap={{ scale: 0.985 }}
-                    className={`group relative w-[240px] shrink-0 overflow-hidden rounded-[1.6rem] border p-4 text-left transition-all duration-300 ${
-                      highlighted
-                        ? "border-primary/24 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
-                        : "border-border/70 bg-[hsl(var(--surface)/0.9)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
-                    } ${active ? "ring-2 ring-primary/35" : ""}`}
+            <div className="overflow-x-auto pb-1 [scrollbar-width:none]">
+              <div className="flex min-w-max gap-3 snap-x snap-mandatory">
+                <motion.button
+                  type="button"
+                  onClick={() => setCategory("all")}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-[210px] shrink-0 snap-start rounded-[1.45rem] border p-4 text-left transition-all duration-300 ${
+                    category === "all"
+                      ? "border-primary/30 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
+                      : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+                  }`}
+                >
+                  <p
+                    className={`text-[11px] font-black uppercase tracking-[0.16em] ${
+                      category === "all" ? "text-white/66" : "text-muted-foreground"
+                    }`}
                   >
-                    {item.imageUrl ? (
-                      <div className="absolute inset-y-0 right-0 w-24 overflow-hidden">
-                        <div className="relative h-full w-full">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          fill
-                          className="object-cover opacity-30 transition duration-500 group-hover:scale-105"
-                        />
-                        </div>
-                        <div className={`absolute inset-0 ${highlighted ? "bg-gradient-to-l from-transparent to-slate-950/85" : "bg-gradient-to-l from-transparent to-background/95"}`} />
-                      </div>
-                    ) : null}
+                    All categories
+                  </p>
+                  <p className="mt-3 text-lg font-black tracking-tight">Everything live</p>
+                  <p
+                    className={`mt-2 line-clamp-2 text-sm leading-6 ${
+                      category === "all" ? "text-white/82" : "text-muted-foreground"
+                    }`}
+                  >
+                    See the full catalog without limiting results to one lane.
+                  </p>
+                </motion.button>
 
-                    <div className="relative">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className={`text-xs font-black uppercase tracking-[0.16em] ${highlighted ? "text-white/68" : "text-muted-foreground"}`}>
-                            {count > 0 ? `${count} item${count === 1 ? "" : "s"}` : "Ready for upload"}
-                          </p>
-                          <p className="mt-3 text-xl font-black tracking-tight">{item.name}</p>
+                {categoryStats.map(({ category: item, count, startingPrice, bestSellingCount }, index) => {
+                  const highlighted = isFeaturedCategory(item);
+                  const active = category === item.id;
+
+                  return (
+                    <motion.button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setCategory(item.id)}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.03 }}
+                      whileTap={{ scale: 0.985 }}
+                      className={`group relative w-[230px] shrink-0 snap-start overflow-hidden rounded-[1.45rem] border p-4 text-left transition-all duration-300 ${
+                        highlighted
+                          ? "border-primary/24 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
+                          : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+                      } ${active ? "ring-2 ring-primary/35" : ""}`}
+                    >
+                      {item.imageUrl ? (
+                        <div className="absolute inset-y-0 right-0 w-24 overflow-hidden">
+                          <div className="relative h-full w-full">
+                            <Image
+                              src={item.imageUrl}
+                              alt={item.name}
+                              fill
+                              className="object-cover opacity-30 transition duration-500 group-hover:scale-105"
+                            />
+                          </div>
+                          <div
+                            className={`absolute inset-0 ${
+                              highlighted
+                                ? "bg-gradient-to-l from-transparent to-slate-950/88"
+                                : "bg-gradient-to-l from-transparent to-background/95"
+                            }`}
+                          />
                         </div>
-                        {highlighted ? (
-                          <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
-                            Main
+                      ) : null}
+
+                      <div className="relative">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p
+                              className={`text-[11px] font-black uppercase tracking-[0.16em] ${
+                                highlighted ? "text-white/66" : "text-muted-foreground"
+                              }`}
+                            >
+                              {count > 0 ? `${count} item${count === 1 ? "" : "s"}` : "Ready for upload"}
+                            </p>
+                            <p className="mt-3 text-lg font-black tracking-tight">{item.name}</p>
+                          </div>
+                          {highlighted ? (
+                            <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                              Main
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <p
+                          className={`mt-2 line-clamp-2 max-w-[86%] text-sm leading-6 ${
+                            highlighted ? "text-white/82" : "text-muted-foreground"
+                          }`}
+                        >
+                          {item.description || "Category ready for manual uploads and stronger product copy."}
+                        </p>
+
+                        <div className="mt-4 flex items-center justify-between gap-3 text-xs">
+                          <span className={highlighted ? "text-white/76" : "text-muted-foreground"}>
+                            {startingPrice ? `From ${formatCurrency(startingPrice)}` : "No pricing yet"}
                           </span>
-                        ) : null}
+                          <span className={highlighted ? "text-white/76" : "text-muted-foreground"}>
+                            {bestSellingCount ? `${bestSellingCount} best seller${bestSellingCount === 1 ? "" : "s"}` : "Build this lane"}
+                          </span>
+                        </div>
                       </div>
-
-                      <p className={`mt-2 line-clamp-2 max-w-[85%] text-sm leading-6 ${highlighted ? "text-white/82" : "text-muted-foreground"}`}>
-                        {item.description || "Category ready for manual uploads and detailed product copy."}
-                      </p>
-
-                      <div className="mt-4 flex items-center justify-between gap-3 text-sm">
-                        <span className={highlighted ? "text-white/78" : "text-muted-foreground"}>
-                          {startingPrice ? `From ${formatCurrency(startingPrice)}` : "No pricing yet"}
-                        </span>
-                        <span className={`inline-flex items-center gap-1 font-semibold ${highlighted ? "text-white" : "text-primary"}`}>
-                          Check now <ArrowRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                    </div>
-                  </motion.button>
-                );
-              })}
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -195,7 +233,11 @@ export function ProductCatalog({
               transition={{ delay: index * 0.06 }}
               className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(160deg,rgba(15,23,42,0.98),rgba(30,41,59,0.96))] p-5 text-white shadow-[0_18px_48px_rgba(15,23,42,0.14)]"
             >
-              <div className={`absolute -right-10 -top-10 h-36 w-36 rounded-full ${offerGlowTones[index % offerGlowTones.length]} blur-3xl`} />
+              <div
+                className={`absolute -right-10 -top-10 h-36 w-36 rounded-full ${
+                  offerGlowTones[index % offerGlowTones.length]
+                } blur-3xl`}
+              />
               {offer.badge ? (
                 <p className="relative inline-flex rounded-full border border-white/15 bg-white/8 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em]">
                   {offer.badge}
@@ -204,7 +246,10 @@ export function ProductCatalog({
               <h3 className="relative mt-3 text-lg font-black">{offer.title}</h3>
               <p className="relative mt-2 text-sm leading-6 text-white/82">{offer.description}</p>
               {offer.ctaLabel && offer.ctaUrl ? (
-                <Link href={offer.ctaUrl} className="relative mt-4 inline-flex text-sm font-semibold text-white underline-offset-4 hover:underline">
+                <Link
+                  href={offer.ctaUrl}
+                  className="relative mt-4 inline-flex text-sm font-semibold text-white underline-offset-4 hover:underline"
+                >
                   {offer.ctaLabel}
                 </Link>
               ) : null}
@@ -213,7 +258,94 @@ export function ProductCatalog({
         </div>
       ) : null}
 
-      {featuredCategory ? (
+      {selectedCategoryStat ? (
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] p-6 text-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] md:p-7"
+        >
+          {selectedCategoryStat.category.imageUrl ? (
+            <div className="absolute inset-y-0 right-0 hidden w-[40%] overflow-hidden lg:block">
+              <Image
+                src={selectedCategoryStat.category.imageUrl}
+                alt={selectedCategoryStat.category.name}
+                fill
+                className="object-cover opacity-28"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-950/55 to-slate-950/88" />
+            </div>
+          ) : null}
+
+          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-cyan-300/20 blur-3xl" />
+          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-blue-400/18 blur-3xl" />
+
+          <div className="relative grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em]">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Active category
+                </span>
+                {isFeaturedCategory(selectedCategoryStat.category) ? (
+                  <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-white">
+                    Main lane
+                  </span>
+                ) : null}
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-black tracking-tight md:text-3xl">
+                  {selectedCategoryStat.category.name}
+                </h3>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/84 md:text-base">
+                  {selectedCategoryMeta?.description ||
+                    selectedCategoryStat.category.description ||
+                    "This category is ready for stronger products, sharper positioning, and a cleaner buying flow."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={scrollToResults}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/16"
+                >
+                  Browse products <ArrowRight className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-black/12 px-5 py-2.5 text-sm font-semibold text-white/92 transition hover:bg-black/18"
+                >
+                  Back to full catalog
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              <div className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88">
+                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-white/58">Live items</p>
+                <p className="mt-3 text-2xl font-black">{selectedCategoryStat.count}</p>
+                <p className="mt-2 text-white/72">Products currently visible in this category.</p>
+              </div>
+              <div className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88">
+                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-white/58">Starting price</p>
+                <p className="mt-3 text-2xl font-black">
+                  {selectedCategoryStat.startingPrice
+                    ? formatCurrency(selectedCategoryStat.startingPrice)
+                    : "--"}
+                </p>
+                <p className="mt-2 text-white/72">The lowest live entry point in this lane.</p>
+              </div>
+              <div className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88">
+                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-white/58">Best sellers</p>
+                <p className="mt-3 text-2xl font-black">{selectedCategoryStat.bestSellingCount}</p>
+                <p className="mt-2 text-white/72">Products already marked as your stronger picks.</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ) : featuredCategory ? (
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -241,12 +373,17 @@ export function ProductCatalog({
               <div>
                 <h3 className="text-2xl font-black tracking-tight md:text-3xl">{featuredCategory.name}</h3>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-white/84 md:text-base">
-                  {featuredMeta?.description || featuredCategory.description || "Built for your flagship Telegram automation products."}
+                  {featuredMeta?.description ||
+                    featuredCategory.description ||
+                    "Built for your flagship Telegram automation products."}
                 </p>
               </div>
               <button
                 type="button"
-                onClick={() => setCategory(featuredCategory.id)}
+                onClick={() => {
+                  setCategory(featuredCategory.id);
+                  setTimeout(scrollToResults, 60);
+                }}
                 className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/16"
               >
                 Check now <ArrowRight className="h-4 w-4" />
@@ -259,7 +396,10 @@ export function ProductCatalog({
                 "Keep your best automation tools in this lane",
                 "Make this the category you lead the catalog with"
               ].map((item) => (
-                <div key={item} className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88">
+                <div
+                  key={item}
+                  className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88"
+                >
                   {item}
                 </div>
               ))}
@@ -268,14 +408,14 @@ export function ProductCatalog({
         </motion.div>
       ) : null}
 
-      <div className="section-shell p-5 md:p-6">
+      <div id="catalog-results" className="section-shell p-5 md:p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Catalog controls</p>
             <p className="mt-2 text-sm leading-7 text-muted-foreground">
-              {category === "all"
-                ? "Showing every live product across the store."
-                : `Filtered to ${categories.find((item) => item.id === category)?.name || "the selected category"}.`}
+              {selectedCategoryStat
+                ? `Showing ${filteredProducts.length} product${filteredProducts.length === 1 ? "" : "s"} in ${selectedCategoryStat.category.name}.`
+                : "Showing every live product across the store."}
             </p>
           </div>
           <div className="control-surface rounded-full px-3 py-1.5 text-sm text-muted-foreground">
@@ -388,14 +528,20 @@ export function ProductCatalog({
                         }
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <p className={`text-sm font-bold ${highlighted ? "text-white" : "text-foreground"}`}>{item.name}</p>
+                          <p className={`text-sm font-bold ${highlighted ? "text-white" : "text-foreground"}`}>
+                            {item.name}
+                          </p>
                           {highlighted ? (
                             <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
                               Main
                             </span>
                           ) : null}
                         </div>
-                        <p className={`mt-2 text-sm leading-6 ${highlighted ? "text-white/82" : "text-muted-foreground"}`}>
+                        <p
+                          className={`mt-2 text-sm leading-6 ${
+                            highlighted ? "text-white/82" : "text-muted-foreground"
+                          }`}
+                        >
                           {item.description || "Category ready for your manual product uploads."}
                         </p>
                       </div>
@@ -406,7 +552,10 @@ export function ProductCatalog({
                     "Use real images and delivery notes",
                     "Publish featured items only after quality check"
                   ].map((item) => (
-                    <div key={item} className="rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4 text-sm font-medium">
+                    <div
+                      key={item}
+                      className="rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4 text-sm font-medium"
+                    >
                       {item}
                     </div>
                   ))}
