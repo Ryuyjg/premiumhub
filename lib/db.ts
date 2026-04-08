@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { FEATURED_CATEGORY_SLUG, STARTER_CATEGORIES, sortCategories } from "@/lib/catalog";
 import type {
   AppUser,
   AnalyticsSummary,
@@ -85,6 +86,48 @@ function dedupeProducts(items: Product[]) {
 
   return Array.from(byKey.values());
 }
+
+async function ensureStarterCategories(categories: Category[]) {
+  const existingSlugs = new Set(categories.map((category) => slugify(category.slug || category.name || category.id)));
+  const missing = STARTER_CATEGORIES.filter((category) => !existingSlugs.has(category.slug));
+
+  if (!missing.length) {
+    return categories;
+  }
+
+  const timestamp = new Date().toISOString();
+  const batch = adminDb.batch();
+
+  missing.forEach((category) => {
+    const ref = adminDb.collection("categories").doc(category.slug);
+    batch.set(
+      ref,
+      {
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+        featured: category.slug === FEATURED_CATEGORY_SLUG,
+        seeded: true,
+        createdAt: timestamp,
+        updatedAt: timestamp
+      },
+      { merge: true }
+    );
+  });
+
+  await batch.commit();
+
+  return [
+    ...categories,
+    ...missing.map((category) => ({
+      id: category.slug,
+      name: category.name,
+      slug: category.slug,
+      description: category.description
+    }))
+  ];
+}
+
 export async function expireOverdueSubscriptions() {
   try {
     const snapshot = await adminDb
@@ -175,7 +218,9 @@ export async function getProductBySlug(slug: string) {
 
 export async function getCategories() {
   const snapshot = await adminDb.collection("categories").get();
-  return snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
+  const categories = snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
+  const completeList = await ensureStarterCategories(categories);
+  return sortCategories(completeList);
 }
 
 export async function getOffers() {

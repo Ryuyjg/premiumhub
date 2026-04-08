@@ -7,6 +7,7 @@ import type { Category, Product } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 
 export function CategoryManager({
   categories,
@@ -105,6 +106,7 @@ export function CategoryManager({
           const productCount = categoryUsage.get(category.id) || 0;
           const inUse = productCount > 0;
           const isDeleting = deletingId === category.id;
+          const highlighted = category.slug === FEATURED_CATEGORY_SLUG;
 
           return (
             <div key={category.id} className="rounded-2xl border border-border/80 px-4 py-3">
@@ -112,6 +114,11 @@ export function CategoryManager({
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold">{category.name}</p>
+                    {highlighted ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+                        Main product
+                      </span>
+                    ) : null}
                     <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-muted/35 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       <Box className="h-3.5 w-3.5" />
                       {productCount} product{productCount === 1 ? "" : "s"}
@@ -120,6 +127,8 @@ export function CategoryManager({
                   <p className="mt-1 text-sm text-muted-foreground">{category.description || "No description added."}</p>
                   {inUse ? (
                     <p className="mt-1 text-xs text-amber-600 dark:text-amber-300">In use, delete disabled.</p>
+                  ) : highlighted ? (
+                    <p className="mt-1 text-xs text-primary">Keep this lane for your flagship Telegram automation listings.</p>
                   ) : (
                     <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-300">Safe to delete.</p>
                   )}

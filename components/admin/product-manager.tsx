@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 
 type ProductForm = {
   id?: string;
@@ -51,6 +52,7 @@ export function ProductManager({
     ...initialForm,
     categoryId: categories[0]?.id || ""
   });
+  const selectedCategory = categories.find((category) => category.id === form.categoryId) || null;
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>
@@ -169,6 +171,11 @@ export function ProductManager({
               </option>
             ))}
           </select>
+          {selectedCategory?.slug === FEATURED_CATEGORY_SLUG ? (
+            <div className="rounded-[1.25rem] border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-foreground">
+              Telegram auto software is your featured lane. Use stronger copy, fuller descriptions, and better delivery notes here.
+            </div>
+          ) : null}
           <Input
             value={form.name}
             onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}

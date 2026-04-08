@@ -25,8 +25,8 @@ export default async function ProductsPage() {
           <span className="gradient-text block">skip what is not ready.</span>
         </h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">
-          The storefront now focuses on intentional listings, clear product pages, and cleaner browsing instead of
-          filler inventory. Add products only when they are ready to sell.
+          The storefront now starts with AI plans, OTT plans, games, softwares, virtual numbers, Telegram sessions,
+          and a featured Telegram auto software lane. Add products only when they are ready to sell.
         </p>
       </div>
       <ProductCatalog products={products} categories={categories} offers={offers} />

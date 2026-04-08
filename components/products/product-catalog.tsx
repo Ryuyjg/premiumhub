@@ -2,12 +2,13 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { Grid2X2, List, Search, Sparkles } from "lucide-react";
+import { ArrowRight, Grid2X2, List, Search, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/store/use-app-store";
+import { FEATURED_CATEGORY_SLUG, getStarterCategoryMeta, isFeaturedCategory } from "@/lib/catalog";
 
 const offerGlowTones = ["bg-primary/20", "bg-accent/18", "bg-white/10"];
 
@@ -25,6 +26,11 @@ export function ProductCatalog({
   const [layout, setLayout] = useState<"grid" | "list">("grid");
 
   const activeOffers = useMemo(() => offers.filter((offer) => offer.active).slice(0, 3), [offers]);
+  const featuredCategory = useMemo(
+    () => categories.find((item) => item.slug === FEATURED_CATEGORY_SLUG) || null,
+    [categories]
+  );
+  const featuredMeta = featuredCategory ? getStarterCategoryMeta(featuredCategory.slug) : null;
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -78,6 +84,50 @@ export function ProductCatalog({
         </div>
       ) : null}
 
+      {featuredCategory ? (
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] p-6 text-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] md:p-7"
+        >
+          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-cyan-300/20 blur-3xl" />
+          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-blue-400/18 blur-3xl" />
+          <div className="relative grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div className="space-y-4">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em]">
+                <Sparkles className="h-3.5 w-3.5" />
+                Main product category
+              </span>
+              <div>
+                <h3 className="text-2xl font-black tracking-tight md:text-3xl">{featuredCategory.name}</h3>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/84 md:text-base">
+                  {featuredMeta?.description || featuredCategory.description || "Built for your flagship Telegram automation products."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCategory(featuredCategory.id)}
+                className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/16"
+              >
+                Focus this category <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {[
+                "Use longer descriptions and setup notes here",
+                "Keep your best automation tools in this lane",
+                "Make this the category you lead the catalog with"
+              ].map((item) => (
+                <div key={item} className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      ) : null}
+
       <div className="section-shell p-5 md:p-6">
         <div className="mb-4 overflow-x-auto pb-1">
           <div className="flex min-w-max gap-2">
@@ -95,7 +145,13 @@ export function ProductCatalog({
                 type="button"
                 onClick={() => setCategory(item.id)}
                 whileTap={{ scale: 0.98 }}
-                className={category === item.id ? "pill-filter-active whitespace-nowrap" : "pill-filter whitespace-nowrap"}
+                className={
+                  category === item.id
+                    ? "pill-filter-active whitespace-nowrap"
+                    : isFeaturedCategory(item)
+                      ? "pill-filter whitespace-nowrap border-primary/35 bg-primary/10 text-foreground"
+                      : "pill-filter whitespace-nowrap"
+                }
               >
                 {item.name}
               </motion.button>
@@ -197,16 +253,42 @@ export function ProductCatalog({
               </div>
             </div>
 
-            <div className="grid gap-3">
-              {[
-                "Create your core categories first",
-                "Use real images and delivery notes",
-                "Publish featured items only after quality check"
-              ].map((item) => (
-                <div key={item} className="rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4 text-sm font-medium">
-                  {item}
-                </div>
-              ))}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {categories.length
+                ? categories.map((item) => {
+                    const highlighted = isFeaturedCategory(item);
+                    return (
+                      <div
+                        key={item.id}
+                        className={
+                          highlighted
+                            ? "sm:col-span-2 rounded-[1.6rem] border border-primary/20 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] px-5 py-4 text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
+                            : "rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4"
+                        }
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <p className={`text-sm font-bold ${highlighted ? "text-white" : "text-foreground"}`}>{item.name}</p>
+                          {highlighted ? (
+                            <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                              Main
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className={`mt-2 text-sm leading-6 ${highlighted ? "text-white/82" : "text-muted-foreground"}`}>
+                          {item.description || "Category ready for your manual product uploads."}
+                        </p>
+                      </div>
+                    );
+                  })
+                : [
+                    "Create your core categories first",
+                    "Use real images and delivery notes",
+                    "Publish featured items only after quality check"
+                  ].map((item) => (
+                    <div key={item} className="rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4 text-sm font-medium">
+                      {item}
+                    </div>
+                  ))}
             </div>
           </div>
         </div>
