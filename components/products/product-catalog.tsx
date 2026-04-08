@@ -72,6 +72,119 @@ export function ProductCatalog({
 
   return (
     <div className="space-y-8">
+      {categoryStats.length ? (
+        <div className="section-shell p-5 md:p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                Swipe on mobile or scroll sideways on desktop to jump between categories fast.
+              </p>
+            </div>
+            {category !== "all" ? (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="pill-filter whitespace-nowrap"
+              >
+                Reset filter
+              </button>
+            ) : null}
+          </div>
+
+          <div className="overflow-x-auto pb-2">
+            <div className="flex min-w-max gap-3">
+              <motion.button
+                type="button"
+                onClick={() => setCategory("all")}
+                whileTap={{ scale: 0.98 }}
+                className={`w-[220px] shrink-0 rounded-[1.6rem] border p-4 text-left transition-all duration-300 ${
+                  category === "all"
+                    ? "border-primary/30 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
+                    : "border-border/70 bg-[hsl(var(--surface)/0.88)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+                }`}
+              >
+                <p className={`text-xs font-black uppercase tracking-[0.16em] ${category === "all" ? "text-white/68" : "text-muted-foreground"}`}>
+                  All categories
+                </p>
+                <p className="mt-3 text-xl font-black tracking-tight">Everything live</p>
+                <p className={`mt-2 text-sm leading-6 ${category === "all" ? "text-white/82" : "text-muted-foreground"}`}>
+                  View the full catalog without limiting the results to one category.
+                </p>
+                <div className={`mt-4 inline-flex items-center gap-1 text-sm font-semibold ${category === "all" ? "text-white" : "text-primary"}`}>
+                  Open all <ArrowRight className="h-4 w-4" />
+                </div>
+              </motion.button>
+
+              {categoryStats.map(({ category: item, count, startingPrice }, index) => {
+                const highlighted = isFeaturedCategory(item);
+                const active = category === item.id;
+
+                return (
+                  <motion.button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setCategory(item.id)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    whileTap={{ scale: 0.985 }}
+                    className={`group relative w-[240px] shrink-0 overflow-hidden rounded-[1.6rem] border p-4 text-left transition-all duration-300 ${
+                      highlighted
+                        ? "border-primary/24 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
+                        : "border-border/70 bg-[hsl(var(--surface)/0.9)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+                    } ${active ? "ring-2 ring-primary/35" : ""}`}
+                  >
+                    {item.imageUrl ? (
+                      <div className="absolute inset-y-0 right-0 w-24 overflow-hidden">
+                        <div className="relative h-full w-full">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          fill
+                          className="object-cover opacity-30 transition duration-500 group-hover:scale-105"
+                        />
+                        </div>
+                        <div className={`absolute inset-0 ${highlighted ? "bg-gradient-to-l from-transparent to-slate-950/85" : "bg-gradient-to-l from-transparent to-background/95"}`} />
+                      </div>
+                    ) : null}
+
+                    <div className="relative">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className={`text-xs font-black uppercase tracking-[0.16em] ${highlighted ? "text-white/68" : "text-muted-foreground"}`}>
+                            {count > 0 ? `${count} item${count === 1 ? "" : "s"}` : "Ready for upload"}
+                          </p>
+                          <p className="mt-3 text-xl font-black tracking-tight">{item.name}</p>
+                        </div>
+                        {highlighted ? (
+                          <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                            Main
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <p className={`mt-2 line-clamp-2 max-w-[85%] text-sm leading-6 ${highlighted ? "text-white/82" : "text-muted-foreground"}`}>
+                        {item.description || "Category ready for manual uploads and detailed product copy."}
+                      </p>
+
+                      <div className="mt-4 flex items-center justify-between gap-3 text-sm">
+                        <span className={highlighted ? "text-white/78" : "text-muted-foreground"}>
+                          {startingPrice ? `From ${formatCurrency(startingPrice)}` : "No pricing yet"}
+                        </span>
+                        <span className={`inline-flex items-center gap-1 font-semibold ${highlighted ? "text-white" : "text-primary"}`}>
+                          Check now <ArrowRight className="h-4 w-4" />
+                        </span>
+                      </div>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {activeOffers.length ? (
         <div className="grid gap-4 md:grid-cols-3">
           {activeOffers.map((offer, index) => (
@@ -155,115 +268,18 @@ export function ProductCatalog({
         </motion.div>
       ) : null}
 
-      {categoryStats.length ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {categoryStats.map(({ category: item, count, startingPrice }, index) => {
-            const highlighted = isFeaturedCategory(item);
-            const active = category === item.id;
-
-            return (
-              <motion.button
-                key={item.id}
-                type="button"
-                onClick={() => setCategory(item.id)}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.04 }}
-                className={`group relative overflow-hidden rounded-[1.75rem] border text-left transition-all duration-300 hover:-translate-y-1 ${
-                  highlighted
-                    ? "border-primary/22 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_22px_48px_rgba(15,23,42,0.14)] xl:col-span-2"
-                    : "border-border/70 bg-[hsl(var(--surface)/0.9)] text-foreground shadow-[0_16px_36px_rgba(15,23,42,0.06)]"
-                } ${active ? "ring-2 ring-primary/35" : ""}`}
-              >
-                {item.imageUrl ? (
-                  <div className={`relative ${highlighted ? "aspect-[16/7]" : "aspect-[16/9]"}`}>
-                    <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition duration-500 group-hover:scale-105" />
-                    <div
-                      className={`absolute inset-0 ${
-                        highlighted
-                          ? "bg-gradient-to-t from-slate-950/85 via-slate-950/28 to-transparent"
-                          : "bg-gradient-to-t from-slate-950/72 via-slate-950/12 to-transparent"
-                      }`}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={`flex ${highlighted ? "aspect-[16/7]" : "aspect-[16/9]"} items-center justify-center ${
-                      highlighted ? "bg-white/8" : "bg-primary/8"
-                    }`}
-                  >
-                    <span className={`text-3xl font-black tracking-tight ${highlighted ? "text-white/92" : "text-foreground/75"}`}>
-                      {item.name
-                        .split(" ")
-                        .slice(0, 2)
-                        .map((word) => word[0])
-                        .join("")}
-                    </span>
-                  </div>
-                )}
-
-                <div className="space-y-3 p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className={`text-lg font-black tracking-tight ${highlighted ? "text-white" : "text-foreground"}`}>{item.name}</p>
-                      <p className={`mt-1 text-xs uppercase tracking-[0.14em] ${highlighted ? "text-white/62" : "text-muted-foreground"}`}>
-                        {count > 0 ? `${count} live item${count === 1 ? "" : "s"}` : "Ready for products"}
-                      </p>
-                    </div>
-                    {highlighted ? (
-                      <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
-                        Main lane
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <p className={`line-clamp-3 text-sm leading-6 ${highlighted ? "text-white/82" : "text-muted-foreground"}`}>
-                    {item.description || "Category ready for manual uploads and stronger descriptions."}
-                  </p>
-
-                  <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className={highlighted ? "text-white/78" : "text-muted-foreground"}>
-                      {startingPrice ? `Starts at ${formatCurrency(startingPrice)}` : "Add products to activate"}
-                    </span>
-                    <span className={`inline-flex items-center gap-1 font-semibold ${highlighted ? "text-white" : "text-primary"}`}>
-                      Open category <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </div>
-                </div>
-              </motion.button>
-            );
-          })}
-        </div>
-      ) : null}
-
       <div className="section-shell p-5 md:p-6">
-        <div className="mb-4 overflow-x-auto pb-1">
-          <div className="flex min-w-max gap-2">
-            <motion.button
-              type="button"
-              onClick={() => setCategory("all")}
-              whileTap={{ scale: 0.98 }}
-              className={category === "all" ? "pill-filter-active whitespace-nowrap" : "pill-filter whitespace-nowrap"}
-            >
-              All categories
-            </motion.button>
-            {categories.map((item) => (
-              <motion.button
-                key={item.id}
-                type="button"
-                onClick={() => setCategory(item.id)}
-                whileTap={{ scale: 0.98 }}
-                className={
-                  category === item.id
-                    ? "pill-filter-active whitespace-nowrap"
-                    : isFeaturedCategory(item)
-                      ? "pill-filter whitespace-nowrap border-primary/35 bg-primary/10 text-foreground"
-                      : "pill-filter whitespace-nowrap"
-                }
-              >
-                {item.name}
-              </motion.button>
-            ))}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Catalog controls</p>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+              {category === "all"
+                ? "Showing every live product across the store."
+                : `Filtered to ${categories.find((item) => item.id === category)?.name || "the selected category"}.`}
+            </p>
+          </div>
+          <div className="control-surface rounded-full px-3 py-1.5 text-sm text-muted-foreground">
+            Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> items
           </div>
         </div>
 
@@ -295,9 +311,6 @@ export function ProductCatalog({
             >
               <List className="h-4 w-4" />
             </button>
-            <div className="control-surface rounded-full px-3 py-1.5 text-sm text-muted-foreground">
-              Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> items
-            </div>
           </div>
         </div>
       </div>
