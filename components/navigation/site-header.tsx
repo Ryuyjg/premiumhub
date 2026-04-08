@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Shield, ShoppingCart, Sparkles, X } from "lucide-react";
+import { Menu, Shield, ShoppingCart, X } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -80,16 +80,6 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40">
-      <div className="border-b border-border/40 bg-background/76 backdrop-blur-xl">
-        <div className="container flex h-8 items-center justify-between text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <Sparkles className="h-3 w-3 text-primary" />
-            Fresh catalog mode
-          </span>
-          <span className="hidden sm:inline">Private support on WhatsApp and Telegram</span>
-        </div>
-      </div>
-
       <div
         className={`transition-all duration-300 ${
           scrolled
