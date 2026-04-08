@@ -52,9 +52,9 @@ export function DashboardOverview({
   const statCards = [
     {
       icon: LayoutDashboard,
-      label: "Active plans",
+      label: "Active access",
       value: String(activeSubCount),
-      sub: `${subscriptions.length} total subscriptions`,
+      sub: `${subscriptions.length} total deliveries`,
       tone: "from-primary/25 to-cyan-500/10",
       iconTone: "bg-primary/15 text-primary"
     },
@@ -70,7 +70,7 @@ export function DashboardOverview({
       icon: Clock3,
       label: "Next renewal",
       value: nextExpiry !== null ? `${nextExpiry}d` : "N/A",
-      sub: nextExpiry !== null ? (nextExpiry <= 3 ? "Renew now to avoid interruption" : "Days remaining") : "No active plans yet",
+      sub: nextExpiry !== null ? (nextExpiry <= 3 ? "Renew now to avoid interruption" : "Days remaining") : "No active access yet",
       tone: nextExpiry !== null && nextExpiry <= 3 ? "from-rose-500/20 to-orange-500/10" : "from-emerald-500/20 to-teal-500/10",
       iconTone: nextExpiry !== null && nextExpiry <= 3 ? "bg-rose-500/12 text-rose-600" : "bg-emerald-500/12 text-emerald-600"
     },
@@ -91,32 +91,32 @@ export function DashboardOverview({
         <div className="absolute -bottom-10 -left-8 h-36 w-36 rounded-full bg-white/10 blur-3xl" />
         <div className="relative grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="space-y-3">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/80">Client cockpit</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/80">Customer workspace</p>
             <h1 className="text-3xl font-black tracking-tight md:text-4xl">
               Welcome back, {firstName}
             </h1>
             <p className="max-w-2xl text-sm text-white/90 md:text-base">
-              {APP_NAME} keeps your billing, credentials, renewals, and support in one high-speed workspace.
+              {APP_NAME} keeps your orders, delivery details, renewals, and support in one clean workspace.
             </p>
             <div className="flex flex-wrap gap-2 text-xs font-semibold">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
-                <ShieldCheck className="h-3.5 w-3.5" /> Secure payments
+                <ShieldCheck className="h-3.5 w-3.5" /> Protected account
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
-                <Sparkles className="h-3.5 w-3.5" /> Instant credentials
+                <Sparkles className="h-3.5 w-3.5" /> Delivery records
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
-                <Headset className="h-3.5 w-3.5" /> Priority support
+                <Headset className="h-3.5 w-3.5" /> Support history
               </span>
             </div>
           </div>
 
           <div className="grid gap-2.5 text-sm sm:grid-cols-2 lg:w-[19rem]">
             <Link href="/products" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 font-bold text-primary transition hover:bg-white/90">
-              Add new plan <ArrowRight className="h-4 w-4" />
+              Browse catalog <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/cart" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 py-3 font-bold text-white transition hover:bg-white/20">
-              View cart
+              Open cart
             </Link>
           </div>
         </div>
@@ -144,7 +144,7 @@ export function DashboardOverview({
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-[1.75rem] border border-border/55 bg-white/75 p-5 shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-lg font-black tracking-tight">Your active plans</h2>
+            <h2 className="text-lg font-black tracking-tight">Your active access</h2>
             <Link href="/products" className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.12em] text-primary">
               Upgrade <ArrowRight className="h-3 w-3" />
             </Link>
@@ -188,12 +188,18 @@ export function DashboardOverview({
                 </motion.div>
               ))
             ) : (
-              <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 py-10 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/50">
-                  <ShoppingBag className="h-6 w-6 text-muted-foreground" />
+              <div className="surface-interactive group flex flex-col items-center gap-4 rounded-3xl py-12 text-center bg-gradient-to-b border-dashed border-2 from-transparent to-muted/20">
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 shadow-inner overflow-hidden">
+                  <div className="absolute inset-0 bg-primary/20 blur-xl group-hover:bg-primary/30 transition-all duration-500" />
+                  <ShoppingBag className="h-7 w-7 text-primary relative z-10" />
                 </div>
-                <p className="max-w-sm text-sm text-muted-foreground">No active plans yet. Buy your first plan and credentials appear instantly here.</p>
-                <Link href="/products" className="btn-primary h-10 px-5 text-xs">Browse plans</Link>
+                <div className="space-y-1.5 px-4">
+                  <p className="text-lg font-black tracking-tight">Your vault is empty</p>
+                  <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">Your future deliveries and account details will appear here after checkout.</p>
+                </div>
+                <Link href="/products" className="btn-primary mt-2">
+                  Explore catalog <ArrowRight className="h-4 w-4 ml-1.5" />
+                </Link>
               </div>
             )}
           </div>
@@ -233,11 +239,11 @@ export function DashboardOverview({
                 </motion.div>
               ))
             ) : (
-              <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/70 py-10 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/50">
-                  <CreditCard className="h-6 w-6 text-muted-foreground" />
+              <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border/70 py-12 text-center bg-muted/10">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/50 shadow-sm border border-border/50">
+                  <CreditCard className="h-6 w-6 text-muted-foreground/60" />
                 </div>
-                <p className="max-w-sm text-sm text-muted-foreground">No orders yet. Your transactions will appear here with status and timestamps.</p>
+                <p className="max-w-[220px] text-xs text-muted-foreground">Completed orders and delivery updates will appear here once checkout activity starts.</p>
               </div>
             )}
           </div>

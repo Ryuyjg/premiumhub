@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, ShoppingCart, X, Zap, Sparkles } from "lucide-react";
+import { Menu, Shield, ShoppingCart, Sparkles, X } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { APP_NAME, NAV_LINKS } from "@/lib/constants";
+import { APP_NAME, APP_TAGLINE, NAV_LINKS } from "@/lib/constants";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAppStore } from "@/store/use-app-store";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -84,9 +84,9 @@ export function SiteHeader() {
         <div className="container flex h-8 items-center justify-between text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Sparkles className="h-3 w-3 text-primary" />
-            Instant delivery platform
+            Fresh catalog mode
           </span>
-          <span className="hidden sm:inline">Secure checkout and real support</span>
+          <span className="hidden sm:inline">Private support on WhatsApp and Telegram</span>
         </div>
       </div>
 
@@ -100,11 +100,11 @@ export function SiteHeader() {
         <div className="container flex h-[4.75rem] items-center justify-between gap-4">
           <Link href="/" className="group inline-flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
-              <Zap className="h-5 w-5 text-white" />
+              <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
               <p className="text-sm font-black tracking-tight">{APP_NAME}</p>
-              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Premium subscriptions</p>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{APP_TAGLINE}</p>
             </div>
           </Link>
 

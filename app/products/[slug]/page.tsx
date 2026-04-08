@@ -8,7 +8,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   return {
-    title: product?.seoTitle || product?.name || "Plan details",
+    title: product?.seoTitle || product?.name || "Product details",
     description: product?.seoDescription || product?.shortDescription
   };
 }

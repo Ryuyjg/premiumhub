@@ -1,39 +1,38 @@
 import Link from "next/link";
-import { APP_NAME } from "@/lib/constants";
-import { Twitter, Github, Instagram, Mail, Shield, Zap, HeadphonesIcon, ArrowUpRight } from "lucide-react";
+import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
+import { ArrowUpRight, Mail, MessageCircle, Send, Shield, ShieldCheck, Sparkles } from "lucide-react";
 
 const footerLinks = {
-  Platform: [
-    { label: "Browse Plans", href: "/products" },
-    { label: "My Dashboard", href: "/dashboard" },
+  Explore: [
+    { label: "Browse catalog", href: "/products" },
+    { label: "My account", href: "/dashboard" },
     { label: "Cart", href: "/cart" },
-    { label: "Login", href: "/login" }
+    { label: "Sign in", href: "/login" }
   ],
-  Support: [
-    { label: "Help Center", href: "/dashboard" },
-    { label: "Contact Us", href: "/dashboard" },
-    { label: "Refund Policy", href: "/" },
-    { label: "Terms of Use", href: "/" }
+  Company: [
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Support channels", href: "/contact" }
   ],
-  Services: [
-    { label: "Netflix", href: "/products" },
-    { label: "Disney+", href: "/products" },
-    { label: "Prime Video", href: "/products" },
-    { label: "All Plans", href: "/products" }
+  Policies: [
+    { label: "Refund policy", href: "/refund-policy" },
+    { label: "Terms of use", href: "/terms" },
+    { label: "Privacy", href: "/privacy" },
+    { label: "Store FAQ", href: "/faq" }
   ]
 };
 
 const socials = [
-  { icon: Twitter, label: "Twitter", href: "#" },
-  { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: Github, label: "GitHub", href: "#" },
-  { icon: Mail, label: "Email", href: "#" }
+  { icon: MessageCircle, label: "WhatsApp", href: "https://wa.me/917907102615" },
+  { icon: Send, label: "Telegram", href: "https://t.me/ogdigital" },
+  { icon: Mail, label: "Contact", href: "/contact" }
 ];
 
 const trustBadges = [
-  { icon: Shield, label: "SSL Secured" },
-  { icon: Zap, label: "Instant Delivery" },
-  { icon: HeadphonesIcon, label: "24/7 Support" }
+  { icon: Shield, label: "Owner-managed catalog" },
+  { icon: ShieldCheck, label: "Protected sessions" },
+  { icon: Sparkles, label: "Direct support channels" }
 ];
 
 export function SiteFooter() {
@@ -48,7 +47,7 @@ export function SiteFooter() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground md:text-right">
-            Payments and order flows are being prepared for <span className="font-semibold text-foreground">USDT checkout</span>
+            Gateway checkout can be added back later without rebuilding the store front.
           </p>
         </div>
       </div>
@@ -58,16 +57,16 @@ export function SiteFooter() {
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25">
-                <Zap className="h-5 w-5 text-white" />
+                <Shield className="h-5 w-5 text-white" />
               </div>
               <div>
                 <p className="text-lg font-black tracking-tight">{APP_NAME}</p>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Digital subscription commerce</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{APP_TAGLINE}</p>
               </div>
             </Link>
 
             <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-              Built for digital plans, instant delivery workflows, and manual catalog control as you prepare the next checkout gateway.
+              Built for curated digital access, software, subscriptions, and private offers with full control over what goes live and how delivery is handled.
             </p>
 
             <div className="flex items-center gap-2.5">
@@ -106,10 +105,9 @@ export function SiteFooter() {
 
         <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-border/40 pt-6 text-xs text-muted-foreground md:flex-row">
           <p>{APP_NAME} Copyright {new Date().getFullYear()}. All rights reserved.</p>
-          <p>Built for OTT resellers and digital product teams</p>
+          <p>Manual catalog, secure account area, and human support built in.</p>
         </div>
       </div>
     </footer>
   );
 }
-

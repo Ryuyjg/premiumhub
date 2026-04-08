@@ -7,7 +7,7 @@ export default function CheckoutCancelPage() {
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">Payment cancelled</p>
         <h1 className="mt-3 text-3xl font-black">Checkout was not completed</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          No worries. Your cart is still available, and USDT checkout will be connected again when the next gateway is ready.
+          No worries. Your cart is still available, and a future checkout gateway can be added when the store is ready for it.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

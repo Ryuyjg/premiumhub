@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { Grid2X2, List, Search } from "lucide-react";
+import { Grid2X2, List, Search, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
@@ -22,6 +22,8 @@ export function ProductCatalog({
   const [visibleCount, setVisibleCount] = useState(6);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
 
+  const activeOffers = useMemo(() => offers.filter((offer) => offer.active).slice(0, 3), [offers]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesSearch =
@@ -33,16 +35,22 @@ export function ProductCatalog({
   }, [category, products, search]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
+  const catalogIsEmpty = products.length === 0;
 
   useEffect(() => {
     setVisibleCount(6);
   }, [search, category]);
 
+  function resetFilters() {
+    setSearch("");
+    setCategory("all");
+  }
+
   return (
     <div className="space-y-8">
-      {offers.length ? (
+      {activeOffers.length ? (
         <div className="grid gap-4 md:grid-cols-3">
-          {offers.slice(0, 3).map((offer, index) => (
+          {activeOffers.map((offer, index) => (
             <motion.div
               key={offer.id}
               initial={{ opacity: 0, y: 14 }}
@@ -99,7 +107,7 @@ export function ProductCatalog({
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search plans, providers, bundles..."
+              placeholder="Search products, bundles, providers..."
               className="pl-10"
             />
           </div>
@@ -122,42 +130,95 @@ export function ProductCatalog({
               <List className="h-4 w-4" />
             </button>
             <div className="rounded-full border border-border/60 bg-white/75 px-3 py-1.5 text-sm text-muted-foreground dark:bg-white/5">
-              Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> plans
+              Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> items
             </div>
           </div>
         </div>
       </div>
 
-      <motion.div layout className={layout === "grid" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : "grid gap-5"}>
-        <AnimatePresence mode="popLayout">
-          {visibleProducts.map((product) => (
-            <motion.div
-              layout
-              key={product.id}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.24 }}
-            >
-              <ProductCard product={product} variant={layout} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
+      {visibleProducts.length ? (
+        <>
+          <motion.div layout className={layout === "grid" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : "grid gap-5"}>
+            <AnimatePresence mode="popLayout">
+              {visibleProducts.map((product) => (
+                <motion.div
+                  layout
+                  key={product.id}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.24 }}
+                >
+                  <ProductCard product={product} variant={layout} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
 
-      {visibleProducts.length < filteredProducts.length ? (
-        <div className="flex justify-center">
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.98 }}
-            whileHover={{ y: -2 }}
-            onClick={() => setVisibleCount((count) => count + 6)}
-            className="rounded-full border border-border/65 bg-white/75 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5"
-          >
-            Load more plans
-          </motion.button>
+          {visibleProducts.length < filteredProducts.length ? (
+            <div className="flex justify-center">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.98 }}
+                whileHover={{ y: -2 }}
+                onClick={() => setVisibleCount((count) => count + 6)}
+                className="rounded-full border border-border/65 bg-white/75 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5"
+              >
+                Load more items
+              </motion.button>
+            </div>
+          ) : null}
+        </>
+      ) : catalogIsEmpty ? (
+        <div className="rounded-[2.25rem] border border-dashed border-border/70 bg-white/68 p-8 shadow-[0_22px_60px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-10">
+          <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+            <div className="space-y-4">
+              <span className="glow-badge">
+                <Sparkles className="h-3.5 w-3.5" />
+                Catalog currently empty
+              </span>
+              <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                The storefront is ready for a
+                <span className="gradient-text block">better first collection.</span>
+              </h2>
+              <p className="max-w-2xl text-base leading-8 text-muted-foreground">
+                This is a healthy reset. Add the exact categories and products you want, then reconnect external payment
+                only after the catalog and copy feel strong.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/login" className="btn-primary">
+                  Open account area
+                </Link>
+                <Link href="/contact" className="btn-ghost">
+                  View support links
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              {[
+                "Create your core categories first",
+                "Use real images and delivery notes",
+                "Publish featured items only after quality check"
+              ].map((item) => (
+                <div key={item} className="rounded-[1.5rem] border border-border/55 bg-background/70 px-5 py-4 text-sm font-medium">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="rounded-[2rem] border border-border/55 bg-white/72 p-8 text-center shadow-[0_20px_55px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4">
+          <p className="text-lg font-semibold">No products match your filters</p>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            Try a different search term or reset the active category filter to see more results.
+          </p>
+          <button type="button" onClick={resetFilters} className="btn-primary mt-6">
+            Reset filters
+          </button>
+        </div>
+      )}
     </div>
   );
 }

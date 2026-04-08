@@ -40,6 +40,7 @@ export function ProductDetail({
           </AnimatePresence>
           <div className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-full bg-primary/25 blur-3xl" />
         </div>
+
         <div className="grid grid-cols-4 gap-3">
           {product.imageUrls.map((image) => (
             <motion.button
@@ -56,6 +57,7 @@ export function ProductDetail({
           ))}
         </div>
       </div>
+
       <div className="space-y-6">
         <Badge>{product.categoryName}</Badge>
         {isOutOfStock ? (
@@ -63,10 +65,12 @@ export function ProductDetail({
             No stock
           </p>
         ) : null}
+
         <div>
           <h1 className="text-4xl font-semibold tracking-tight">{product.name}</h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{product.description}</p>
         </div>
+
         <motion.div whileHover={{ y: -4 }} className="surface rounded-[1.75rem] p-6">
           <div className="flex items-end justify-between gap-4">
             <div>
@@ -84,9 +88,10 @@ export function ProductDetail({
           </div>
           <div className="mt-6 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
             <ShieldCheck className="h-4 w-4" />
-            Secure backend verification with instant delivery after payment confirmation.
+            Delivery notes, credentials, and support follow-up stay inside the customer dashboard after checkout.
           </div>
         </motion.div>
+
         <motion.div whileHover={{ y: -4 }} className="surface rounded-[1.75rem] p-6">
           <h2 className="text-lg font-semibold">What is included</h2>
           <div className="mt-5 grid gap-3">
@@ -100,6 +105,7 @@ export function ProductDetail({
             ))}
           </div>
         </motion.div>
+
         <motion.div whileHover={{ y: -4 }} className="surface rounded-[1.75rem] p-6">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold">Customer reviews</h2>
@@ -119,14 +125,19 @@ export function ProductDetail({
                 <p className="mt-2 text-sm text-muted-foreground">{review.message}</p>
               </div>
             ))}
-            {reviews.length === 0 ? <p className="text-sm text-muted-foreground">No reviews yet.</p> : null}
+            {reviews.length === 0 ? (
+              <p className="text-sm leading-7 text-muted-foreground">
+                No public reviews yet. Once the catalog starts moving again, real customer feedback can be shown here.
+              </p>
+            ) : null}
           </div>
         </motion.div>
       </div>
+
       <div className="lg:col-span-2">
         <div className="surface rounded-[1.75rem] p-6">
           <h2 className="text-xl font-semibold">You may also like</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Recommended plans from the same category.</p>
+          <p className="mt-1 text-sm text-muted-foreground">More items from the same catalog path.</p>
           <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {relatedProducts.map((item) => (
               <Link key={item.id} href={`/products/${item.slug}`} className="rounded-2xl border border-border/80 p-4 transition hover:border-primary/40">
@@ -135,7 +146,9 @@ export function ProductDetail({
                 <p className="mt-3 text-sm font-semibold">{formatCurrency(item.salePrice || item.price)}</p>
               </Link>
             ))}
-            {relatedProducts.length === 0 ? <p className="text-sm text-muted-foreground">No related products found.</p> : null}
+            {relatedProducts.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No related items are live in this category yet.</p>
+            ) : null}
           </div>
         </div>
       </div>

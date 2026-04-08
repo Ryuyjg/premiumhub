@@ -8,8 +8,7 @@ const COLLECTIONS_TO_CLEAR = [
   "offers",
   "reviews",
   "coupons",
-  "ottAccounts",
-  "uropayTransactions"
+  "ottAccounts"
 ];
 
 async function deleteCollection(name: string) {

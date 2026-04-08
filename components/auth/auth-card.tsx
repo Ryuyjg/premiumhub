@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
-import { Lock, Mail, User, Zap, ArrowRight, ShieldCheck, BadgeCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, Lock, Mail, ShieldCheck, User } from "lucide-react";
 import { getClientAuth } from "@/lib/firebase/client";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -37,8 +37,8 @@ export function AuthCard() {
     if (!res.ok) throw new Error("Unable to start secure session.");
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     setLoading(true);
     try {
       if (mode === "register") {
@@ -70,7 +70,11 @@ export function AuthCard() {
       const message = error instanceof Error ? error.message : "Authentication failed.";
       if (message.includes("Firebase client configuration")) {
         toast.error("Firebase not configured. Add env variables in Vercel.");
-      } else if (message.includes("user-not-found") || message.includes("wrong-password") || message.includes("invalid-credential")) {
+      } else if (
+        message.includes("user-not-found") ||
+        message.includes("wrong-password") ||
+        message.includes("invalid-credential")
+      ) {
         toast.error("Invalid email or password.");
       } else {
         toast.error(message);
@@ -87,7 +91,7 @@ export function AuthCard() {
 
       <div className="relative mb-7 flex flex-col items-center gap-3 text-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25">
-          <Zap className="h-6 w-6 text-white" />
+          <ShieldCheck className="h-6 w-6 text-white" />
         </div>
 
         <AnimatePresence mode="wait">
@@ -98,9 +102,11 @@ export function AuthCard() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
           >
-            <h1 className="text-2xl font-black tracking-tight">{mode === "login" ? "Client login" : "Create account"}</h1>
+            <h1 className="text-2xl font-black tracking-tight">{mode === "login" ? "Sign in" : "Create account"}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {mode === "login" ? "Access billing, credentials, and support in one place." : "Join and start managing subscriptions instantly."}
+              {mode === "login"
+                ? "Open your orders, delivery history, and support records."
+                : "Create a customer account for faster checkout and organized follow-up."}
             </p>
           </motion.div>
         </AnimatePresence>
@@ -135,7 +141,7 @@ export function AuthCard() {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
               <div className="relative">
                 <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="field pl-10" />
+                <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Full name" className="field pl-10" />
               </div>
             </motion.div>
           )}
@@ -145,7 +151,7 @@ export function AuthCard() {
           <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
             type="email"
             placeholder="Email address"
             required
@@ -157,7 +163,7 @@ export function AuthCard() {
           <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
             type="password"
             placeholder="Password"
             required
@@ -174,7 +180,7 @@ export function AuthCard() {
             </span>
           ) : (
             <>
-              {mode === "login" ? "Continue to dashboard" : "Create account"}
+              {mode === "login" ? "Continue" : "Create account"}
               <ArrowRight className="h-4 w-4" />
             </>
           )}
@@ -184,13 +190,13 @@ export function AuthCard() {
       <div className="mt-6 rounded-2xl border border-border/55 bg-muted/30 p-3.5">
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Firebase Auth
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Protected sessions
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Lock className="h-3.5 w-3.5 text-primary" /> SSL Secured
+            <Lock className="h-3.5 w-3.5 text-primary" /> Secure sign-in
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <BadgeCheck className="h-3.5 w-3.5 text-accent" /> Verified sessions
+            <BadgeCheck className="h-3.5 w-3.5 text-accent" /> Verified account area
           </span>
         </div>
       </div>

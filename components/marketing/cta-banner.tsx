@@ -4,11 +4,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-const perks = [
-  "Instant delivery after payment",
-  "USDT-ready purchase flow",
-  "24/7 customer support",
-  "AES-encrypted account vault"
+const checklist = [
+  "Add your real catalog manually",
+  "Upload stronger product creatives",
+  "Write clear delivery and refund notes",
+  "Reconnect crypto checkout when the store is ready"
 ];
 
 export function CtaBanner() {
@@ -19,12 +19,11 @@ export function CtaBanner() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.55 }}
-        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-accent to-[hsl(var(--gradient-mid))] p-[1px]"
+        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-[hsl(var(--gradient-mid))] to-accent p-[1px]"
       >
-        <div className="relative overflow-hidden rounded-[calc(2.5rem-1px)] bg-gradient-to-br from-primary/90 via-accent to-[hsl(var(--gradient-mid))] px-8 py-14 md:px-14 md:py-16">
-          {/* Background decorations */}
+        <div className="relative overflow-hidden rounded-[calc(2.5rem-1px)] bg-gradient-to-br from-primary/95 via-[hsl(var(--gradient-mid))] to-accent px-8 py-14 md:px-14 md:py-16">
           <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/8 blur-3xl" />
-          <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-black/10 blur-3xl" />
           <div
             className="absolute inset-0 opacity-10"
             style={{
@@ -34,22 +33,23 @@ export function CtaBanner() {
           />
 
           <div className="relative flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-xl space-y-6">
+            <div className="max-w-2xl space-y-6">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                Start today
+                Fresh start checklist
               </span>
-              <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl xl:text-5xl">
-                From storefront to fulfillment — fully structured for scale.
+              <h2 className="text-3xl font-black tracking-tight text-white md:text-4xl xl:text-5xl">
+                Build the catalog first.
+                <span className="block">Bring payments back second.</span>
               </h2>
-              <ul className="grid gap-2.5 sm:grid-cols-2">
-                {perks.map((perk) => (
-                  <li key={perk} className="flex items-center gap-2 text-sm text-white/85">
+              <div className="grid gap-2.5 sm:grid-cols-2">
+                {checklist.map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm text-white/90">
                     <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-white" />
-                    {perk}
-                  </li>
+                    {item}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row md:flex-col">
@@ -57,13 +57,13 @@ export function CtaBanner() {
                 href="/products"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-7 text-sm font-bold text-primary shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl"
               >
-                Browse plans <ArrowRight className="h-4 w-4" />
+                Preview catalog <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/dashboard"
+                href="/contact"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
               >
-                Go to dashboard
+                Open support links
               </Link>
             </div>
           </div>
@@ -72,5 +72,3 @@ export function CtaBanner() {
     </section>
   );
 }
-
-

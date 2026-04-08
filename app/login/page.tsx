@@ -1,12 +1,24 @@
 import { Suspense } from "react";
 import { APP_NAME } from "@/lib/constants";
 import { AuthCard } from "@/components/auth/auth-card";
-import { ShieldCheck, Zap, Star } from "lucide-react";
+import { HeadphonesIcon, LayoutDashboard, ShieldCheck } from "lucide-react";
 
 const features = [
-  { icon: ShieldCheck, title: "USDT-ready billing", desc: "Crypto-first purchase experience with secure order handling" },
-  { icon: Zap, title: "Instant credentials", desc: "Get account access quickly after successful payment" },
-  { icon: Star, title: "Real human support", desc: "Raise a ticket from dashboard and get guided help fast" }
+  {
+    icon: ShieldCheck,
+    title: "Secure access",
+    desc: "Account sessions, protected routes, and delivery records stay organized in one place."
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Clear customer area",
+    desc: "Orders, renewals, credentials, and support history live inside a cleaner dashboard."
+  },
+  {
+    icon: HeadphonesIcon,
+    title: "Direct support flow",
+    desc: "Customers can move from purchase questions to follow-up help without leaving the platform."
+  }
 ];
 
 export default function LoginPage() {
@@ -20,39 +32,34 @@ export default function LoginPage() {
       <div className="container grid min-h-[calc(100vh-8rem)] items-center gap-10 lg:grid-cols-[1fr_1fr]">
         <div className="rounded-[2rem] border border-border/55 bg-white/70 p-7 shadow-[0_22px_58px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 lg:p-8">
           <div className="space-y-4">
-            <span className="glow-badge">{APP_NAME} Client Portal</span>
+            <span className="glow-badge">{APP_NAME} Account Area</span>
             <h1 className="text-4xl font-black tracking-tight xl:text-5xl">
-              Trusted access to
-              <span className="gradient-text block">premium subscriptions.</span>
+              Sign in to the
+              <span className="gradient-text block">customer workspace.</span>
             </h1>
-            <p className="max-w-md text-lg text-muted-foreground">
-              Sign in to manage plans, view credentials, track renewals, and get support from one secure workspace.
+            <p className="max-w-lg text-lg leading-8 text-muted-foreground">
+              This is where customers manage purchases, receive delivery information, and open support conversations
+              after checkout.
             </p>
           </div>
 
           <div className="mt-8 space-y-3.5">
-            {features.map((f) => (
-              <div key={f.title} className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/25 p-4">
+            {features.map((feature) => (
+              <div key={feature.title} className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/25 p-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                  <f.icon className="h-5 w-5 text-primary" />
+                  <feature.icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold">{f.title}</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{f.desc}</p>
+                  <p className="font-semibold">{feature.title}</p>
+                  <p className="mt-0.5 text-sm leading-6 text-muted-foreground">{feature.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-7 flex items-center gap-3 text-sm text-muted-foreground">
-            <div className="flex -space-x-2">
-              {["from-primary to-accent", "from-cyan-500 to-sky-600", "from-amber-500 to-orange-600", "from-emerald-500 to-teal-600"].map((g, i) => (
-                <div key={i} className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${g} text-xs font-bold text-white ring-2 ring-background`}>
-                  {["P", "R", "A", "K"][i]}
-                </div>
-              ))}
-            </div>
-            Trusted by <span className="font-semibold text-foreground">10,000+</span> paying customers
+          <div className="mt-7 rounded-[1.5rem] border border-border/55 bg-background/70 p-4 text-sm leading-7 text-muted-foreground">
+            Use this area for real customer activity, not filler. Once products and payments are finalized, the account
+            flow is already in place.
           </div>
         </div>
 
@@ -65,4 +72,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

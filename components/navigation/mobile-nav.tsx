@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Home, ShoppingBag, Grid, User, Search } from "lucide-react";
+import { Grid, Home, ShoppingBag, User } from "lucide-react";
 import { useAppStore } from "@/store/use-app-store";
 import { useEffect, useState } from "react";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/" },
-  { icon: Grid, label: "Plans", href: "/products" },
+  { icon: Grid, label: "Catalog", href: "/products" },
   { icon: ShoppingBag, label: "Cart", href: "/cart", showBadge: true },
-  { icon: User, label: "Profile", href: "/dashboard" }
+  { icon: User, label: "Account", href: "/dashboard" }
 ];
 
 export function MobileNav() {
@@ -33,16 +33,18 @@ export function MobileNav() {
       >
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-          
+
           return (
             <Link
               key={item.href}
               href={item.href}
               className="relative flex flex-1 flex-col items-center justify-center gap-1 py-1.5"
             >
-              <div className={`relative flex h-10 w-10 items-center justify-center rounded-2xl transition-colors ${
-                isActive ? "text-primary" : "text-muted-foreground"
-              }`}>
+              <div
+                className={`relative flex h-10 w-10 items-center justify-center rounded-2xl transition-colors ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-pill"
@@ -51,14 +53,18 @@ export function MobileNav() {
                   />
                 )}
                 <item.icon className={`h-5 w-5 ${isActive ? "stroke-[2.5px]" : "stroke-[1.8px]"}`} />
-                
+
                 {item.showBadge && hydrated && cartItemsCount > 0 && (
                   <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white ring-2 ring-background">
                     {cartItemsCount}
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? "text-primary" : "text-muted-foreground opacity-60"}`}>
+              <span
+                className={`text-[10px] font-bold uppercase tracking-widest ${
+                  isActive ? "text-primary" : "text-muted-foreground opacity-60"
+                }`}
+              >
                 {item.label}
               </span>
             </Link>

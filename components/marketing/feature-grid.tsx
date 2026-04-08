@@ -1,89 +1,89 @@
 "use client";
 
-import {
-  Gamepad2,
-  BrainCircuit,
-  AppWindow,
-  Phone,
-  ShieldCheck,
-  Zap,
-  HeadphonesIcon,
-  CreditCard
-} from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  CreditCard,
+  HeadphonesIcon,
+  LayoutDashboard,
+  Search,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Zap
+} from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
 
 const features = [
   {
-    icon: AppWindow,
-    title: "Software Licenses",
-    description: "Original license keys for Windows, Office, Adobe, and professional editing tools delivered instantly.",
-    gradient: "from-blue-500/15 to-cyan-500/10",
-    iconBg: "bg-blue-500/10",
-    iconColor: "text-blue-500",
+    icon: ShoppingBag,
+    title: "Manual catalog control",
+    description: "Publish each product intentionally instead of filling the storefront with noisy starter stock.",
+    gradient: "from-primary/18 to-amber-500/10",
+    iconBg: "bg-primary/12",
+    iconColor: "text-primary",
     number: "01"
   },
   {
-    icon: BrainCircuit,
-    title: "Premium AI Subscriptions",
-    description: "Access shared or private accounts for ChatGPT Plus, Midjourney, Claude, and more AI assistants.",
-    gradient: "from-primary/18 to-accent/10",
-    iconBg: "bg-primary/15",
-    iconColor: "text-primary",
+    icon: Sparkles,
+    title: "Flexible digital product mix",
+    description: "Use the same storefront for subscriptions, software, private offers, account access, and niche digital items.",
+    gradient: "from-emerald-500/16 to-teal-500/10",
+    iconBg: "bg-emerald-500/10",
+    iconColor: "text-emerald-600",
     number: "02"
   },
   {
-    icon: Gamepad2,
-    title: "Gaming Accounts",
-    description: "Premium access to Minecraft, Xbox Game Pass, PlayStation Plus, and other popular gaming networks.",
-    gradient: "from-amber-500/15 to-orange-500/10",
-    iconBg: "bg-amber-500/10",
-    iconColor: "text-amber-500",
+    icon: Search,
+    title: "Fast browse and filter flow",
+    description: "Search, category filters, and clean product cards keep the catalog easy to scan when you start adding items.",
+    gradient: "from-sky-500/16 to-cyan-500/10",
+    iconBg: "bg-sky-500/10",
+    iconColor: "text-sky-600",
     number: "03"
   },
   {
-    icon: Phone,
-    title: "Virtual Numbers",
-    description: "Verified active numbers for Telegram, WhatsApp, and SMS bypass, ready for immediate use.",
-    gradient: "from-emerald-500/15 to-teal-500/10",
-    iconBg: "bg-emerald-500/10",
-    iconColor: "text-emerald-500",
+    icon: LayoutDashboard,
+    title: "Private customer workspace",
+    description: "Orders, delivery notes, credentials, and renewals all live in one account area instead of scattered chats.",
+    gradient: "from-violet-500/14 to-fuchsia-500/8",
+    iconBg: "bg-violet-500/10",
+    iconColor: "text-violet-600",
     number: "04"
   },
   {
     icon: ShieldCheck,
-    title: "Encrypted credential vault",
-    description: "All purchased accounts, keys, and credentials are AES-encrypted before storage and decrypted on read.",
-    gradient: "from-pink-500/15 to-rose-500/10",
-    iconBg: "bg-pink-500/10",
-    iconColor: "text-pink-500",
+    title: "Security-first structure",
+    description: "Protected sessions, clear policies, and stored delivery records make the store feel legitimate from day one.",
+    gradient: "from-rose-500/14 to-orange-500/8",
+    iconBg: "bg-rose-500/10",
+    iconColor: "text-rose-600",
     number: "05"
   },
   {
-    icon: Zap,
-    title: "Instant delivery engine",
-    description: "Subscriptions activate in under 15 seconds with automated credential allocation and delivery.",
-    gradient: "from-cyan-500/18 to-primary/10",
-    iconBg: "bg-cyan-500/10",
-    iconColor: "text-cyan-600",
+    icon: HeadphonesIcon,
+    title: "Human support channels",
+    description: "Direct WhatsApp and Telegram support stay visible so buyers know help exists before and after purchase.",
+    gradient: "from-amber-500/18 to-orange-500/10",
+    iconBg: "bg-amber-500/10",
+    iconColor: "text-amber-600",
     number: "06"
   },
   {
     icon: CreditCard,
-    title: "Secure Payments",
-    description: "Guaranteed failure recovery and secure wallet balance system for safe and reliable checkouts.",
-    gradient: "from-sky-500/15 to-blue-500/10",
-    iconBg: "bg-sky-500/10",
-    iconColor: "text-sky-500",
+    title: "Checkout-ready architecture",
+    description: "You can keep payment paused while the storefront improves, then plug the next crypto gateway in later.",
+    gradient: "from-slate-500/16 to-zinc-500/10",
+    iconBg: "bg-slate-500/10",
+    iconColor: "text-slate-600",
     number: "07"
   },
   {
-    icon: HeadphonesIcon,
-    title: "Built-in support center",
-    description: "Direct 24/7 access to customer support and ticket resolution tools directly from your user dashboard.",
-    gradient: "from-fuchsia-500/15 to-pink-500/10",
-    iconBg: "bg-fuchsia-500/10",
-    iconColor: "text-fuchsia-500",
+    icon: Zap,
+    title: "Launch-ready presentation",
+    description: "Stronger visuals, better copy, and better empty states make the store feel polished even while restocking.",
+    gradient: "from-accent/18 to-primary/10",
+    iconBg: "bg-accent/12",
+    iconColor: "text-accent",
     number: "08"
   }
 ];
@@ -92,14 +92,15 @@ export function FeatureGrid() {
   return (
     <section className="container py-20 md:py-28">
       <Reveal>
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <span className="glow-badge mb-5">Built for real operations</span>
-          <h2 className="mt-5 text-3xl font-bold tracking-tight md:text-5xl">
-            Every layer is ready for{" "}
-            <span className="gradient-text">production.</span>
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <span className="glow-badge mb-5">Built for a serious relaunch</span>
+          <h2 className="mt-5 text-3xl font-black tracking-tight md:text-5xl">
+            A premium storefront without the
+            <span className="gradient-text block">cheap signals.</span>
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Not just a demo — a complete, battle-tested infrastructure for selling subscriptions at scale.
+          <p className="mt-4 text-lg leading-8 text-muted-foreground">
+            The rebuild focuses on control, clarity, and trust, so the site feels stronger before you even start
+            promoting the next drop.
           </p>
         </div>
       </Reveal>
@@ -110,14 +111,12 @@ export function FeatureGrid() {
             <motion.div
               whileHover={{ y: -6, scale: 1.01 }}
               transition={{ duration: 0.2 }}
-              className={`group relative h-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm transition-all dark:border-white/6`}
+              className={`group relative h-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm dark:border-white/6`}
             >
-              {/* Number watermark */}
-              <span className="absolute -right-1 -top-2 text-7xl font-black text-foreground/4 select-none">
+              <span className="absolute -right-1 -top-2 select-none text-7xl font-black text-foreground/4">
                 {feature.number}
               </span>
 
-              {/* Icon */}
               <div className={`relative mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl ${feature.iconBg}`}>
                 <feature.icon className={`h-5 w-5 ${feature.iconColor}`} />
               </div>
@@ -131,4 +130,3 @@ export function FeatureGrid() {
     </section>
   );
 }
-

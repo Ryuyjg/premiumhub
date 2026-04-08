@@ -1,142 +1,99 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { CheckCircle2, HeadphonesIcon, LayoutDashboard, ShieldCheck, Sparkles, Wallet } from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
 
-const reviews = [
+const standards = [
   {
-    name: "Priya Sharma",
-    handle: "@priya_s",
-    avatar: "PS",
-    rating: 5,
-    text: "Honestly shocked at how fast the delivery was. Got my ChatGPT Plus shared account credentials literally 10 seconds after payment. This is the real deal.",
-    plan: "ChatGPT Plus · 1 month",
-    gradient: "from-primary to-accent"
+    icon: ShieldCheck,
+    title: "No fake urgency",
+    text: "The rebuild removes fake purchase popups and weak social proof so the store feels cleaner and more believable."
   },
   {
-    name: "Rahul Mehta",
-    handle: "@rahulmehta",
-    avatar: "RM",
-    rating: 5,
-    text: "Clean UI, no nonsense. Need a virtual number for WhatsApp and it worked flawlessly on the first try. Way better than sketchy sellers.",
-    plan: "Virtual Number · WhatsApp",
-    gradient: "from-blue-500 to-cyan-600"
+    icon: Sparkles,
+    title: "Real catalog-first approach",
+    text: "You now start from an empty catalog, which is better than trying to repair trust after filling the store with random starter items."
   },
   {
-    name: "Ananya Reddy",
-    handle: "@ananya.r",
-    avatar: "AR",
-    rating: 5,
-    text: "Used the coupon code and got 20% off my Adobe Creative Cloud license. Checked out smoothly, got a confirmation email instantly.",
-    plan: "Creative Cloud · 1 year",
-    gradient: "from-amber-500 to-orange-600"
+    icon: LayoutDashboard,
+    title: "Order records stay organized",
+    text: "When products come back, customers already have a polished account area for delivery details, renewals, and support."
   },
   {
-    name: "Kiran Patel",
-    handle: "@kiranp",
-    avatar: "KP",
-    rating: 5,
-    text: "I bought Minecraft Java edition and the key was instantly sent to my dashboard. Claimed it on Microsoft within seconds.",
-    plan: "Minecraft Java Edition",
-    gradient: "from-emerald-500 to-teal-600"
+    icon: HeadphonesIcon,
+    title: "Visible human support",
+    text: "Support links are kept easy to find, which matters more than flashy claims when buyers are deciding whether to trust you."
   },
   {
-    name: "Deepa Nair",
-    handle: "@deepanair",
-    avatar: "DN",
-    rating: 5,
-    text: "Payment was super secure, I can see the secure payment badge. The Telegram premium number came with the email exactly as promised. 10/10.",
-    plan: "Telegram Premium Number",
-    gradient: "from-pink-500 to-rose-600"
+    icon: Wallet,
+    title: "Payments can return later",
+    text: "The storefront no longer depends on a gateway being active to look complete, which gives you time to integrate the next one properly."
   },
   {
-    name: "Sanjay Kumar",
-    handle: "@sanjayk",
-    avatar: "SK",
-    rating: 5,
-    text: "The platform's UI is incredibly premium. Used it to grab a Netflix screen and it has been working perfectly without any drops.",
-    plan: "Netflix 4K · 3 months",
-    gradient: "from-cyan-500 to-sky-600"
+    icon: CheckCircle2,
+    title: "Cleaner launch standards",
+    text: "Policies, contact pages, and empty states help the website feel intentional instead of unfinished."
   }
+];
+
+const principles = [
+  "Publish fewer items, but make each one stronger",
+  "Use real images and clear delivery notes",
+  "Let support and policy pages do trust work for you"
 ];
 
 export function TestimonialsSection() {
   return (
     <section className="container py-20 md:py-24">
       <Reveal>
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <span className="glow-badge mb-5">Social proof</span>
-          <h2 className="mt-5 text-3xl font-bold tracking-tight md:text-5xl">
-            Loved by{" "}
-            <span className="gradient-text">thousands of customers.</span>
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <span className="glow-badge mb-5">Store standards</span>
+          <h2 className="mt-5 text-3xl font-black tracking-tight md:text-5xl">
+            The site now feels more
+            <span className="gradient-text block">premium and intentional.</span>
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Real people, real results — see what they say about OTT Shoppy.
+          <p className="mt-4 text-lg leading-8 text-muted-foreground">
+            Instead of pretending the store is already huge, this version leans into what actually builds trust:
+            control, clarity, support, and clean presentation.
           </p>
         </div>
       </Reveal>
 
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {reviews.map((review, index) => (
-          <Reveal key={review.name} delay={index * 0.06}>
+        {standards.map((item, index) => (
+          <Reveal key={item.title} delay={index * 0.06}>
             <motion.div
               whileHover={{ y: -5, scale: 1.01 }}
               transition={{ duration: 0.2 }}
-              className="surface h-full rounded-[1.75rem] p-6 transition-all"
+              className="surface h-full rounded-[1.75rem] p-6"
             >
-              {/* Stars */}
-              <div className="flex items-center gap-1 mb-4">
-                {Array.from({ length: review.rating }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                ))}
+              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <item.icon className="h-5 w-5" />
               </div>
-
-              {/* Review text */}
-              <p className="text-sm leading-7 text-foreground/80 mb-5">
-                &ldquo;{review.text}&rdquo;
-              </p>
-
-              {/* Plan badge */}
-              <span className="inline-flex items-center rounded-full border border-border/60 bg-muted/50 px-3 py-1 text-xs font-semibold text-muted-foreground mb-5">
-                {review.plan}
-              </span>
-
-              {/* Author */}
-              <div className="flex items-center gap-3 border-t border-border/50 pt-4">
-                <div
-                  className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${review.gradient} text-xs font-bold text-white`}
-                >
-                  {review.avatar}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">{review.name}</p>
-                  <p className="text-xs text-muted-foreground">{review.handle}</p>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.text}</p>
             </motion.div>
           </Reveal>
         ))}
       </div>
 
-      {/* Overall rating */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-12 flex flex-col items-center gap-3 text-center"
+        className="mt-12 rounded-[2rem] border border-border/55 bg-white/72 p-6 text-center shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4"
       >
-        <div className="flex items-center gap-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} className="h-6 w-6 fill-amber-400 text-amber-400" />
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Keep these rules</p>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {principles.map((rule) => (
+            <div key={rule} className="rounded-[1.25rem] border border-border/55 bg-background/70 px-4 py-4 text-sm font-medium">
+              {rule}
+            </div>
           ))}
         </div>
-        <p className="text-2xl font-bold">4.9 out of 5</p>
-        <p className="text-sm text-muted-foreground">Based on 1,200+ verified customer reviews</p>
       </motion.div>
     </section>
   );
 }
-
-
