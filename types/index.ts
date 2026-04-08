@@ -89,7 +89,7 @@ export type Order = {
   status: OrderStatus;
   gatewayOrderId?: string | null;
   gatewayPaymentId?: string;
-  paymentMethod?: "wallet" | "uropay" | "manual";
+  paymentMethod?: "wallet" | "crypto" | "manual";
   walletDeducted?: number;
   deliveryMode?: "direct_credentials" | "otp_manual" | "email_invite";
   customerDeliveryEmail?: string;

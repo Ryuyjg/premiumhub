@@ -1,13 +1,13 @@
 # StreamVault
 
-Premium OTT subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, Firebase, and an INR-first checkout flow.
+Premium digital subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, and Firebase.
 
 ## What is included
 
 - Premium SaaS-grade landing page with glassmorphism, gradients, motion, and responsive sections
 - Product catalog with search, filters, animated cards, and plan detail views
 - Firebase Auth login and secure server-side session cookies
-- INR pricing, wallet purchases, and UroPay QR checkout with webhook-ready settlement
+- Manual catalog management with wallet purchases and a clean base for future USDT gateway integration
 - Firestore-backed orders, subscriptions, coupons, analytics, and OTT account assignment
 - Admin workspace for analytics, products, coupons, orders, and credential vault management
 - AES-encrypted OTT credentials, Firestore rules, and Storage rules
@@ -20,7 +20,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - Tailwind CSS
 - Framer Motion
 - Firebase Auth, Firestore, Storage, Admin SDK
-- UroPay
+- Future USDT gateway (manual integration later)
 - Zustand
 - Zod
 
@@ -29,7 +29,7 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 1. Install Node.js 20+ and npm 10+.
 2. Run `npm install`.
 3. Copy `.env.example` to `.env.local`.
-4. Fill all Firebase values and add UroPay values when you integrate the INR gateway.
+4. Fill all Firebase values.
 5. Start the app with `npm run dev`.
 
 ## Environment variables
@@ -43,12 +43,6 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
 - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
-- `UROPAY_API_KEY`
-- `UROPAY_BASE_URL`
-- `UROPAY_SECRET`
-- `UROPAY_VPA`
-- `UROPAY_VPA_NAME`
-
 ### Server secrets
 
 - `FIREBASE_PROJECT_ID`
@@ -76,13 +70,11 @@ Premium OTT subscription selling platform built with Next.js App Router, TypeScr
 3. Add category documents first.
 4. Add products and OTT accounts from `/admin`.
 
-## INR gateway notes
+## Catalog notes
 
-- Currency and final order creation should stay server-side.
-- Connect the upcoming UroPay success and webhook callbacks to fulfillment.
-- Keep gateway secrets on server environment variables only.
-- Configure your UroPay dashboard webhook to point at `/api/uropay/webhook`.
-- UroPay order generation needs your receiving `UROPAY_VPA` and display name `UROPAY_VPA_NAME`.
+- The app no longer auto-seeds starter categories or products.
+- Use the admin dashboard to add your catalog manually.
+- Use the admin dashboard clear action if you want to wipe catalog-side data and start fresh again.
 
 ## Deployment
 

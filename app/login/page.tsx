@@ -4,7 +4,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { ShieldCheck, Zap, Star } from "lucide-react";
 
 const features = [
-  { icon: ShieldCheck, title: "Clean billing flow", desc: "INR-first purchase experience with secure order handling" },
+  { icon: ShieldCheck, title: "USDT-ready billing", desc: "Crypto-first purchase experience with secure order handling" },
   { icon: Zap, title: "Instant credentials", desc: "Get account access quickly after successful payment" },
   { icon: Star, title: "Real human support", desc: "Raise a ticket from dashboard and get guided help fast" }
 ];

@@ -64,7 +64,7 @@ export function AdminDashboard({
 }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
-  const [seedingCatalog, setSeedingCatalog] = useState(false);
+  const [resettingCatalog, setResettingCatalog] = useState(false);
 
   const paidOrders = useMemo(() => orders.filter((order) => order.status === "paid").length, [orders]);
   const failedOrders = useMemo(() => orders.filter((order) => order.status === "failed").length, [orders]);
@@ -84,25 +84,31 @@ export function AdminDashboard({
     { icon: TicketPercent, label: "Live Subscriptions", value: String(analytics.activeSubscriptions), gradient: "from-amber-500/15 to-orange-500/8", iconBg: "bg-amber-500/10", iconColor: "text-amber-500" }
   ], [analytics]);
 
-  async function handleSeedCatalog() {
+  async function handleResetCatalog() {
+    if (!confirm("This will delete products, categories, offers, coupons, reviews, account pools, and old gateway transaction data. Continue?")) {
+      return;
+    }
+
     try {
-      setSeedingCatalog(true);
-      const response = await fetch("/api/admin/seed-catalog", { method: "POST" });
+      setResettingCatalog(true);
+      const response = await fetch("/api/admin/catalog/reset", { method: "POST" });
       const payload = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload?.error || "Unable to seed catalog.");
+        throw new Error(payload?.error || "Unable to clear catalog.");
       }
 
-      toast.success(
-        `Starter catalog ready: ${payload.categoriesCreated} categories and ${payload.productsCreated} products added.`
-      );
+      const deleted = Array.isArray(payload.results)
+        ? payload.results.reduce((sum: number, item: { deleted?: number }) => sum + Number(item.deleted || 0), 0)
+        : 0;
+
+      toast.success(`Catalog cleared. ${deleted} records removed.`);
       setActiveTab("catalog");
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to seed catalog.");
+      toast.error(error instanceof Error ? error.message : "Unable to clear catalog.");
     } finally {
-      setSeedingCatalog(false);
+      setResettingCatalog(false);
     }
   }
 
@@ -123,11 +129,11 @@ export function AdminDashboard({
             <p className="max-w-xl text-white/75 text-sm">Manage catalog, orders, users, and growth tools from one place.</p>
             <button
               type="button"
-              onClick={handleSeedCatalog}
-              disabled={seedingCatalog}
+              onClick={handleResetCatalog}
+              disabled={resettingCatalog}
               className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-primary transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {seedingCatalog ? "Seeding starter catalog..." : "Seed all categories and products"}
+              {resettingCatalog ? "Clearing catalog..." : "Clear catalog and start fresh"}
             </button>
           </div>
           <div className="grid grid-cols-3 gap-3">

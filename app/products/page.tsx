@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "OTT Plans",
-  description: "Browse premium OTT subscriptions with instant delivery and an INR-ready buying flow."
+  description: "Browse premium OTT subscriptions with instant delivery and a USDT-ready buying flow."
 };
 
 export default async function ProductsPage() {

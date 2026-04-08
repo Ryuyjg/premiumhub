@@ -11,7 +11,7 @@ type FulfillOrderInput = {
     device?: string;
   };
   gatewayPaymentId?: string;
-  paymentMethod?: "wallet" | "uropay" | "manual";
+  paymentMethod?: "wallet" | "crypto" | "manual";
 };
 
 export async function createUserNotification(userId: string, title: string, message: string) {

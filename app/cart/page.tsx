@@ -13,28 +13,15 @@ import { useAuth } from "@/components/providers/auth-provider";
 import type { Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 
-type UroPayCheckout = {
-  gatewayOrderId: string;
-  qrCode: string;
-  upiString: string;
-  amountInRupees: string;
-};
-
-function redirectToSuccess(gatewayOrderId: string) {
-  window.location.href = `/checkout/success?gatewayOrderId=${encodeURIComponent(gatewayOrderId)}`;
-}
-
 export default function CartPage() {
   const { user } = useAuth();
   const cartItems = useAppStore((state) => state.cartItems);
   const removeFromCart = useAppStore((state) => state.removeFromCart);
   const clearCart = useAppStore((state) => state.clearCart);
-  const [loading, setLoading] = useState<"none" | "wallet" | "uropay" | "reference">("none");
+  const [loading, setLoading] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [trending, setTrending] = useState<Product[]>([]);
   const [fetchingTrending, setFetchingTrending] = useState(false);
-  const [uroPayCheckout, setUroPayCheckout] = useState<UroPayCheckout | null>(null);
-  const [referenceNumber, setReferenceNumber] = useState("");
 
   const total = cartItems.reduce((sum, item) => sum + item.price, 0);
 
@@ -61,36 +48,6 @@ export default function CartPage() {
     }
   }, [cartItems.length]);
 
-  useEffect(() => {
-    if (!uroPayCheckout?.gatewayOrderId) {
-      return;
-    }
-
-    const interval = window.setInterval(async () => {
-      try {
-        const response = await fetch(`/api/uropay/status/${encodeURIComponent(uroPayCheckout.gatewayOrderId)}`, {
-          cache: "no-store"
-        });
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          return;
-        }
-
-        if (data.gatewayStatus === "COMPLETED") {
-          toast.success("Payment confirmed. Your products are ready on your dashboard.");
-          clearCart();
-          window.clearInterval(interval);
-          redirectToSuccess(uroPayCheckout.gatewayOrderId);
-        }
-      } catch {
-        // Ignore polling errors and retry later.
-      }
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, [clearCart, uroPayCheckout]);
-
   async function handleWalletCheckout() {
     if (!user) {
       toast.error("Please sign in to proceed.");
@@ -103,7 +60,7 @@ export default function CartPage() {
       return;
     }
 
-    setLoading("wallet");
+    setLoading(true);
     toast.loading("Processing your wallet payment...", { id: "wallet-checkout" });
 
     try {
@@ -126,90 +83,7 @@ export default function CartPage() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Checkout failed.", { id: "wallet-checkout" });
     } finally {
-      setLoading("none");
-    }
-  }
-
-  async function handleUroPayCheckout() {
-    if (!user) {
-      toast.error("Please sign in to proceed with checkout.");
-      window.location.href = "/login?redirect=/cart";
-      return;
-    }
-
-    if (cartItems.length === 0) {
-      return;
-    }
-
-    setLoading("uropay");
-    try {
-      const response = await fetch("/api/uropay/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productIds: cartItems.map((item) => item.productId)
-        })
-      });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to create UroPay order.");
-      }
-
-      setUroPayCheckout({
-        gatewayOrderId: String(data.gatewayOrderId || ""),
-        qrCode: String(data.qrCode || ""),
-        upiString: String(data.upiString || ""),
-        amountInRupees: String(data.amountInRupees || "")
-      });
-      setReferenceNumber("");
-      toast.success("UroPay order created. Scan the QR or open your UPI app.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to create UroPay order.");
-    } finally {
-      setLoading("none");
-    }
-  }
-
-  async function handleReferenceSubmit() {
-    if (!uroPayCheckout?.gatewayOrderId) {
-      toast.error("Create a UroPay order first.");
-      return;
-    }
-
-    if (!referenceNumber.trim()) {
-      toast.error("Enter the UPI reference number after payment.");
-      return;
-    }
-
-    setLoading("reference");
-    try {
-      const response = await fetch("/api/uropay/reference", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          gatewayOrderId: uroPayCheckout.gatewayOrderId,
-          referenceNumber: referenceNumber.trim()
-        })
-      });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to submit UPI reference number.");
-      }
-
-      if (data.gatewayStatus === "COMPLETED") {
-        toast.success("Payment confirmed. Your products are ready on your dashboard.");
-        clearCart();
-        redirectToSuccess(uroPayCheckout.gatewayOrderId);
-        return;
-      }
-
-      toast.success("Reference number submitted. We are waiting for UroPay confirmation.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to submit UPI reference number.");
-    } finally {
-      setLoading("none");
+      setLoading(false);
     }
   }
 
@@ -373,30 +247,17 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
-                <Button
-                  onClick={handleUroPayCheckout}
-                  className="btn-primary w-full h-14 text-base gap-3"
-                  disabled={loading !== "none"}
-                >
-                  {loading === "uropay" ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Creating UroPay order...
-                    </>
-                  ) : (
-                    <>
-                      Pay with UPI (UroPay) <ArrowRight className="h-5 w-5" />
-                    </>
-                  )}
-                </Button>
+                <div className="rounded-[1.5rem] border border-dashed border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground">
+                  USDT checkout will be connected later after you add the next gateway. Wallet checkout is active right now.
+                </div>
 
                 <Button 
                   onClick={handleWalletCheckout} 
                   variant="outline"
                   className="w-full h-14 text-base gap-3 rounded-[1.5rem] border-primary/20 hover:bg-primary/5"
-                  disabled={loading !== "none" || (walletBalance !== null && walletBalance < total)}
+                  disabled={loading || (walletBalance !== null && walletBalance < total)}
                 >
-                  {loading === "wallet" ? (
+                  {loading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
                     <Cpu className="h-5 w-5 text-primary" />
@@ -411,37 +272,11 @@ export default function CartPage() {
                     </span>
                   </p>
                 ) : null}
-
-                {uroPayCheckout ? (
-                  <div className="rounded-[1.5rem] border border-border/70 bg-muted/25 p-4">
-                    <p className="text-sm font-semibold">Complete your INR payment</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Order ID: {uroPayCheckout.gatewayOrderId} | Amount: Rs. {uroPayCheckout.amountInRupees}
-                    </p>
-                    <div className="mt-4 flex justify-center rounded-2xl bg-white p-3">
-                      <img src={uroPayCheckout.qrCode} alt="UroPay QR code" className="h-52 w-52 rounded-xl object-contain" />
-                    </div>
-                    <div className="mt-4 grid gap-3">
-                      <Button type="button" variant="outline" className="h-11 w-full" onClick={() => window.open(uroPayCheckout.upiString, "_self")}>
-                        Open UPI App
-                      </Button>
-                      <input
-                        value={referenceNumber}
-                        onChange={(event) => setReferenceNumber(event.target.value)}
-                        placeholder="Enter UPI reference number after payment"
-                        className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
-                      />
-                      <Button type="button" variant="outline" className="h-11 w-full" onClick={handleReferenceSubmit} disabled={loading !== "none"}>
-                        {loading === "reference" ? "Submitting reference..." : "Submit Reference Number"}
-                      </Button>
-                    </div>
-                  </div>
-                ) : null}
               </div>
 
               <div className="mt-8 space-y-3 rounded-[2rem] border border-border/50 bg-muted/30 p-5">
                 {[
-                  { icon: ShieldCheck, text: "UroPay QR checkout with INR pricing", color: "text-emerald-500" },
+                  { icon: ShieldCheck, text: "USDT checkout gateway will be added later", color: "text-emerald-500" },
                   { icon: Zap, text: "Instant Credentials Auto-delivery", color: "text-amber-500" }
                 ].map((t) => (
                   <div key={t.text} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">

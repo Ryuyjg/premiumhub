@@ -48,7 +48,7 @@ export function SiteFooter() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground md:text-right">
-            Payments and order flows are being refreshed for <span className="font-semibold text-foreground">INR checkout</span>
+            Payments and order flows are being prepared for <span className="font-semibold text-foreground">USDT checkout</span>
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function SiteFooter() {
             </Link>
 
             <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-              Built for premium OTT and digital plans with instant delivery flows, secure checkout, and customer-first support operations.
+              Built for digital plans, instant delivery workflows, and manual catalog control as you prepare the next checkout gateway.
             </p>
 
             <div className="flex items-center gap-2.5">
