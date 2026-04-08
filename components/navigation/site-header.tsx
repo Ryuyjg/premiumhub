@@ -80,7 +80,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40">
-      <div className="border-b border-border/30 bg-gradient-to-r from-primary/10 via-transparent to-accent/10">
+      <div className="border-b border-border/40 bg-background/76 backdrop-blur-xl">
         <div className="container flex h-8 items-center justify-between text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Sparkles className="h-3 w-3 text-primary" />
@@ -93,13 +93,13 @@ export function SiteHeader() {
       <div
         className={`transition-all duration-300 ${
           scrolled
-            ? "border-b border-border/40 bg-background/86 shadow-[0_10px_40px_rgba(2,6,23,0.08)] backdrop-blur-2xl"
-            : "border-b border-transparent bg-background/62 backdrop-blur-xl"
+            ? "border-b border-border/50 bg-background/88 shadow-[0_10px_34px_rgba(15,23,42,0.08)] backdrop-blur-2xl"
+            : "border-b border-transparent bg-background/72 backdrop-blur-xl"
         }`}
       >
         <div className="container flex h-[4.75rem] items-center justify-between gap-4">
           <Link href="/" className="group inline-flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground to-accent shadow-[0_12px_24px_rgba(15,23,42,0.14)] transition-transform group-hover:scale-105">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -108,7 +108,7 @@ export function SiteHeader() {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-full border border-border/60 bg-white/70 p-1 shadow-sm dark:bg-white/5 md:flex">
+          <nav className="hidden items-center gap-1 rounded-full border border-border/70 bg-white/82 p-1 shadow-[0_8px_20px_rgba(15,23,42,0.05)] dark:bg-white/5 md:flex">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
@@ -122,7 +122,7 @@ export function SiteHeader() {
                   {active ? (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full border border-primary/30 bg-gradient-to-r from-primary/12 to-accent/12"
+                      className="absolute inset-0 -z-10 rounded-full border border-foreground/10 bg-foreground/6"
                     />
                   ) : null}
                   {link.label}
@@ -134,7 +134,7 @@ export function SiteHeader() {
           <div className="flex items-center gap-2.5">
             <Link
               href="/cart"
-              className="relative inline-flex h-10 items-center gap-2 rounded-full border border-border/60 bg-white/70 px-3.5 text-sm font-semibold transition-all hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5"
+              className="relative inline-flex h-10 items-center gap-2 rounded-full border border-border/70 bg-white/82 px-3.5 text-sm font-semibold transition-all hover:border-primary/24 hover:bg-primary/5 dark:bg-white/5"
             >
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">Cart</span>
@@ -153,14 +153,14 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="hidden h-10 rounded-full border border-border/60 bg-white/70 px-5 text-sm font-semibold text-foreground transition-all hover:border-rose-500/35 hover:bg-rose-500/8 hover:text-rose-600 md:inline-flex dark:bg-white/5"
+                className="hidden h-10 rounded-full border border-border/70 bg-white/82 px-5 text-sm font-semibold text-foreground transition-all hover:border-rose-500/28 hover:bg-rose-500/8 hover:text-rose-600 md:inline-flex dark:bg-white/5"
               >
                 Sign out
               </button>
             ) : (
               <Link
                 href="/login"
-                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-primary to-accent px-5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl md:inline-flex"
+                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-foreground to-accent px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.16)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(15,23,42,0.2)] md:inline-flex"
               >
                 Sign in
               </Link>
@@ -169,7 +169,7 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setOpen((s) => !s)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-white/70 text-foreground transition-all hover:border-primary/35 md:hidden dark:bg-white/5"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-white/82 text-foreground transition-all hover:border-primary/24 md:hidden dark:bg-white/5"
               aria-label="Toggle menu"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -198,7 +198,7 @@ export function SiteHeader() {
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                       active
                         ? "bg-gradient-to-r from-primary/14 to-accent/14 text-foreground"
-                        : "border border-border/60 bg-white/70 text-foreground hover:bg-muted/50 dark:bg-white/5"
+                        : "border border-border/70 bg-white/82 text-foreground hover:bg-muted/50 dark:bg-white/5"
                     }`}
                   >
                     {link.label}
@@ -220,7 +220,7 @@ export function SiteHeader() {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-primary to-accent px-4 py-3 text-sm font-semibold text-white"
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-foreground to-accent px-4 py-3 text-sm font-semibold text-white"
                   >
                     Sign in
                   </Link>

@@ -29,7 +29,7 @@ export function MobileNav() {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
-        className="flex items-center justify-between rounded-[2.5rem] border border-white/20 bg-background/60 p-2.5 shadow-2xl backdrop-blur-3xl dark:border-white/10 dark:bg-black/60"
+        className="flex items-center justify-between rounded-[2.5rem] border border-border/70 bg-background/86 p-2.5 shadow-[0_18px_36px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:bg-black/55"
       >
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
@@ -42,13 +42,13 @@ export function MobileNav() {
             >
               <div
                 className={`relative flex h-10 w-10 items-center justify-center rounded-2xl transition-colors ${
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  isActive ? "text-white" : "text-muted-foreground"
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-pill"
-                    className="absolute inset-0 z-[-1] rounded-2xl bg-primary/10"
+                    className="absolute inset-0 z-[-1] rounded-2xl border border-foreground/10 bg-foreground shadow-[0_10px_24px_rgba(15,23,42,0.16)]"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -62,7 +62,7 @@ export function MobileNav() {
               </div>
               <span
                 className={`text-[10px] font-bold uppercase tracking-widest ${
-                  isActive ? "text-primary" : "text-muted-foreground opacity-60"
+                  isActive ? "text-foreground" : "text-muted-foreground opacity-70"
                 }`}
               >
                 {item.label}

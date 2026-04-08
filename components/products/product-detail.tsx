@@ -38,7 +38,7 @@ export function ProductDetail({
               <Image src={activeImage || product.imageUrls[0]} alt={product.name} fill className="object-cover" />
             </motion.div>
           </AnimatePresence>
-          <div className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-full bg-primary/25 blur-3xl" />
+          <div className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-full bg-foreground/14 blur-3xl" />
         </div>
 
         <div className="grid grid-cols-4 gap-3">
@@ -49,7 +49,9 @@ export function ProductDetail({
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveImage(image)}
               className={`relative aspect-square overflow-hidden rounded-2xl border transition ${
-                activeImage === image ? "border-primary shadow-lg shadow-primary/20" : "border-border/70"
+                activeImage === image
+                  ? "border-foreground shadow-[0_12px_28px_rgba(15,23,42,0.12)]"
+                  : "border-border/70"
               }`}
             >
               <Image src={image} alt={product.name} fill className="object-cover" />
@@ -86,8 +88,8 @@ export function ProductDetail({
           <div className="mt-6">
             <CheckoutButton product={product} />
           </div>
-          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
-            <ShieldCheck className="h-4 w-4" />
+          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-primary/12 bg-primary/6 px-4 py-3 text-sm text-foreground">
+            <ShieldCheck className="h-4 w-4 text-primary" />
             Delivery notes, credentials, and support follow-up stay inside the customer dashboard after checkout.
           </div>
         </motion.div>
@@ -140,7 +142,11 @@ export function ProductDetail({
           <p className="mt-1 text-sm text-muted-foreground">More items from the same catalog path.</p>
           <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {relatedProducts.map((item) => (
-              <Link key={item.id} href={`/products/${item.slug}`} className="rounded-2xl border border-border/80 p-4 transition hover:border-primary/40">
+              <Link
+                key={item.id}
+                href={`/products/${item.slug}`}
+                className="rounded-2xl border border-border/80 bg-background/55 p-4 transition hover:border-foreground/18 hover:bg-background/72"
+              >
                 <p className="font-semibold">{item.name}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{item.shortDescription}</p>
                 <p className="mt-3 text-sm font-semibold">{formatCurrency(item.salePrice || item.price)}</p>

@@ -18,7 +18,7 @@ export default function TermsPage() {
     >
       <div className="space-y-4">
         {terms.map((term, index) => (
-          <div key={term} className="rounded-[1.5rem] border border-border/55 bg-background/70 p-5">
+          <div key={term} className="rounded-[1.5rem] border border-border/70 bg-background/72 p-5">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Rule {index + 1}</p>
             <p className="mt-2 text-sm leading-7 text-muted-foreground">{term}</p>
           </div>

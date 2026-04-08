@@ -3,7 +3,7 @@ import { MessageCircle, Send } from "lucide-react";
 export function SupportFloat() {
   return (
     <div className="fixed bottom-20 right-4 z-50 md:bottom-8 md:right-6">
-      <div className="rounded-[1.5rem] border border-border/60 bg-background/82 p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur-2xl">
+      <div className="rounded-[1.5rem] border border-border/70 bg-background/88 p-2 shadow-[0_20px_42px_rgba(15,23,42,0.1)] backdrop-blur-xl">
         <p className="px-3 pb-2 pt-1 text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground">
           Need help
         </p>
@@ -12,7 +12,7 @@ export function SupportFloat() {
             href="https://wa.me/917907102615"
             target="_blank"
             rel="noreferrer noopener"
-            className="flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(5,150,105,0.22)] transition-transform hover:-translate-y-0.5"
             aria-label="Chat on WhatsApp"
           >
             <MessageCircle size={16} />
@@ -22,7 +22,7 @@ export function SupportFloat() {
             href="https://t.me/ogdigital"
             target="_blank"
             rel="noreferrer noopener"
-            className="flex items-center gap-2 rounded-full border border-sky-300/60 bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(2,132,199,0.2)] transition-transform hover:-translate-y-0.5"
             aria-label="Open Telegram"
           >
             <Send size={16} />

@@ -29,7 +29,7 @@ export default function AboutPage() {
       <div className="space-y-10">
         <div className="grid gap-5 md:grid-cols-3">
           {pillars.map((pillar) => (
-            <div key={pillar.title} className="rounded-[1.75rem] border border-border/55 bg-background/70 p-6">
+            <div key={pillar.title} className="rounded-[1.75rem] border border-border/70 bg-background/72 p-6">
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <pillar.icon className="h-5 w-5" />
               </div>

@@ -3,44 +3,44 @@
 @tailwind utilities;
 
 :root {
-  --background: 34 38% 97%;
-  --foreground: 223 31% 11%;
+  --background: 40 24% 97%;
+  --foreground: 220 30% 14%;
   --card: 0 0% 100%;
-  --border: 32 20% 84%;
-  --input: 32 20% 84%;
-  --ring: 24 95% 53%;
-  --muted: 33 34% 92%;
-  --muted-foreground: 220 11% 38%;
-  --primary: 24 95% 53%;
+  --border: 214 16% 84%;
+  --input: 214 16% 84%;
+  --ring: 214 42% 24%;
+  --muted: 210 23% 93%;
+  --muted-foreground: 220 11% 40%;
+  --primary: 214 42% 24%;
   --primary-foreground: 0 0% 100%;
-  --accent: 173 67% 31%;
+  --accent: 158 29% 35%;
   --accent-foreground: 0 0% 100%;
-  --success: 151 55% 35%;
+  --success: 151 42% 34%;
   --warning: 35 92% 51%;
   --surface: 0 0% 100%;
-  --surface-foreground: 223 31% 11%;
-  --gradient-start: 24 95% 53%;
-  --gradient-mid: 36 96% 58%;
-  --gradient-end: 173 67% 31%;
+  --surface-foreground: 220 30% 14%;
+  --gradient-start: 214 42% 24%;
+  --gradient-mid: 200 34% 30%;
+  --gradient-end: 158 29% 35%;
 }
 
 .dark {
-  --background: 224 27% 9%;
-  --foreground: 36 33% 96%;
-  --card: 223 24% 12%;
+  --background: 222 25% 9%;
+  --foreground: 40 20% 95%;
+  --card: 223 22% 12%;
   --border: 221 17% 19%;
   --input: 221 17% 19%;
-  --ring: 24 98% 62%;
-  --muted: 223 18% 15%;
-  --muted-foreground: 217 14% 72%;
-  --primary: 24 98% 62%;
+  --ring: 208 42% 68%;
+  --muted: 223 16% 15%;
+  --muted-foreground: 217 12% 72%;
+  --primary: 208 42% 68%;
   --primary-foreground: 0 0% 100%;
-  --accent: 173 70% 40%;
+  --accent: 158 33% 52%;
   --accent-foreground: 0 0% 100%;
-  --success: 151 58% 42%;
+  --success: 151 40% 44%;
   --warning: 35 92% 56%;
-  --surface: 223 24% 12%;
-  --surface-foreground: 36 33% 96%;
+  --surface: 223 22% 12%;
+  --surface-foreground: 40 20% 95%;
 }
 
 html {
@@ -65,16 +65,16 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 70% 55% at 12% -10%, rgba(249, 115, 22, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 52% 45% at 92% 0%, rgba(13, 148, 136, 0.14) 0%, transparent 52%),
-    hsl(224 27% 9%);
+    radial-gradient(ellipse 70% 55% at 12% -10%, rgba(37, 99, 235, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 52% 45% at 92% 0%, rgba(20, 83, 45, 0.18) 0%, transparent 52%),
+    hsl(222 25% 9%);
 }
 
 body:not(.dark) {
   background:
-    radial-gradient(ellipse 65% 50% at 15% -10%, rgba(249, 115, 22, 0.1) 0%, transparent 55%),
-    radial-gradient(ellipse 45% 35% at 90% 0%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
-    hsl(34 38% 97%);
+    radial-gradient(ellipse 65% 50% at 15% -10%, rgba(30, 64, 175, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 90% 0%, rgba(21, 128, 61, 0.06) 0%, transparent 50%),
+    hsl(40 24% 97%);
 }
 
 ::selection {
@@ -100,40 +100,40 @@ body:not(.dark) {
 
 @layer components {
   .glass-panel {
-    @apply border border-white/20 bg-white/60 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
+    @apply border border-foreground/8 bg-white/72 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7;
   }
 
   .section-shell {
-    @apply rounded-[2rem] border border-white/25 bg-white/70 shadow-premium backdrop-blur-xl
+    @apply rounded-[2rem] border border-border/70 bg-white/78 shadow-[0_16px_42px_rgba(15,23,42,0.05)] backdrop-blur-xl
            dark:border-white/10 dark:bg-white/5;
   }
 
   .surface {
-    @apply rounded-3xl border border-border/60 bg-[hsl(var(--surface)/0.9)]
+    @apply rounded-3xl border border-border/80 bg-[hsl(var(--surface)/0.92)]
            text-[hsl(var(--surface-foreground))]
-           shadow-[0_8px_30px_rgba(15,23,42,0.08)]
-           backdrop-blur-xl
+           shadow-[0_14px_38px_rgba(15,23,42,0.06)]
+           backdrop-blur-md
            dark:shadow-[0_8px_40px_rgba(0,0,0,0.35)];
   }
 
   .surface-interactive {
     @apply surface transition-all duration-300
-           hover:-translate-y-2
-           hover:shadow-[0_24px_64px_rgba(249,115,22,0.16)]
-           dark:hover:shadow-[0_24px_72px_rgba(249,115,22,0.22)];
+           hover:-translate-y-1.5
+           hover:shadow-[0_24px_52px_rgba(15,23,42,0.1)]
+           dark:hover:shadow-[0_24px_72px_rgba(0,0,0,0.32)];
   }
 
   .pill-filter {
-    @apply rounded-full border border-border/70 bg-white/60 px-4 py-2 text-sm font-medium
+    @apply rounded-full border border-border/70 bg-white/70 px-4 py-2 text-sm font-medium
            text-muted-foreground transition-all duration-200
-           hover:border-primary/40 hover:bg-primary/5 hover:text-foreground
+           hover:border-primary/30 hover:bg-primary/5 hover:text-foreground
            dark:bg-white/5;
   }
 
   .pill-filter-active {
-    @apply rounded-full border border-transparent bg-gradient-to-r from-primary to-[hsl(var(--gradient-mid))]
-           px-4 py-2 text-sm font-semibold text-white
-           shadow-lg shadow-primary/30;
+    @apply rounded-full border border-transparent bg-foreground
+           px-4 py-2 text-sm font-semibold text-background
+           shadow-[0_12px_28px_rgba(15,23,42,0.14)];
   }
 
   .gradient-text {
@@ -147,32 +147,32 @@ body:not(.dark) {
   }
 
   .glow-badge {
-    @apply inline-flex items-center gap-2 rounded-full border border-primary/25
-           bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest
-           text-primary shadow-inner shadow-primary/10;
+    @apply inline-flex items-center gap-2 rounded-full border border-border/70
+           bg-background/85 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]
+           text-foreground shadow-[0_8px_18px_rgba(15,23,42,0.04)];
   }
 
   .btn-primary {
     @apply inline-flex h-12 items-center justify-center gap-2 rounded-full
-           bg-gradient-to-r from-primary to-[hsl(var(--gradient-mid))] px-7 text-sm font-semibold
-           text-white shadow-lg shadow-primary/25 transition-all duration-200
-           hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/40
+           bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))]
+           px-7 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(15,23,42,0.16)] transition-all duration-200
+           hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(15,23,42,0.2)]
            active:translate-y-0;
   }
 
   .btn-ghost {
     @apply inline-flex h-12 items-center justify-center gap-2 rounded-full
-           border border-border/70 bg-white/70 px-6 text-sm font-semibold
+           border border-border/70 bg-white/82 px-6 text-sm font-semibold
            text-foreground transition-all duration-200
-           hover:border-primary/30 hover:bg-primary/5
+           hover:border-primary/24 hover:bg-primary/4
            dark:bg-white/5;
   }
 
   .page-grid {
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
-    background-size: 48px 48px;
+      linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+    background-size: 56px 56px;
   }
 
   .dot-grid {
@@ -204,7 +204,7 @@ body:not(.dark) {
 
   .stat-card {
     @apply surface relative overflow-hidden p-6 transition-all duration-300
-           hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(249,115,22,0.16)];
+           hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(15,23,42,0.1)];
   }
 
   .field {

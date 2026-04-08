@@ -30,7 +30,7 @@ export function ProductCard({
   const shadow = useTransform(
     springY,
     [-8, 8],
-    ["0 20px 45px rgba(13, 148, 136, 0.10)", "0 20px 45px rgba(13, 148, 136, 0.22)"]
+    ["0 18px 38px rgba(15, 23, 42, 0.08)", "0 22px 46px rgba(15, 23, 42, 0.16)"]
   );
 
   function onMove(event: MouseEvent<HTMLElement>) {
@@ -82,7 +82,7 @@ export function ProductCard({
       style={{ rotateX: springX, rotateY: springY, boxShadow: shadow, transformStyle: "preserve-3d" }}
       className="relative"
     >
-      <div className={`group overflow-hidden rounded-[1.75rem] border border-border/55 bg-white/78 shadow-[0_16px_44px_rgba(2,6,23,0.06)] backdrop-blur-xl transition-all hover:-translate-y-1 dark:bg-white/4 ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
+      <div className={`group overflow-hidden rounded-[1.75rem] border border-border/70 bg-white/84 shadow-[0_16px_36px_rgba(15,23,42,0.05)] backdrop-blur-md transition-all hover:-translate-y-1 dark:bg-white/4 ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
         <Link href={`/products/${product.slug}`} className="block">
           <div className={`relative overflow-hidden ${variant === "list" ? "aspect-[16/8] md:aspect-[16/6]" : "aspect-[16/10]"}`}>
             <Image
@@ -96,7 +96,7 @@ export function ProductCard({
               <Badge>{isOutOfStock ? "No stock" : product.categoryName}</Badge>
             </div>
             {product.bestSelling ? (
-              <div className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-500/90 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-amber-500/25">
+              <div className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-foreground/88 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-black/20">
                 <Sparkles className="h-3 w-3" />
                 Best seller
               </div>
@@ -112,7 +112,7 @@ export function ProductCard({
               <ArrowRight className="h-5 w-5 shrink-0 text-primary transition group-hover:translate-x-1" />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-border/55 bg-muted/30 px-3 py-2.5">
+            <div className="flex items-center justify-between rounded-xl border border-border/60 bg-background/74 px-3 py-2.5">
               <div>
                 <p className="text-2xl font-black">{formatCurrency(product.salePrice || product.price)}</p>
                 {product.salePrice ? (

@@ -9,6 +9,8 @@ import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/store/use-app-store";
 
+const offerGlowTones = ["bg-primary/20", "bg-accent/18", "bg-white/10"];
+
 export function ProductCatalog({
   products,
   categories,
@@ -56,18 +58,18 @@ export function ProductCatalog({
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.06 }}
-              className={`relative overflow-hidden rounded-[1.75rem] border border-white/25 bg-gradient-to-br ${offer.accent || "from-primary to-accent"} p-5 text-white shadow-2xl`}
+              className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(160deg,rgba(15,23,42,0.98),rgba(30,41,59,0.96))] p-5 text-white shadow-[0_18px_48px_rgba(15,23,42,0.14)]"
             >
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/25 blur-2xl" />
+              <div className={`absolute -right-10 -top-10 h-36 w-36 rounded-full ${offerGlowTones[index % offerGlowTones.length]} blur-3xl`} />
               {offer.badge ? (
-                <p className="relative inline-flex rounded-full border border-white/40 bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em]">
+                <p className="relative inline-flex rounded-full border border-white/15 bg-white/8 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em]">
                   {offer.badge}
                 </p>
               ) : null}
               <h3 className="relative mt-3 text-lg font-black">{offer.title}</h3>
-              <p className="relative mt-2 text-sm text-white/90">{offer.description}</p>
+              <p className="relative mt-2 text-sm leading-6 text-white/82">{offer.description}</p>
               {offer.ctaLabel && offer.ctaUrl ? (
-                <Link href={offer.ctaUrl} className="relative mt-4 inline-flex text-sm font-semibold underline-offset-4 hover:underline">
+                <Link href={offer.ctaUrl} className="relative mt-4 inline-flex text-sm font-semibold text-white underline-offset-4 hover:underline">
                   {offer.ctaLabel}
                 </Link>
               ) : null}
@@ -76,7 +78,7 @@ export function ProductCatalog({
         </div>
       ) : null}
 
-      <div className="rounded-[2rem] border border-border/55 bg-white/72 p-5 shadow-[0_22px_54px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
+      <div className="rounded-[2rem] border border-border/70 bg-white/78 p-5 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-6">
         <div className="mb-4 overflow-x-auto pb-1">
           <div className="flex min-w-max gap-2">
             <motion.button
@@ -129,7 +131,7 @@ export function ProductCatalog({
             >
               <List className="h-4 w-4" />
             </button>
-            <div className="rounded-full border border-border/60 bg-white/75 px-3 py-1.5 text-sm text-muted-foreground dark:bg-white/5">
+            <div className="rounded-full border border-border/70 bg-white/82 px-3 py-1.5 text-sm text-muted-foreground dark:bg-white/5">
               Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> items
             </div>
           </div>
@@ -162,7 +164,7 @@ export function ProductCatalog({
                 whileTap={{ scale: 0.98 }}
                 whileHover={{ y: -2 }}
                 onClick={() => setVisibleCount((count) => count + 6)}
-                className="rounded-full border border-border/65 bg-white/75 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5"
+                className="rounded-full border border-border/70 bg-white/82 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/24 hover:bg-primary/4 dark:bg-white/5"
               >
                 Load more items
               </motion.button>
@@ -170,7 +172,7 @@ export function ProductCatalog({
           ) : null}
         </>
       ) : catalogIsEmpty ? (
-        <div className="rounded-[2.25rem] border border-dashed border-border/70 bg-white/68 p-8 shadow-[0_22px_60px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-10">
+        <div className="rounded-[2.25rem] border border-dashed border-border/70 bg-white/78 p-8 shadow-[0_22px_52px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
             <div className="space-y-4">
               <span className="glow-badge">
@@ -201,7 +203,7 @@ export function ProductCatalog({
                 "Use real images and delivery notes",
                 "Publish featured items only after quality check"
               ].map((item) => (
-                <div key={item} className="rounded-[1.5rem] border border-border/55 bg-background/70 px-5 py-4 text-sm font-medium">
+                <div key={item} className="rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4 text-sm font-medium">
                   {item}
                 </div>
               ))}
@@ -209,7 +211,7 @@ export function ProductCatalog({
           </div>
         </div>
       ) : (
-        <div className="rounded-[2rem] border border-border/55 bg-white/72 p-8 text-center shadow-[0_20px_55px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4">
+        <div className="rounded-[2rem] border border-border/70 bg-white/78 p-8 text-center shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4">
           <p className="text-lg font-semibold">No products match your filters</p>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
             Try a different search term or reset the active category filter to see more results.

@@ -77,8 +77,8 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
 
   return (
     <section className="page-grid relative overflow-hidden py-16 md:py-24">
-      <div className="orb -left-20 -top-16 h-[420px] w-[420px] bg-primary/12" />
-      <div className="orb -right-12 top-12 h-[420px] w-[420px] bg-accent/12" />
+      <div className="orb -left-20 -top-16 h-[420px] w-[420px] bg-primary/10" />
+      <div className="orb -right-12 top-12 h-[420px] w-[420px] bg-accent/10" />
 
       <div className="container grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <Reveal>
@@ -108,7 +108,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
               </Link>
             </div>
 
-            <div className="grid gap-3 rounded-[1.75rem] border border-border/55 bg-white/72 p-4 shadow-[0_16px_40px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 sm:grid-cols-3">
+            <div className="grid gap-3 rounded-[1.75rem] border border-border/70 bg-white/78 p-4 shadow-[0_16px_40px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 sm:grid-cols-3">
               {quickStats.map((stat) => (
                 <div key={stat.label} className="rounded-[1.25rem] border border-border/50 bg-background/70 px-4 py-4">
                   <p className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">{stat.label}</p>
@@ -125,7 +125,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.08 }}
-                  className="rounded-[1.5rem] border border-border/55 bg-white/70 p-4 shadow-[0_12px_32px_rgba(2,6,23,0.04)] dark:bg-white/4"
+                  className="rounded-[1.5rem] border border-border/70 bg-white/78 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] dark:bg-white/4"
                 >
                   <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                     <item.icon className="h-5 w-5" />
@@ -143,9 +143,9 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[2rem] border border-border/55 bg-white/75 p-6 shadow-[0_24px_70px_rgba(2,6,23,0.09)] backdrop-blur-xl dark:bg-white/4 md:p-7"
+            className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-white/82 p-6 shadow-[0_24px_56px_rgba(15,23,42,0.08)] backdrop-blur-md dark:bg-white/4 md:p-7"
           >
-            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-primary/14 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-primary/10 to-transparent" />
             <div className="relative space-y-5">
               <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-muted/35 px-4 py-3">
                 <div>
@@ -160,7 +160,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
               <div className="surface rounded-[1.5rem] p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">Launch board</p>
-                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold text-primary">
+                  <span className="rounded-full border border-border/60 bg-background/80 px-2.5 py-1 text-[10px] font-bold text-foreground">
                     OWNER VIEW
                   </span>
                 </div>
@@ -182,7 +182,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
               {livePreview.length ? (
                 <div className="grid gap-3 md:grid-cols-3">
                   {livePreview.map((product) => (
-                    <div key={product.id} className="rounded-2xl border border-border/50 bg-white/80 p-4 dark:bg-white/10">
+                    <div key={product.id} className="rounded-2xl border border-border/60 bg-background/78 p-4 dark:bg-white/10">
                       <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{product.categoryName}</p>
                       <p className="mt-2 line-clamp-2 text-sm font-semibold">{product.name}</p>
                       <p className="mt-3 text-lg font-black text-primary">
@@ -192,7 +192,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[1.75rem] border border-dashed border-border/70 bg-muted/20 p-6">
+                <div className="rounded-[1.75rem] border border-dashed border-border/70 bg-background/65 p-6">
                   <div className="flex items-start gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                       <Sparkles className="h-5 w-5" />

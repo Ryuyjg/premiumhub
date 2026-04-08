@@ -40,7 +40,7 @@ export function TrustSection() {
   return (
     <section className="container py-18 md:py-24">
       <Reveal>
-        <div className="mb-10 rounded-[2rem] border border-border/55 bg-white/72 p-7 shadow-[0_20px_55px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-8">
+        <div className="mb-10 rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-8">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Trust layer</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">
             A buyer should be able to trust the store

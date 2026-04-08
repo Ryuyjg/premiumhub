@@ -9,15 +9,15 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "relative overflow-hidden bg-gradient-to-r from-primary via-[hsl(var(--gradient-mid))] to-accent text-white shadow-[0_16px_32px_rgba(13,148,136,0.28)] " +
+    "relative overflow-hidden bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-accent text-white shadow-[0_16px_32px_rgba(15,23,42,0.18)] " +
     "before:absolute before:inset-0 before:-translate-x-full before:bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.22),transparent)] " +
-    "before:transition-transform before:duration-700 hover:shadow-[0_20px_40px_rgba(13,148,136,0.34)] hover:-translate-y-px hover:before:translate-x-full",
+    "before:transition-transform before:duration-700 hover:shadow-[0_20px_38px_rgba(15,23,42,0.22)] hover:-translate-y-px hover:before:translate-x-full",
   secondary:
-    "border border-foreground/10 bg-foreground text-background hover:bg-foreground/90",
+    "border border-foreground/10 bg-foreground text-background shadow-[0_12px_28px_rgba(15,23,42,0.14)] hover:bg-foreground/92",
   ghost:
     "border border-transparent bg-transparent text-foreground hover:border-border/60 hover:bg-foreground/5",
   outline:
-    "border border-border/70 bg-white/70 text-foreground hover:border-primary/35 hover:bg-primary/5 dark:bg-white/5",
+    "border border-border/70 bg-white/82 text-foreground hover:border-primary/24 hover:bg-primary/4 dark:bg-white/5",
   danger:
     "border border-rose-500/20 bg-rose-600 text-white shadow-md shadow-rose-500/20 hover:bg-rose-700"
 };

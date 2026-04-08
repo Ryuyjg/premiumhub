@@ -83,12 +83,12 @@ export function TestimonialsSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-12 rounded-[2rem] border border-border/55 bg-white/72 p-6 text-center shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4"
+        className="mt-12 rounded-[2rem] border border-border/70 bg-white/78 p-6 text-center shadow-[0_18px_42px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4"
       >
         <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Keep these rules</p>
         <div className="mt-5 grid gap-3 md:grid-cols-3">
           {principles.map((rule) => (
-            <div key={rule} className="rounded-[1.25rem] border border-border/55 bg-background/70 px-4 py-4 text-sm font-medium">
+            <div key={rule} className="rounded-[1.25rem] border border-border/70 bg-background/72 px-4 py-4 text-sm font-medium">
               {rule}
             </div>
           ))}

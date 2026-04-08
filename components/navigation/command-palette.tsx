@@ -72,7 +72,7 @@ export function CommandPalette() {
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="relative mx-4 w-full max-w-xl overflow-hidden rounded-3xl border border-border/60 bg-background/95 shadow-2xl shadow-primary/10 backdrop-blur-2xl"
+            className="relative mx-4 w-full max-w-xl overflow-hidden rounded-[2rem] border border-border/70 bg-white/92 shadow-[0_28px_70px_rgba(15,23,42,0.12)] backdrop-blur-2xl dark:bg-[hsl(var(--card)/0.96)]"
           >
             <div className="flex items-center border-b border-border/50 px-4">
               <Search className="mr-3 h-5 w-5 text-muted-foreground" />
@@ -106,9 +106,9 @@ export function CommandPalette() {
                     <button
                       type="button"
                       onClick={() => navigate("/products")}
-                      className="group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition hover:bg-primary/10 hover:text-primary"
+                      className="group flex items-center gap-3 rounded-2xl border border-transparent px-3 py-2.5 text-sm transition hover:border-border/60 hover:bg-foreground/5 hover:text-foreground"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted group-hover:bg-primary/20">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 group-hover:bg-background">
                         <Sparkles className="h-4 w-4" />
                       </div>
                       <span className="font-medium">Browse catalog</span>
@@ -116,9 +116,9 @@ export function CommandPalette() {
                     <button
                       type="button"
                       onClick={() => navigate("/cart")}
-                      className="group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition hover:bg-primary/10 hover:text-primary"
+                      className="group flex items-center gap-3 rounded-2xl border border-transparent px-3 py-2.5 text-sm transition hover:border-border/60 hover:bg-foreground/5 hover:text-foreground"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted group-hover:bg-primary/20">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 group-hover:bg-background">
                         <ShoppingCart className="h-4 w-4" />
                       </div>
                       <span className="font-medium">Review cart</span>
@@ -144,7 +144,7 @@ export function CommandPalette() {
                           key={product.id}
                           type="button"
                           onClick={() => navigate(`/products/${product.slug}`)}
-                          className="group flex items-center justify-between rounded-2xl px-3 py-3 text-left text-sm transition hover:bg-primary/10"
+                          className="group flex items-center justify-between rounded-2xl border border-transparent px-3 py-3 text-left text-sm transition hover:border-border/60 hover:bg-foreground/5"
                         >
                           <div className="flex min-w-0 items-center gap-3">
                             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-muted">
@@ -173,7 +173,7 @@ export function CommandPalette() {
               )}
             </div>
 
-            <div className="flex items-center justify-between border-t border-border/50 bg-muted/30 px-4 py-3 text-[10px] text-muted-foreground">
+            <div className="flex items-center justify-between border-t border-border/50 bg-muted/20 px-4 py-3 text-[10px] text-muted-foreground">
               <div className="flex gap-4">
                 <span>Press Ctrl/Cmd + K to open</span>
                 <span>Press Esc to close</span>

@@ -74,12 +74,12 @@ export function AuthCard() {
   }
 
   return (
-    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-border/60 bg-white/78 p-7 shadow-[0_26px_70px_rgba(2,6,23,0.1)] backdrop-blur-2xl dark:bg-white/5 md:p-8">
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
-      <div className="absolute -top-16 left-1/2 h-32 w-56 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
+    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-border/70 bg-white/82 p-7 shadow-[0_24px_56px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:bg-white/5 md:p-8">
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-accent" />
+      <div className="absolute -top-16 left-1/2 h-32 w-56 -translate-x-1/2 rounded-full bg-primary/12 blur-3xl" />
 
       <div className="relative mb-7 flex flex-col items-center gap-3 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground to-accent shadow-[0_14px_28px_rgba(15,23,42,0.16)]">
           <ShieldCheck className="h-6 w-6 text-white" />
         </div>
 
@@ -176,7 +176,7 @@ export function AuthCard() {
         </Button>
       </form>
 
-      <div className="mt-6 rounded-2xl border border-border/55 bg-muted/30 p-3.5">
+      <div className="mt-6 rounded-2xl border border-border/70 bg-background/72 p-3.5">
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Protected sessions

@@ -28,7 +28,7 @@ const statusStyles: Record<string, string> = {
   pending: "bg-amber-500/12 text-amber-700 dark:text-amber-300 border-amber-500/25",
   paid: "bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border-emerald-500/25",
   failed: "bg-rose-500/12 text-rose-700 dark:text-rose-300 border-rose-500/25",
-  created: "bg-blue-500/12 text-blue-700 dark:text-blue-300 border-blue-500/25",
+  created: "bg-primary/12 text-primary border-primary/20",
   cancelled: "bg-zinc-500/12 text-zinc-700 dark:text-zinc-300 border-zinc-500/25"
 };
 
@@ -55,7 +55,7 @@ export function DashboardOverview({
       label: "Active access",
       value: String(activeSubCount),
       sub: `${subscriptions.length} total deliveries`,
-      tone: "from-primary/25 to-cyan-500/10",
+      tone: "from-primary/16 to-primary/5",
       iconTone: "bg-primary/15 text-primary"
     },
     {
@@ -63,32 +63,32 @@ export function DashboardOverview({
       label: "Successful orders",
       value: String(paidOrderCount),
       sub: `${orders.length} total orders`,
-      tone: "from-blue-500/20 to-sky-500/10",
-      iconTone: "bg-blue-500/12 text-blue-600"
+      tone: "from-foreground/8 to-primary/5",
+      iconTone: "bg-foreground/8 text-foreground"
     },
     {
       icon: Clock3,
       label: "Next renewal",
       value: nextExpiry !== null ? `${nextExpiry}d` : "N/A",
       sub: nextExpiry !== null ? (nextExpiry <= 3 ? "Renew now to avoid interruption" : "Days remaining") : "No active access yet",
-      tone: nextExpiry !== null && nextExpiry <= 3 ? "from-rose-500/20 to-orange-500/10" : "from-emerald-500/20 to-teal-500/10",
-      iconTone: nextExpiry !== null && nextExpiry <= 3 ? "bg-rose-500/12 text-rose-600" : "bg-emerald-500/12 text-emerald-600"
+      tone: nextExpiry !== null && nextExpiry <= 3 ? "from-amber-500/16 to-amber-500/6" : "from-accent/16 to-accent/6",
+      iconTone: nextExpiry !== null && nextExpiry <= 3 ? "bg-amber-500/12 text-amber-600" : "bg-accent/12 text-accent"
     },
     {
       icon: Wallet,
       label: "Wallet balance",
       value: formatCurrency(user.walletBalance || 0),
       sub: `Total spent ${formatCurrency(totalSpent)}`,
-      tone: "from-amber-500/20 to-orange-500/10",
-      iconTone: "bg-amber-500/12 text-amber-600"
+      tone: "from-primary/10 to-accent/6",
+      iconTone: "bg-primary/12 text-primary"
     }
   ];
 
   return (
     <div className="space-y-7">
-      <section className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-gradient-to-br from-primary/90 via-[hsl(var(--gradient-mid))] to-accent p-6 text-white shadow-[0_28px_70px_rgba(13,148,136,0.28)] md:p-8">
-        <div className="absolute -right-16 -top-14 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
-        <div className="absolute -bottom-10 -left-8 h-36 w-36 rounded-full bg-white/10 blur-3xl" />
+      <section className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-accent p-6 text-white shadow-[0_28px_56px_rgba(15,23,42,0.18)] md:p-8">
+        <div className="absolute -right-16 -top-14 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-10 -left-8 h-36 w-36 rounded-full bg-accent/15 blur-3xl" />
         <div className="relative grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="space-y-3">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-white/80">Customer workspace</p>
@@ -129,7 +129,7 @@ export function DashboardOverview({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className={`relative overflow-hidden rounded-[1.5rem] border border-border/50 bg-gradient-to-br ${card.tone} p-5`}
+            className={`relative overflow-hidden rounded-[1.5rem] border border-border/60 bg-gradient-to-br ${card.tone} p-5 shadow-[0_14px_34px_rgba(15,23,42,0.04)]`}
           >
             <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl ${card.iconTone}`}>
               <card.icon className="h-5 w-5" />
@@ -142,7 +142,7 @@ export function DashboardOverview({
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[1.75rem] border border-border/55 bg-white/75 p-5 shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
+        <div className="rounded-[1.75rem] border border-border/70 bg-white/78 p-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-black tracking-tight">Your active access</h2>
             <Link href="/products" className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.12em] text-primary">
@@ -205,7 +205,7 @@ export function DashboardOverview({
           </div>
         </div>
 
-        <div className="rounded-[1.75rem] border border-border/55 bg-white/75 p-5 shadow-[0_18px_48px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 md:p-6">
+        <div className="rounded-[1.75rem] border border-border/70 bg-white/78 p-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-black tracking-tight">Order timeline</h2>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />

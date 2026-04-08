@@ -44,7 +44,7 @@ export default function FaqPage() {
     >
       <div className="space-y-4">
         {faqs.map((faq) => (
-          <div key={faq.question} className="rounded-[1.5rem] border border-border/55 bg-background/70 p-5">
+          <div key={faq.question} className="rounded-[1.5rem] border border-border/70 bg-background/72 p-5">
             <p className="text-lg font-semibold">{faq.question}</p>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{faq.answer}</p>
           </div>

@@ -30,7 +30,7 @@ export default function LoginPage() {
       </div>
 
       <div className="container grid min-h-[calc(100vh-8rem)] items-center gap-10 lg:grid-cols-[1fr_1fr]">
-        <div className="rounded-[2rem] border border-border/55 bg-white/70 p-7 shadow-[0_22px_58px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4 lg:p-8">
+        <div className="rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 lg:p-8">
           <div className="space-y-4">
             <span className="glow-badge">{APP_NAME} Account Area</span>
             <h1 className="text-4xl font-black tracking-tight xl:text-5xl">
@@ -45,7 +45,7 @@ export default function LoginPage() {
 
           <div className="mt-8 space-y-3.5">
             {features.map((feature) => (
-              <div key={feature.title} className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/25 p-4">
+              <div key={feature.title} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/72 p-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                   <feature.icon className="h-5 w-5 text-primary" />
                 </div>
@@ -57,7 +57,7 @@ export default function LoginPage() {
             ))}
           </div>
 
-          <div className="mt-7 rounded-[1.5rem] border border-border/55 bg-background/70 p-4 text-sm leading-7 text-muted-foreground">
+          <div className="mt-7 rounded-[1.5rem] border border-border/70 bg-background/72 p-4 text-sm leading-7 text-muted-foreground">
             Use this area for real customer activity, not filler. Once products and payments are finalized, the account
             flow is already in place.
           </div>

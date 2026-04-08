@@ -18,7 +18,7 @@ const features = [
     icon: ShoppingBag,
     title: "Manual catalog control",
     description: "Publish each product intentionally instead of filling the storefront with noisy starter stock.",
-    gradient: "from-primary/18 to-amber-500/10",
+    gradient: "from-primary/14 to-primary/5",
     iconBg: "bg-primary/12",
     iconColor: "text-primary",
     number: "01"
@@ -27,63 +27,63 @@ const features = [
     icon: Sparkles,
     title: "Flexible digital product mix",
     description: "Use the same storefront for subscriptions, software, private offers, account access, and niche digital items.",
-    gradient: "from-emerald-500/16 to-teal-500/10",
-    iconBg: "bg-emerald-500/10",
-    iconColor: "text-emerald-600",
+    gradient: "from-accent/16 to-accent/6",
+    iconBg: "bg-accent/12",
+    iconColor: "text-accent",
     number: "02"
   },
   {
     icon: Search,
     title: "Fast browse and filter flow",
     description: "Search, category filters, and clean product cards keep the catalog easy to scan when you start adding items.",
-    gradient: "from-sky-500/16 to-cyan-500/10",
-    iconBg: "bg-sky-500/10",
-    iconColor: "text-sky-600",
+    gradient: "from-foreground/8 to-primary/5",
+    iconBg: "bg-foreground/8",
+    iconColor: "text-foreground",
     number: "03"
   },
   {
     icon: LayoutDashboard,
     title: "Private customer workspace",
     description: "Orders, delivery notes, credentials, and renewals all live in one account area instead of scattered chats.",
-    gradient: "from-violet-500/14 to-fuchsia-500/8",
-    iconBg: "bg-violet-500/10",
-    iconColor: "text-violet-600",
+    gradient: "from-primary/10 to-accent/6",
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
     number: "04"
   },
   {
     icon: ShieldCheck,
     title: "Security-first structure",
     description: "Protected sessions, clear policies, and stored delivery records make the store feel legitimate from day one.",
-    gradient: "from-rose-500/14 to-orange-500/8",
-    iconBg: "bg-rose-500/10",
-    iconColor: "text-rose-600",
+    gradient: "from-foreground/7 to-accent/5",
+    iconBg: "bg-foreground/8",
+    iconColor: "text-foreground",
     number: "05"
   },
   {
     icon: HeadphonesIcon,
     title: "Human support channels",
     description: "Direct WhatsApp and Telegram support stay visible so buyers know help exists before and after purchase.",
-    gradient: "from-amber-500/18 to-orange-500/10",
-    iconBg: "bg-amber-500/10",
-    iconColor: "text-amber-600",
+    gradient: "from-accent/14 to-primary/6",
+    iconBg: "bg-accent/10",
+    iconColor: "text-accent",
     number: "06"
   },
   {
     icon: CreditCard,
     title: "Checkout-ready architecture",
     description: "You can keep payment paused while the storefront improves, then plug the next crypto gateway in later.",
-    gradient: "from-slate-500/16 to-zinc-500/10",
-    iconBg: "bg-slate-500/10",
-    iconColor: "text-slate-600",
+    gradient: "from-foreground/8 to-foreground/3",
+    iconBg: "bg-foreground/8",
+    iconColor: "text-foreground",
     number: "07"
   },
   {
     icon: Zap,
     title: "Launch-ready presentation",
     description: "Stronger visuals, better copy, and better empty states make the store feel polished even while restocking.",
-    gradient: "from-accent/18 to-primary/10",
-    iconBg: "bg-accent/12",
-    iconColor: "text-accent",
+    gradient: "from-primary/12 to-accent/6",
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
     number: "08"
   }
 ];
@@ -111,7 +111,7 @@ export function FeatureGrid() {
             <motion.div
               whileHover={{ y: -6, scale: 1.01 }}
               transition={{ duration: 0.2 }}
-              className={`group relative h-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br ${feature.gradient} p-6 backdrop-blur-sm dark:border-white/6`}
+              className={`group relative h-full overflow-hidden rounded-[1.75rem] border border-border/70 bg-gradient-to-br ${feature.gradient} p-6 shadow-[0_14px_34px_rgba(15,23,42,0.04)] backdrop-blur-sm dark:border-white/6`}
             >
               <span className="absolute -right-1 -top-2 select-none text-7xl font-black text-foreground/4">
                 {feature.number}

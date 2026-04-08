@@ -79,7 +79,7 @@ export default function CartPage() {
 
   return (
     <div className="container py-16">
-      <div className="mb-10 space-y-3">
+      <div className="mb-10 rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4">
         <p className="glow-badge w-fit">Your cart</p>
         <h1 className="text-3xl font-black tracking-tight md:text-5xl">
           {cartItems.length > 0 ? (
@@ -101,7 +101,7 @@ export default function CartPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="surface flex flex-col items-center gap-6 rounded-[2.5rem] border-2 border-dashed border-border/60 bg-muted/20 py-20 text-center"
+            className="surface flex flex-col items-center gap-6 rounded-[2.5rem] border-2 border-dashed border-border/60 bg-background/72 py-20 text-center"
           >
             <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-background shadow-xl">
               <ShoppingBag className="h-10 w-10 text-muted-foreground" />
@@ -119,7 +119,7 @@ export default function CartPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             {emptyCartIdeas.map((idea) => (
-              <div key={idea} className="rounded-[1.75rem] border border-border/55 bg-white/70 p-6 shadow-[0_16px_40px_rgba(2,6,23,0.05)] backdrop-blur-xl dark:bg-white/4">
+              <div key={idea} className="rounded-[1.75rem] border border-border/70 bg-white/78 p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4">
                 <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <Sparkles className="h-4 w-4" />
                 </div>
@@ -140,7 +140,7 @@ export default function CartPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 16, scale: 0.97 }}
                   transition={{ delay: index * 0.04 }}
-                  className="surface group flex items-center gap-5 rounded-[2rem] border border-border/40 p-5 transition-all hover:shadow-xl hover:shadow-primary/5"
+                  className="surface group flex items-center gap-5 rounded-[2rem] border border-border/60 p-5 transition-all hover:shadow-[0_20px_42px_rgba(15,23,42,0.08)]"
                 >
                   <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-2xl bg-muted shadow-sm">
                     <Image
@@ -196,7 +196,7 @@ export default function CartPage() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              className="surface sticky top-24 rounded-[2.5rem] border border-primary/10 p-8 shadow-2xl shadow-primary/5"
+              className="surface sticky top-24 rounded-[2.5rem] border border-border/70 p-8 shadow-[0_22px_52px_rgba(15,23,42,0.08)]"
             >
               <h2 className="mb-6 flex items-center gap-2 text-xl font-bold">
                 Order summary
@@ -215,7 +215,7 @@ export default function CartPage() {
               <div className="mb-8 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Total</p>
-                  <p className="gradient-text text-3xl font-black">{formatCurrency(total)}</p>
+                  <p className="text-3xl font-black">{formatCurrency(total)}</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <ShieldCheck size={24} />
@@ -223,7 +223,7 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
-                <div className="rounded-[1.5rem] border border-dashed border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground">
+                <div className="rounded-[1.5rem] border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
                   External gateway checkout is paused while the store is being rebuilt. Wallet checkout stays available
                   for approved users.
                 </div>
@@ -254,10 +254,10 @@ export default function CartPage() {
                 ) : null}
               </div>
 
-              <div className="mt-8 space-y-3 rounded-[2rem] border border-border/50 bg-muted/30 p-5">
+              <div className="mt-8 space-y-3 rounded-[2rem] border border-border/60 bg-background/72 p-5">
                 {[
-                  { icon: CreditCard, text: "Reconnect the next gateway when the catalog is ready", color: "text-amber-500" },
-                  { icon: ShieldCheck, text: "Dashboard delivery and support flow stay active", color: "text-emerald-500" }
+                  { icon: CreditCard, text: "Reconnect the next gateway when the catalog is ready", color: "text-primary" },
+                  { icon: ShieldCheck, text: "Dashboard delivery and support flow stay active", color: "text-accent" }
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">
                     <item.icon className={`h-4 w-4 ${item.color}`} />

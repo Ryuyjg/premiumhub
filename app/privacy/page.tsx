@@ -32,7 +32,7 @@ export default function PrivacyPage() {
     >
       <div className="grid gap-5 md:grid-cols-2">
         {privacySections.map((section) => (
-          <div key={section.title} className="rounded-[1.75rem] border border-border/55 bg-background/70 p-6">
+          <div key={section.title} className="rounded-[1.75rem] border border-border/70 bg-background/72 p-6">
             <h2 className="text-xl font-semibold">{section.title}</h2>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{section.text}</p>
           </div>

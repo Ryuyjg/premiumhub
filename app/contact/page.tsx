@@ -36,7 +36,7 @@ export default function ContactPage() {
       <div className="space-y-10">
         <div className="grid gap-5 md:grid-cols-3">
           {contactCards.map((card) => (
-            <div key={card.title} className="rounded-[1.75rem] border border-border/55 bg-background/70 p-6">
+            <div key={card.title} className="rounded-[1.75rem] border border-border/70 bg-background/72 p-6">
               <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <card.icon className="h-5 w-5" />
               </div>
@@ -49,7 +49,7 @@ export default function ContactPage() {
           ))}
         </div>
 
-        <div className="rounded-[1.75rem] border border-border/55 bg-muted/20 p-6">
+        <div className="rounded-[1.75rem] border border-border/70 bg-background/72 p-6">
           <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <HeadphonesIcon className="h-5 w-5" />
           </div>

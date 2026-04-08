@@ -37,7 +37,7 @@ const trustBadges = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-12 border-t border-border/40 bg-gradient-to-b from-transparent to-muted/30">
+    <footer className="mt-12 border-t border-border/40 bg-gradient-to-b from-transparent to-muted/35">
       <div className="border-b border-border/35">
         <div className="container grid gap-3 py-5 md:grid-cols-4 md:items-center">
           {trustBadges.map((badge) => (
@@ -53,10 +53,10 @@ export function SiteFooter() {
       </div>
 
       <div className="container py-14">
-        <div className="grid gap-10 rounded-[2rem] border border-border/50 bg-white/65 p-8 shadow-[0_20px_60px_rgba(2,6,23,0.06)] backdrop-blur-xl dark:bg-white/4 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 rounded-[2rem] border border-border/70 bg-white/78 p-8 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground to-accent shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                 <Shield className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -75,7 +75,7 @@ export function SiteFooter() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-white/70 text-muted-foreground transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-primary dark:bg-white/5"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-white/82 text-muted-foreground transition-all hover:border-primary/24 hover:bg-primary/8 hover:text-primary dark:bg-white/5"
                 >
                   <social.icon className="h-4 w-4" />
                 </Link>
