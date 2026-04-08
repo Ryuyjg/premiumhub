@@ -11,28 +11,36 @@ const trustCards = [
     title: "Clear policies",
     description: "Refund, privacy, FAQ, and terms pages are now visible so customers can verify how the store operates.",
     href: "/refund-policy",
-    cta: "Read policies"
+    cta: "Read policies",
+    iconTone: "bg-primary/10 text-primary",
+    ctaTone: "text-primary"
   },
   {
     icon: HeadphonesIcon,
     title: "Direct support",
     description: "Customers can find WhatsApp, Telegram, and dashboard support without hunting through the site.",
     href: "/contact",
-    cta: "Open contact"
+    cta: "Open contact",
+    iconTone: "bg-success/12 text-success",
+    ctaTone: "text-success"
   },
   {
     icon: BadgeCheck,
     title: "Tracked delivery",
     description: "Orders, renewals, and support history stay tied to the customer account instead of disappearing in chat.",
     href: "/login",
-    cta: "View account flow"
+    cta: "View account flow",
+    iconTone: "bg-success/12 text-success",
+    ctaTone: "text-success"
   },
   {
     icon: Wallet,
     title: "Safer rollout",
     description: "Checkout is intentionally paused until the next gateway is ready, which is better than forcing a weak payment flow live.",
     href: "/faq",
-    cta: "See how it works"
+    cta: "See how it works",
+    iconTone: "bg-primary/10 text-primary",
+    ctaTone: "text-primary"
   }
 ];
 
@@ -57,12 +65,12 @@ export function TrustSection() {
         {trustCards.map((card, index) => (
           <Reveal key={card.title} delay={index * 0.05}>
             <motion.div whileHover={{ y: -5 }} className="surface-interactive rounded-[1.75rem] p-6">
-              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl ${card.iconTone}`}>
                 <card.icon className="h-5 w-5" />
               </div>
               <p className="text-lg font-semibold">{card.title}</p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">{card.description}</p>
-              <Link href={card.href} className="mt-5 inline-flex text-sm font-semibold text-primary">
+              <Link href={card.href} className={`mt-5 inline-flex text-sm font-semibold ${card.ctaTone}`}>
                 {card.cta}
               </Link>
             </motion.div>

@@ -42,7 +42,7 @@ export function SiteFooter() {
         <div className="container grid gap-3 py-5 md:grid-cols-4 md:items-center">
           {trustBadges.map((badge) => (
             <div key={badge.label} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-              <badge.icon className="h-4 w-4 text-primary" />
+              <badge.icon className={`h-4 w-4 ${badge.label === "Direct support channels" ? "text-success" : "text-primary"}`} />
               <span className="font-semibold">{badge.label}</span>
             </div>
           ))}
@@ -56,7 +56,7 @@ export function SiteFooter() {
         <div className="grid gap-10 rounded-[2rem] border border-border/70 bg-white/78 p-8 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground to-accent shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-primary shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                 <Shield className="h-5 w-5 text-white" />
               </div>
               <div>

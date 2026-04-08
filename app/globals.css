@@ -3,44 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: 40 24% 97%;
-  --foreground: 220 30% 14%;
-  --card: 0 0% 100%;
-  --border: 214 16% 84%;
-  --input: 214 16% 84%;
-  --ring: 214 42% 24%;
-  --muted: 210 23% 93%;
-  --muted-foreground: 220 11% 40%;
-  --primary: 214 42% 24%;
-  --primary-foreground: 0 0% 100%;
-  --accent: 158 29% 35%;
-  --accent-foreground: 0 0% 100%;
-  --success: 151 42% 34%;
-  --warning: 35 92% 51%;
-  --surface: 0 0% 100%;
-  --surface-foreground: 220 30% 14%;
-  --gradient-start: 214 42% 24%;
-  --gradient-mid: 200 34% 30%;
-  --gradient-end: 158 29% 35%;
+  --background: 38 33% 94%;
+  --foreground: 221 18% 11%;
+  --card: 40 43% 98%;
+  --border: 36 23% 82%;
+  --input: 36 23% 82%;
+  --ring: 36 46% 49%;
+  --muted: 35 26% 90%;
+  --muted-foreground: 224 10% 36%;
+  --primary: 36 46% 49%;
+  --primary-foreground: 221 18% 11%;
+  --accent: 37 40% 62%;
+  --accent-foreground: 221 18% 11%;
+  --success: 159 39% 30%;
+  --warning: 28 74% 47%;
+  --surface: 40 43% 98%;
+  --surface-foreground: 221 18% 11%;
+  --gradient-start: 225 17% 20%;
+  --gradient-mid: 223 15% 15%;
+  --gradient-end: 36 46% 49%;
 }
 
 .dark {
-  --background: 222 25% 9%;
-  --foreground: 40 20% 95%;
-  --card: 223 22% 12%;
-  --border: 221 17% 19%;
-  --input: 221 17% 19%;
-  --ring: 208 42% 68%;
-  --muted: 223 16% 15%;
-  --muted-foreground: 217 12% 72%;
-  --primary: 208 42% 68%;
-  --primary-foreground: 0 0% 100%;
-  --accent: 158 33% 52%;
-  --accent-foreground: 0 0% 100%;
-  --success: 151 40% 44%;
-  --warning: 35 92% 56%;
-  --surface: 223 22% 12%;
-  --surface-foreground: 40 20% 95%;
+  --background: 222 18% 10%;
+  --foreground: 38 33% 94%;
+  --card: 222 16% 12%;
+  --border: 34 14% 21%;
+  --input: 34 14% 21%;
+  --ring: 36 52% 64%;
+  --muted: 223 11% 16%;
+  --muted-foreground: 37 12% 72%;
+  --primary: 36 52% 62%;
+  --primary-foreground: 221 18% 11%;
+  --accent: 37 44% 70%;
+  --accent-foreground: 221 18% 11%;
+  --success: 159 35% 45%;
+  --warning: 31 76% 57%;
+  --surface: 222 16% 12%;
+  --surface-foreground: 38 33% 94%;
+  --gradient-start: 224 15% 23%;
+  --gradient-mid: 223 14% 17%;
+  --gradient-end: 36 52% 62%;
 }
 
 html {
@@ -65,16 +68,16 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 70% 55% at 12% -10%, rgba(37, 99, 235, 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse 52% 45% at 92% 0%, rgba(20, 83, 45, 0.18) 0%, transparent 52%),
-    hsl(222 25% 9%);
+    radial-gradient(ellipse 70% 55% at 12% -10%, rgba(184, 138, 68, 0.18) 0%, transparent 56%),
+    radial-gradient(ellipse 48% 42% at 92% 0%, rgba(111, 88, 55, 0.16) 0%, transparent 52%),
+    hsl(222 18% 10%);
 }
 
 body:not(.dark) {
   background:
-    radial-gradient(ellipse 65% 50% at 15% -10%, rgba(30, 64, 175, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 45% 35% at 90% 0%, rgba(21, 128, 61, 0.06) 0%, transparent 50%),
-    hsl(40 24% 97%);
+    radial-gradient(ellipse 66% 52% at 15% -10%, rgba(184, 138, 68, 0.14) 0%, transparent 58%),
+    radial-gradient(ellipse 45% 35% at 90% 0%, rgba(42, 47, 58, 0.06) 0%, transparent 52%),
+    hsl(38 33% 94%);
 }
 
 ::selection {
@@ -103,14 +106,14 @@ body:not(.dark) {
   .glass-panel {
     @apply border backdrop-blur-xl;
     border-color: hsl(var(--foreground) / 0.08);
-    background-color: rgb(255 255 255 / 0.72);
+    background-color: rgb(255 253 250 / 0.74);
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
   }
 
   .section-shell {
     @apply rounded-[2rem] border backdrop-blur-xl;
     border-color: hsl(var(--border) / 0.7);
-    background-color: rgb(255 255 255 / 0.78);
+    background-color: rgb(255 252 248 / 0.82);
     box-shadow: 0 16px 42px rgba(15, 23, 42, 0.05);
   }
 
@@ -129,7 +132,7 @@ body:not(.dark) {
   .pill-filter {
     @apply rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200;
     border-color: hsl(var(--border) / 0.7);
-    background-color: rgb(255 255 255 / 0.7);
+    background-color: rgb(255 251 246 / 0.82);
     color: hsl(var(--muted-foreground));
   }
 
@@ -160,8 +163,8 @@ body:not(.dark) {
 
   .glow-badge {
     @apply inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-foreground;
-    border-color: hsl(var(--border) / 0.7);
-    background-color: hsl(var(--background) / 0.85);
+    border-color: hsl(var(--primary) / 0.22);
+    background-color: hsl(var(--background) / 0.92);
     box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
   }
 
@@ -179,18 +182,18 @@ body:not(.dark) {
   .btn-ghost {
     @apply inline-flex h-12 items-center justify-center gap-2 rounded-full border px-6 text-sm font-semibold text-foreground transition-all duration-200;
     border-color: hsl(var(--border) / 0.7);
-    background-color: rgb(255 255 255 / 0.82);
+    background-color: rgb(255 251 246 / 0.88);
   }
 
   .page-grid {
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      linear-gradient(rgba(160, 137, 100, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(160, 137, 100, 0.08) 1px, transparent 1px);
     background-size: 56px 56px;
   }
 
   .dot-grid {
-    background-image: radial-gradient(circle, rgba(148, 163, 184, 0.28) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(160, 137, 100, 0.22) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
@@ -254,8 +257,8 @@ body:not(.dark) {
 }
 
 .pill-filter:hover {
-  border-color: hsl(var(--primary) / 0.3);
-  background-color: hsl(var(--primary) / 0.05);
+  border-color: hsl(var(--primary) / 0.28);
+  background-color: hsl(var(--primary) / 0.08);
   color: hsl(var(--foreground));
 }
 
@@ -274,7 +277,7 @@ body:not(.dark) {
 
 .btn-ghost:hover {
   border-color: hsl(var(--primary) / 0.24);
-  background-color: hsl(var(--primary) / 0.04);
+  background-color: hsl(var(--primary) / 0.08);
 }
 
 .dark .btn-ghost {

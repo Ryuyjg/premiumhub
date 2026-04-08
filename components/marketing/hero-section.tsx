@@ -38,22 +38,22 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
         productCount > 0
           ? `${productCount} item${productCount === 1 ? "" : "s"} are already visible on the storefront.`
           : "The catalog is empty on purpose, so you can rebuild it cleanly.",
-      tone: "bg-emerald-500"
+      tone: "bg-success"
     },
     {
       title: "Fulfillment",
       description: "Dashboard delivery, notes, and support handling stay available for future orders.",
-      tone: "bg-primary"
+      tone: "bg-foreground"
     },
     {
       title: "Payments",
       description: "Gateway checkout is intentionally paused until the next crypto integration is added.",
-      tone: "bg-amber-500"
+      tone: "bg-primary"
     },
     {
       title: "Support",
       description: "WhatsApp and Telegram remain wired in for fast human help.",
-      tone: "bg-sky-500"
+      tone: "bg-success"
     }
   ];
 
@@ -77,8 +77,8 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
 
   return (
     <section className="page-grid relative overflow-hidden py-16 md:py-24">
-      <div className="orb -left-20 -top-16 h-[420px] w-[420px] bg-primary/10" />
-      <div className="orb -right-12 top-12 h-[420px] w-[420px] bg-accent/10" />
+      <div className="orb -left-20 -top-16 h-[420px] w-[420px] bg-primary/12" />
+      <div className="orb -right-12 top-12 h-[420px] w-[420px] bg-foreground/7" />
 
       <div className="container grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <Reveal>
@@ -152,7 +152,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                   <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Store readiness</p>
                   <p className="text-sm font-semibold">Fresh foundation, premium shell, manual catalog</p>
                 </div>
-                <span className="rounded-full bg-emerald-500/14 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="rounded-full bg-success/14 px-3 py-1 text-xs font-semibold text-success">
                   CLEAN RESET
                 </span>
               </div>
@@ -207,15 +207,15 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                       </div>
                       <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted-foreground">
                         <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white/80 px-3 py-1 dark:bg-white/5">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                           Real products only
                         </span>
                         <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white/80 px-3 py-1 dark:bg-white/5">
-                          <MessageCircleHeart className="h-3.5 w-3.5 text-primary" />
+                          <MessageCircleHeart className="h-3.5 w-3.5 text-success" />
                           Human support ready
                         </span>
                         <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white/80 px-3 py-1 dark:bg-white/5">
-                          <Wallet className="h-3.5 w-3.5 text-amber-500" />
+                          <Wallet className="h-3.5 w-3.5 text-primary" />
                           Gateway can return later
                         </span>
                       </div>

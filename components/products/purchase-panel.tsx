@@ -63,12 +63,12 @@ export function CheckoutButton({ product }: { product: Product }) {
   return (
     <div className="grid gap-3">
       {deliveryMode === "otp_manual" ? (
-        <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+        <p className="rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground">
           Manual OTP delivery item. Final access details are shared after payment confirmation.
         </p>
       ) : null}
       {deliveryMode === "email_invite" ? (
-        <p className="rounded-xl border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-sm text-sky-700 dark:text-sky-300">
+        <p className="rounded-xl border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
           Invite-based item. Enter the customer email that should receive access.
         </p>
       ) : null}

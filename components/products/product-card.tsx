@@ -96,7 +96,7 @@ export function ProductCard({
               <Badge>{isOutOfStock ? "No stock" : product.categoryName}</Badge>
             </div>
             {product.bestSelling ? (
-              <div className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-foreground/88 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-black/20">
+              <div className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/92 px-3 py-1 text-xs font-semibold text-[hsl(var(--foreground))] shadow-lg shadow-black/10">
                 <Sparkles className="h-3 w-3" />
                 Best seller
               </div>

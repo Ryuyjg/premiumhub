@@ -99,7 +99,7 @@ export function SiteHeader() {
       >
         <div className="container flex h-[4.75rem] items-center justify-between gap-4">
           <Link href="/" className="group inline-flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground to-accent shadow-[0_12px_24px_rgba(15,23,42,0.14)] transition-transform group-hover:scale-105">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-primary shadow-[0_12px_24px_rgba(15,23,42,0.14)] transition-transform group-hover:scale-105">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -122,7 +122,7 @@ export function SiteHeader() {
                   {active ? (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full border border-foreground/10 bg-foreground/6"
+                      className="absolute inset-0 -z-10 rounded-full border border-primary/20 bg-primary/10"
                     />
                   ) : null}
                   {link.label}
@@ -160,7 +160,7 @@ export function SiteHeader() {
             ) : (
               <Link
                 href="/login"
-                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-foreground to-accent px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.16)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(15,23,42,0.2)] md:inline-flex"
+                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-primary px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.16)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(15,23,42,0.2)] md:inline-flex"
               >
                 Sign in
               </Link>
@@ -197,7 +197,7 @@ export function SiteHeader() {
                     onClick={() => setOpen(false)}
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                       active
-                        ? "bg-gradient-to-r from-primary/14 to-accent/14 text-foreground"
+                        ? "bg-primary/10 text-foreground"
                         : "border border-border/70 bg-white/82 text-foreground hover:bg-muted/50 dark:bg-white/5"
                     }`}
                   >
@@ -220,7 +220,7 @@ export function SiteHeader() {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-foreground to-accent px-4 py-3 text-sm font-semibold text-white"
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-primary px-4 py-3 text-sm font-semibold text-white"
                   >
                     Sign in
                   </Link>

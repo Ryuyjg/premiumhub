@@ -12,7 +12,7 @@ export function SupportFloat() {
             href="https://wa.me/917907102615"
             target="_blank"
             rel="noreferrer noopener"
-            className="flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(5,150,105,0.22)] transition-transform hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-full border border-success/30 bg-success px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(47,107,87,0.22)] transition-transform hover:-translate-y-0.5"
             aria-label="Chat on WhatsApp"
           >
             <MessageCircle size={16} />
@@ -22,10 +22,10 @@ export function SupportFloat() {
             href="https://t.me/ogdigital"
             target="_blank"
             rel="noreferrer noopener"
-            className="flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(2,132,199,0.2)] transition-transform hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-full border border-primary/30 bg-foreground px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(23,26,33,0.22)] transition-transform hover:-translate-y-0.5"
             aria-label="Open Telegram"
           >
-            <Send size={16} />
+            <Send size={16} className="text-primary" />
             <span>Telegram</span>
           </a>
         </div>

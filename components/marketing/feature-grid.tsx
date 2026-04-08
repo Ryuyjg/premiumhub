@@ -27,9 +27,9 @@ const features = [
     icon: Sparkles,
     title: "Flexible digital product mix",
     description: "Use the same storefront for subscriptions, software, private offers, account access, and niche digital items.",
-    gradient: "from-accent/16 to-accent/6",
-    iconBg: "bg-accent/12",
-    iconColor: "text-accent",
+    gradient: "from-primary/16 to-primary/6",
+    iconBg: "bg-primary/12",
+    iconColor: "text-primary",
     number: "02"
   },
   {
@@ -45,27 +45,27 @@ const features = [
     icon: LayoutDashboard,
     title: "Private customer workspace",
     description: "Orders, delivery notes, credentials, and renewals all live in one account area instead of scattered chats.",
-    gradient: "from-primary/10 to-accent/6",
-    iconBg: "bg-primary/10",
-    iconColor: "text-primary",
+    gradient: "from-foreground/8 to-primary/7",
+    iconBg: "bg-foreground/8",
+    iconColor: "text-foreground",
     number: "04"
   },
   {
     icon: ShieldCheck,
     title: "Security-first structure",
     description: "Protected sessions, clear policies, and stored delivery records make the store feel legitimate from day one.",
-    gradient: "from-foreground/7 to-accent/5",
-    iconBg: "bg-foreground/8",
-    iconColor: "text-foreground",
+    gradient: "from-success/14 to-success/5",
+    iconBg: "bg-success/12",
+    iconColor: "text-success",
     number: "05"
   },
   {
     icon: HeadphonesIcon,
     title: "Human support channels",
     description: "Direct WhatsApp and Telegram support stay visible so buyers know help exists before and after purchase.",
-    gradient: "from-accent/14 to-primary/6",
-    iconBg: "bg-accent/10",
-    iconColor: "text-accent",
+    gradient: "from-success/14 to-primary/6",
+    iconBg: "bg-success/12",
+    iconColor: "text-success",
     number: "06"
   },
   {
@@ -81,7 +81,7 @@ const features = [
     icon: Zap,
     title: "Launch-ready presentation",
     description: "Stronger visuals, better copy, and better empty states make the store feel polished even while restocking.",
-    gradient: "from-primary/12 to-accent/6",
+    gradient: "from-primary/16 to-foreground/5",
     iconBg: "bg-primary/10",
     iconColor: "text-primary",
     number: "08"
