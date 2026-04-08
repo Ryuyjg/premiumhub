@@ -11,28 +11,32 @@ import {
   getOttAccounts,
   getSupportTickets
 } from "@/lib/db";
+import { getSitePages, getSupportChannels } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const [analytics, products, orders, users, coupons, accounts, categories, reviews, tickets, offers] = await Promise.all([
-    getAdminAnalytics().catch(() => ({
-      revenue: 0,
-      orders: 0,
-      activeUsers: 0,
-      activeSubscriptions: 0,
-      monthlyRevenue: []
-    })),
-    getAdminProducts().catch(() => []),
-    getAllOrders().catch(() => []),
-    getAllUsers().catch(() => []),
-    getCoupons().catch(() => []),
-    getOttAccounts().catch(() => []),
-    getCategories().catch(() => []),
-    getAdminReviews().catch(() => []),
-    getSupportTickets().catch(() => []),
-    getAdminOffers().catch(() => [])
-  ]);
+  const [analytics, products, orders, users, coupons, accounts, categories, reviews, tickets, offers, sitePages, supportChannels] =
+    await Promise.all([
+      getAdminAnalytics().catch(() => ({
+        revenue: 0,
+        orders: 0,
+        activeUsers: 0,
+        activeSubscriptions: 0,
+        monthlyRevenue: []
+      })),
+      getAdminProducts().catch(() => []),
+      getAllOrders().catch(() => []),
+      getAllUsers().catch(() => []),
+      getCoupons().catch(() => []),
+      getOttAccounts().catch(() => []),
+      getCategories().catch(() => []),
+      getAdminReviews().catch(() => []),
+      getSupportTickets().catch(() => []),
+      getAdminOffers().catch(() => []),
+      getSitePages().catch(() => []),
+      getSupportChannels().catch(() => [])
+    ]);
 
   return (
     <AdminDashboard
@@ -46,6 +50,8 @@ export default async function AdminPage() {
       reviews={reviews}
       tickets={tickets}
       offers={offers}
+      sitePages={sitePages}
+      supportChannels={supportChannels}
     />
   );
 }

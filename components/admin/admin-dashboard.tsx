@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BarChart3, Boxes, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
+import { BarChart3, Boxes, FileText, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type {
@@ -15,6 +15,8 @@ import type {
   OttAccount,
   Product,
   Review,
+  SitePage,
+  SupportChannel,
   SupportTicket
 } from "@/types";
 import { formatCurrency } from "@/lib/utils";
@@ -28,13 +30,15 @@ import { UserBalanceManager } from "@/components/admin/user-balance-manager";
 import { ReviewManager } from "@/components/admin/review-manager";
 import { SupportManager } from "@/components/admin/support-manager";
 import { OfferManager } from "@/components/admin/offer-manager";
+import { SiteContentManager } from "@/components/admin/site-content-manager";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
   { id: "catalog", label: "Catalog", icon: Boxes },
   { id: "operations", label: "Operations", icon: ShieldCheck },
   { id: "users", label: "Users", icon: Users2 },
-  { id: "growth", label: "Growth", icon: TicketPercent }
+  { id: "growth", label: "Growth", icon: TicketPercent },
+  { id: "content", label: "Content", icon: FileText }
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -49,7 +53,9 @@ export function AdminDashboard({
   users,
   reviews,
   tickets,
-  offers = []
+  offers = [],
+  sitePages,
+  supportChannels
 }: {
   analytics: AnalyticsSummary;
   products: Product[];
@@ -61,6 +67,8 @@ export function AdminDashboard({
   reviews: Review[];
   tickets: SupportTicket[];
   offers?: Offer[];
+  sitePages: SitePage[];
+  supportChannels: SupportChannel[];
 }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
@@ -276,6 +284,10 @@ export function AdminDashboard({
                 </div>
               </Card>
             </div>
+          ) : null}
+
+          {activeTab === "content" ? (
+            <SiteContentManager pages={sitePages} supportChannels={supportChannels} />
           ) : null}
         </motion.div>
       </AnimatePresence>

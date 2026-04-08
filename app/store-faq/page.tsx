@@ -4,8 +4,8 @@ import { getSitePage } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
-export default async function AboutPage() {
-  const page = await getSitePage("about");
+export default async function StoreFaqPage() {
+  const page = await getSitePage("store-faq");
 
   if (!page) {
     notFound();

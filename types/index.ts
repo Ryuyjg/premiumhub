@@ -1,5 +1,45 @@
 export type UserRole = "user" | "admin";
 
+export type SitePageLayout = "cards" | "faq" | "policy" | "rules";
+export type SiteFooterGroup = "company" | "policies";
+
+export type SitePageSection = {
+  id: string;
+  title: string;
+  description: string;
+  href?: string;
+  ctaLabel?: string;
+};
+
+export type SitePage = {
+  id: string;
+  slug: string;
+  label: string;
+  footerGroup: SiteFooterGroup;
+  order: number;
+  eyebrow: string;
+  title: string;
+  description: string;
+  body: string;
+  layout: SitePageLayout;
+  showSupportChannels?: boolean;
+  sections: SitePageSection[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type SupportChannel = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  buttonLabel: string;
+  order: number;
+  active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type Category = {
   id: string;
   name: string;

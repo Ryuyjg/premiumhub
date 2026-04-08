@@ -1,6 +1,29 @@
-import { MessageCircle, Send } from "lucide-react";
+import { HeadphonesIcon, Mail, MessageCircle, Send } from "lucide-react";
+import { getSupportChannelIconType } from "@/lib/site-content-defaults";
+import type { SupportChannel } from "@/types";
 
-export function SupportFloat() {
+function getSupportIcon(channel: Pick<SupportChannel, "title" | "href">) {
+  const iconType = getSupportChannelIconType(channel);
+
+  if (iconType === "whatsapp") {
+    return MessageCircle;
+  }
+  if (iconType === "telegram") {
+    return Send;
+  }
+  if (iconType === "mail") {
+    return Mail;
+  }
+  return HeadphonesIcon;
+}
+
+export function SupportFloat({ supportChannels }: { supportChannels: SupportChannel[] }) {
+  const channels = supportChannels.filter((channel) => channel.active).slice(0, 2);
+
+  if (!channels.length) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-20 right-4 z-50 md:bottom-8 md:right-6">
       <div className="rounded-[1.5rem] border border-border/70 bg-background/88 p-2 shadow-[0_20px_42px_rgba(15,23,42,0.1)] backdrop-blur-xl">
@@ -8,26 +31,28 @@ export function SupportFloat() {
           Need help
         </p>
         <div className="flex flex-col gap-2">
-          <a
-            href="https://wa.me/917907102615"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="flex items-center gap-2 rounded-full border border-success/30 bg-success px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(47,107,87,0.22)] transition-transform hover:-translate-y-0.5"
-            aria-label="Chat on WhatsApp"
-          >
-            <MessageCircle size={16} />
-            <span>WhatsApp</span>
-          </a>
-          <a
-            href="https://t.me/ogdigital"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="flex items-center gap-2 rounded-full border border-primary/30 bg-foreground px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(23,26,33,0.22)] transition-transform hover:-translate-y-0.5"
-            aria-label="Open Telegram"
-          >
-            <Send size={16} className="text-primary" />
-            <span>Telegram</span>
-          </a>
+          {channels.map((channel) => {
+            const Icon = getSupportIcon(channel);
+            const emphasized = getSupportChannelIconType(channel) === "whatsapp";
+
+            return (
+              <a
+                key={channel.id}
+                href={channel.href}
+                target={channel.href.startsWith("/") ? undefined : "_blank"}
+                rel={channel.href.startsWith("/") ? undefined : "noreferrer noopener"}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 ${
+                  emphasized
+                    ? "border border-success/30 bg-success shadow-[0_10px_24px_rgba(47,107,87,0.22)]"
+                    : "border border-primary/30 bg-foreground shadow-[0_10px_24px_rgba(23,26,33,0.22)]"
+                }`}
+                aria-label={channel.buttonLabel || channel.title}
+              >
+                <Icon size={16} className={emphasized ? "" : "text-primary"} />
+                <span>{channel.title}</span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

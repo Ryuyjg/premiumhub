@@ -4,8 +4,8 @@ import { getSitePage, getSupportChannels } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
-export default async function ContactPage() {
-  const [page, supportChannels] = await Promise.all([getSitePage("contact"), getSupportChannels()]);
+export default async function SupportChannelsPage() {
+  const [page, supportChannels] = await Promise.all([getSitePage("support-channels"), getSupportChannels()]);
 
   if (!page) {
     notFound();
