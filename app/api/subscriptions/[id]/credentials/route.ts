@@ -29,10 +29,10 @@ export async function GET(
     return NextResponse.json({
       mode: "otp_manual",
       provider: "Manual OTP Login",
-      label: `Use number: ${String(subscription.otpSupportNumber || "configured by admin")}`,
+      label: `Use number: ${String(subscription.otpSupportNumber || "configured support number")}`,
       email: "",
       password: "",
-      note: String(subscription.deliveryNotes || "Admin will share OTP manually.")
+      note: String(subscription.deliveryNotes || "OTP access details will be shared manually.")
     });
   }
 
@@ -43,7 +43,7 @@ export async function GET(
       label: `Requested email: ${String(subscription.customerDeliveryEmail || user.email || "")}`,
       email: "",
       password: "",
-      note: String(subscription.deliveryNotes || "Activation will be completed by admin.")
+      note: String(subscription.deliveryNotes || "Activation will be completed and shared through your account updates.")
     });
   }
 

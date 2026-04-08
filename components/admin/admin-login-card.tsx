@@ -1,0 +1,98 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { ArrowRight, Lock, Mail, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export function AdminLoginCard() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || "Admin sign-in failed.");
+      }
+
+      toast.success("Admin access granted.");
+      router.replace("/admin");
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Admin sign-in failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-border/60 bg-white/78 p-7 shadow-[0_26px_70px_rgba(2,6,23,0.1)] backdrop-blur-2xl dark:bg-white/5 md:p-8">
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
+      <div className="relative mb-7 flex flex-col items-center gap-3 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25">
+          <Shield className="h-6 w-6 text-white" />
+        </div>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-2xl font-black tracking-tight">Admin sign in</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            This area is only for store management, catalog changes, and order operations.
+          </p>
+        </motion.div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-3.5">
+        <div className="relative">
+          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            type="email"
+            placeholder="Admin email"
+            required
+            className="field pl-10"
+          />
+        </div>
+
+        <div className="relative">
+          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            type="password"
+            placeholder="Admin password"
+            required
+            className="field pl-10"
+          />
+        </div>
+
+        <Button className="mt-2 h-12 w-full gap-2" disabled={loading}>
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/35 border-t-white" />
+              Signing in...
+            </span>
+          ) : (
+            <>
+              Continue to admin
+              <ArrowRight className="h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </form>
+    </div>
+  );
+}

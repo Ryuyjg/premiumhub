@@ -84,7 +84,7 @@ export async function isAdminAuthorized() {
 export async function requireAdmin() {
   const authorized = await isAdminAuthorized();
   if (!authorized) {
-    redirect("/");
+    redirect("/admin-login");
   }
   return {
     id: "admin",

@@ -40,7 +40,9 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
   return (
     <Card>
       <h2 className="text-xl font-semibold">Support and issue reporting</h2>
-      <p className="mt-1 text-sm text-muted-foreground">Need help? Raise a ticket and track status in real time.</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Need help? Raise a tracked support ticket here, or use the public contact page for faster pre-sale questions.
+      </p>
       <form onSubmit={submitTicket} className="mt-4 grid gap-3">
         <Input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="Issue subject" required />
         <textarea
@@ -66,7 +68,7 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
             <p className="mt-2 text-sm text-muted-foreground">{ticket.message}</p>
           </div>
         ))}
-        {tickets.length === 0 ? <p className="text-sm text-muted-foreground">No tickets yet.</p> : null}
+        {tickets.length === 0 ? <p className="text-sm text-muted-foreground">No support tickets yet.</p> : null}
       </div>
     </Card>
   );

@@ -47,17 +47,6 @@ export function AuthCard() {
         const creds = await createUserWithEmailAndPassword(auth, email, password);
         if (name) await updateProfile(creds.user, { displayName: name });
       } else {
-        const adminRes = await fetch("/api/auth/admin-login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-        if (adminRes.ok) {
-          toast.success("Admin access granted.");
-          router.replace("/admin");
-          router.refresh();
-          return;
-        }
         const auth = getClientAuth();
         if (!auth) throw new Error("Firebase client configuration missing.");
         await signInWithEmailAndPassword(auth, email, password);

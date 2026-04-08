@@ -51,7 +51,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
               </h2>
               <p className="max-w-2xl text-muted-foreground">
                 {products.length
-                  ? "Featured products appear here once you mark them as featured in the admin panel."
+                  ? "Featured products appear here once you choose them for the storefront."
                   : "Use this reset to add better products, better visuals, and better delivery details instead of reviving the old starter catalog."}
               </p>
             </div>

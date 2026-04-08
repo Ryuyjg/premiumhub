@@ -155,7 +155,7 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
         credentialsText = `${ottAccount.label} - Assigned (View in dashboard)`;
       }
     } else if (deliveryMode === "otp_manual") {
-      credentialsText = `OTP login. Contact admin on ${String(product.otpSupportNumber || "configured number")}`;
+      credentialsText = `OTP login. Contact support on ${String(product.otpSupportNumber || "configured number")}`;
     } else {
       credentialsText = `Invitation will be activated on ${String(order.customerDeliveryEmail || userId)}`;
     }
@@ -205,7 +205,7 @@ export async function fulfillPaidOrder(input: FulfillOrderInput) {
       deliveryMode === "direct_credentials"
         ? `Your ${product.name} subscription is active now.`
         : deliveryMode === "otp_manual"
-          ? `Your ${product.name} access is ready. OTP will be shared manually by admin.`
+          ? `Your ${product.name} access is ready. OTP details will be shared manually.`
           : `Your ${product.name} invitation request has been received and will be activated soon.`
     );
 

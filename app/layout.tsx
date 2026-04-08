@@ -3,11 +3,7 @@ import { Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 import { AppProviders } from "@/components/providers/app-providers";
-import { SiteHeader } from "@/components/navigation/site-header";
-import { SiteFooter } from "@/components/navigation/site-footer";
-import { SupportFloat } from "@/components/navigation/support-float";
-import { CommandPalette } from "@/components/navigation/command-palette";
-import { MobileNav } from "@/components/navigation/mobile-nav";
+import { AppShell } from "@/components/navigation/app-shell";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -55,12 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.variable} ${spaceGrotesk.variable} font-sans`}>
         <AppProviders>
-          <SiteHeader />
-          <CommandPalette />
-          <main className="min-h-screen">{children}</main>
-          <SupportFloat />
-          <MobileNav />
-          <SiteFooter />
+          <AppShell>{children}</AppShell>
         </AppProviders>
       </body>
     </html>

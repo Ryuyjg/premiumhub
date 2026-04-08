@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
@@ -63,7 +64,7 @@ export function CheckoutButton({ product }: { product: Product }) {
     <div className="grid gap-3">
       {deliveryMode === "otp_manual" ? (
         <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
-          Manual OTP delivery item. Final access is handled by the admin after payment confirmation.
+          Manual OTP delivery item. Final access details are shared after payment confirmation.
         </p>
       ) : null}
       {deliveryMode === "email_invite" ? (
@@ -96,6 +97,17 @@ export function CheckoutButton({ product }: { product: Product }) {
       <Button onClick={handleWalletCheckout} variant="outline" className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
         {loading === "wallet" ? "Processing wallet checkout..." : "Checkout with wallet balance"}
       </Button>
+      <div className="flex flex-wrap gap-3 pt-1 text-xs font-semibold text-muted-foreground">
+        <Link href="/refund-policy" className="transition-colors hover:text-primary">
+          Refund policy
+        </Link>
+        <Link href="/faq" className="transition-colors hover:text-primary">
+          FAQ
+        </Link>
+        <Link href="/contact" className="transition-colors hover:text-primary">
+          Contact support
+        </Link>
+      </div>
     </div>
   );
 }
