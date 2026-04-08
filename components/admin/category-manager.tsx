@@ -1,13 +1,28 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
-import { Box, Trash2 } from "lucide-react";
+import { Box, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
+import { ImageUploader } from "@/components/admin/image-uploader";
+
+type CategoryForm = {
+  id?: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+};
+
+const initialForm: CategoryForm = {
+  name: "",
+  description: "",
+  imageUrl: ""
+};
 
 export function CategoryManager({
   categories,
@@ -18,6 +33,7 @@ export function CategoryManager({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [form, setForm] = useState<CategoryForm>(initialForm);
 
   const categoryUsage = useMemo(() => {
     const usageMap = new Map<string, number>();
@@ -27,29 +43,49 @@ export function CategoryManager({
     return usageMap;
   }, [products]);
 
-  async function createCategory(formData: FormData) {
+  function resetForm() {
+    setForm(initialForm);
+  }
+
+  function editCategory(category: Category) {
+    setForm({
+      id: category.id,
+      name: category.name,
+      description: category.description || "",
+      imageUrl: category.imageUrl || ""
+    });
+  }
+
+  async function saveCategory() {
     setSubmitting(true);
     try {
       const payload = {
-        name: String(formData.get("name")),
-        description: String(formData.get("description"))
+        id: form.id,
+        name: form.name.trim(),
+        description: form.description.trim(),
+        imageUrl: form.imageUrl.trim()
       };
 
+      if (!payload.name) {
+        throw new Error("Category name is required.");
+      }
+
       const response = await fetch("/api/admin/categories", {
-        method: "POST",
+        method: form.id ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error || "Unable to create category.");
+        throw new Error(data.error || "Unable to save category.");
       }
 
-      toast.success("Category created.");
+      toast.success(form.id ? "Category updated." : "Category created.");
+      resetForm();
       window.location.reload();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Category creation failed.");
+      toast.error(error instanceof Error ? error.message : "Category save failed.");
     } finally {
       setSubmitting(false);
     }
@@ -88,19 +124,60 @@ export function CategoryManager({
 
   return (
     <Card className="h-full">
-      <h2 className="text-xl font-semibold">Category management (Delete enabled)</h2>
+      <h2 className="text-xl font-semibold">{form.id ? "Edit category" : "Category management"}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Create categories and safely delete categories that are not linked to products.
+        Create, edit, add descriptions, and set category images. Deletion stays blocked while products still use that
+        category.
       </p>
-      <form action={createCategory} className="mt-5 grid gap-4">
-        <Input name="name" placeholder="Movies and Entertainment" required />
-        <textarea
-          name="description"
-          placeholder="Category description"
-          className="min-h-24 rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+
+      <div className="mt-5 grid gap-4">
+        <Input
+          value={form.name}
+          onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+          placeholder="Category name"
+          required
         />
-        <Button disabled={submitting}>{submitting ? "Saving..." : "Create category"}</Button>
-      </form>
+        <textarea
+          value={form.description}
+          onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
+          placeholder="Category description"
+          className="field min-h-28 py-3"
+        />
+
+        <div className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Category image</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
+            {form.imageUrl ? (
+              <Button type="button" variant="ghost" onClick={() => setForm((current) => ({ ...current, imageUrl: "" }))}>
+                Remove image
+              </Button>
+            ) : null}
+          </div>
+          {form.imageUrl ? (
+            <div className="surface overflow-hidden rounded-[1.5rem] p-3">
+              <div className="relative aspect-[16/8] overflow-hidden rounded-[1.15rem]">
+                <Image src={form.imageUrl} alt={form.name || "Category preview"} fill className="object-cover" />
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">Image ready for this category.</p>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">Upload an image if you want this category to have its own visual.</p>
+          )}
+        </div>
+
+        <div className="flex gap-3">
+          <Button type="button" onClick={() => void saveCategory()} disabled={submitting}>
+            {submitting ? "Saving..." : form.id ? "Update category" : "Create category"}
+          </Button>
+          {form.id ? (
+            <Button type="button" variant="ghost" onClick={resetForm}>
+              Cancel edit
+            </Button>
+          ) : null}
+        </div>
+      </div>
+
       <div className="mt-6 grid gap-3">
         {categories.map((category) => {
           const productCount = categoryUsage.get(category.id) || 0;
@@ -111,7 +188,12 @@ export function CategoryManager({
           return (
             <div key={category.id} className="rounded-2xl border border-border/80 px-4 py-3">
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
+                  {category.imageUrl ? (
+                    <div className="relative mb-3 aspect-[16/7] overflow-hidden rounded-[1.1rem] border border-border/70">
+                      <Image src={category.imageUrl} alt={category.name} fill className="object-cover" />
+                    </div>
+                  ) : null}
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold">{category.name}</p>
                     {highlighted ? (
@@ -133,17 +215,29 @@ export function CategoryManager({
                     <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-300">Safe to delete.</p>
                   )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => void deleteCategory(category)}
-                  disabled={inUse || isDeleting}
-                  className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-rose-500/30 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-rose-600 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
-                  aria-label={`Delete ${category.name}`}
-                  title={inUse ? "Move linked products first" : "Delete category"}
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </button>
+                <div className="flex shrink-0 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => editCategory(category)}
+                    className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-border/70 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-foreground transition hover:bg-muted/40"
+                    aria-label={`Edit ${category.name}`}
+                    title="Edit category"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void deleteCategory(category)}
+                    disabled={inUse || isDeleting}
+                    className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-rose-500/30 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-rose-600 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
+                    aria-label={`Delete ${category.name}`}
+                    title={inUse ? "Move linked products first" : "Delete category"}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
               </div>
             </div>
           );

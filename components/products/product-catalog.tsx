@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Grid2X2, List, Search, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -90,6 +91,17 @@ export function ProductCatalog({
           animate={{ opacity: 1, y: 0 }}
           className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] p-6 text-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] md:p-7"
         >
+          {featuredCategory.imageUrl ? (
+            <div className="absolute inset-y-0 right-0 hidden w-[38%] overflow-hidden lg:block">
+              <Image
+                src={featuredCategory.imageUrl}
+                alt={featuredCategory.name}
+                fill
+                className="object-cover opacity-28"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-950/50 to-slate-950/85" />
+            </div>
+          ) : null}
           <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-cyan-300/20 blur-3xl" />
           <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-blue-400/18 blur-3xl" />
           <div className="relative grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">

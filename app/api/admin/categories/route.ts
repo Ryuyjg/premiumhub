@@ -6,7 +6,8 @@ import { slugify } from "@/lib/utils";
 
 const categorySchema = z.object({
   name: z.string().min(2),
-  description: z.string().optional()
+  description: z.string().optional(),
+  imageUrl: z.string().url().optional().or(z.literal(""))
 });
 
 export async function POST(request: Request) {
@@ -18,6 +19,7 @@ export async function POST(request: Request) {
   try {
     const parsed = categorySchema.parse(await request.json());
     const slug = slugify(parsed.name);
+    const timestamp = new Date().toISOString();
 
     const duplicate = await adminDb.collection("categories").where("slug", "==", slug).limit(1).get();
     if (!duplicate.empty) {
@@ -25,14 +27,81 @@ export async function POST(request: Request) {
     }
 
     const ref = await adminDb.collection("categories").add({
-      ...parsed,
-      slug
+      name: parsed.name,
+      slug,
+      description: parsed.description || "",
+      imageUrl: parsed.imageUrl || "",
+      createdAt: timestamp,
+      updatedAt: timestamp
     });
 
     return NextResponse.json({ id: ref.id });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to create category." },
+      { status: 400 }
+    );
+  }
+}
+
+export async function PUT(request: Request) {
+  const allowed = await isAdminAuthorized();
+  if (!allowed) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  try {
+    const body = (await request.json()) as Record<string, unknown>;
+    const id = String(body.id || "").trim();
+    if (!id) {
+      return NextResponse.json({ error: "Missing category id." }, { status: 400 });
+    }
+
+    const parsed = categorySchema.parse(body);
+    const slug = slugify(parsed.name);
+    const timestamp = new Date().toISOString();
+    const categoryRef = adminDb.collection("categories").doc(id);
+
+    const [categoryDoc, duplicate] = await Promise.all([
+      categoryRef.get(),
+      adminDb.collection("categories").where("slug", "==", slug).limit(1).get()
+    ]);
+
+    if (!categoryDoc.exists) {
+      return NextResponse.json({ error: "Category not found." }, { status: 404 });
+    }
+
+    if (!duplicate.empty && duplicate.docs[0].id !== id) {
+      return NextResponse.json({ error: "Another category already uses that name." }, { status: 409 });
+    }
+
+    await categoryRef.set(
+      {
+        name: parsed.name,
+        slug,
+        description: parsed.description || "",
+        imageUrl: parsed.imageUrl || "",
+        updatedAt: timestamp
+      },
+      { merge: true }
+    );
+
+    const linkedProducts = await adminDb.collection("products").where("categoryId", "==", id).get();
+    if (!linkedProducts.empty) {
+      const batch = adminDb.batch();
+      linkedProducts.docs.forEach((doc) => {
+        batch.update(doc.ref, {
+          categoryName: parsed.name,
+          updatedAt: timestamp
+        });
+      });
+      await batch.commit();
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to update category." },
       { status: 400 }
     );
   }
