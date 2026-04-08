@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { fulfillUroPayOrders, markUroPayOrdersFailed } from "@/lib/uropay-order-sync";
+import { getUroPayWebhookTransaction, markUroPayWebhookTransactionProcessed } from "@/lib/uropay-transaction-store";
 import { getUroPayOrderStatus, isUroPayCompleted, isUroPayFailed, updateUroPayOrder } from "@/lib/uropay";
 
 export async function PATCH(request: Request) {
@@ -47,6 +48,23 @@ export async function PATCH(request: Request) {
 
     const statusResponse = await getUroPayOrderStatus(gatewayOrderId);
     const syncedOrders = matchingOrders.map((order: any) => ({ ...order, gatewayPaymentId: referenceNumber }));
+    const webhookTransaction = await getUroPayWebhookTransaction(referenceNumber);
+
+    if (webhookTransaction && webhookTransaction.amount > 0) {
+      const result = await fulfillUroPayOrders(syncedOrders, {
+        ip: request.headers.get("x-forwarded-for") || "unknown",
+        userAgent: "uropay-reference-webhook-match",
+        device: webhookTransaction.environment || "unknown"
+      });
+      await markUroPayWebhookTransactionProcessed(referenceNumber);
+
+      return NextResponse.json({
+        success: true,
+        gatewayOrderId,
+        gatewayStatus: "COMPLETED",
+        fulfilled: result.fulfilled
+      });
+    }
 
     if (isUroPayCompleted(statusResponse.orderStatus)) {
       const result = await fulfillUroPayOrders(syncedOrders, {

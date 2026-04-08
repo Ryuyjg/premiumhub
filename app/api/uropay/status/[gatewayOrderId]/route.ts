@@ -26,6 +26,15 @@ export async function GET(request: Request, context: { params: Promise<{ gateway
       return NextResponse.json({ error: "No UroPay orders found." }, { status: 404 });
     }
 
+    if (matchingOrders.some((order: any) => order.status === "paid")) {
+      return NextResponse.json({
+        success: true,
+        gatewayOrderId,
+        gatewayStatus: "COMPLETED",
+        fulfilled: 0
+      });
+    }
+
     const statusResponse = await getUroPayOrderStatus(gatewayOrderId);
 
     if (isUroPayCompleted(statusResponse.orderStatus)) {

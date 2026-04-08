@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase/admin";
 import { fulfillUroPayOrders } from "@/lib/uropay-order-sync";
+import { markUroPayWebhookTransactionProcessed, saveUroPayWebhookTransaction } from "@/lib/uropay-transaction-store";
 import { verifyUroPayWebhookSignature } from "@/lib/uropay";
 
 export async function POST(request: Request) {
@@ -19,16 +20,25 @@ export async function POST(request: Request) {
 
     const referenceNumber = String((payload as Record<string, unknown>).referenceNumber || "").trim();
     const amount = Number((payload as Record<string, unknown>).amount || 0);
+    const from = String((payload as Record<string, unknown>).from || "").trim() || null;
+    const vpa = String((payload as Record<string, unknown>).vpa || "").trim() || null;
 
     if (!referenceNumber || amount <= 0) {
       return NextResponse.json({ success: true, ignored: true });
     }
 
+    await saveUroPayWebhookTransaction(referenceNumber, {
+      amount,
+      from,
+      vpa,
+      environment
+    });
+
     const orderSnapshot = await adminDb.collection("orders").where("gatewayPaymentId", "==", referenceNumber).get();
     const matchingOrders = orderSnapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() || {}) }));
 
     if (matchingOrders.length === 0) {
-      return NextResponse.json({ success: true, matched: 0 });
+      return NextResponse.json({ success: true, matched: 0, stored: true });
     }
 
     const result = await fulfillUroPayOrders(matchingOrders, {
@@ -36,6 +46,7 @@ export async function POST(request: Request) {
       userAgent: "uropay-webhook",
       device: environment
     });
+    await markUroPayWebhookTransactionProcessed(referenceNumber);
 
     return NextResponse.json({ success: true, matched: matchingOrders.length, fulfilled: result.fulfilled });
   } catch (error) {

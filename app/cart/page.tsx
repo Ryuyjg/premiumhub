@@ -20,6 +20,10 @@ type UroPayCheckout = {
   amountInRupees: string;
 };
 
+function redirectToSuccess(gatewayOrderId: string) {
+  window.location.href = `/checkout/success?gatewayOrderId=${encodeURIComponent(gatewayOrderId)}`;
+}
+
 export default function CartPage() {
   const { user } = useAuth();
   const cartItems = useAppStore((state) => state.cartItems);
@@ -77,7 +81,7 @@ export default function CartPage() {
           toast.success("Payment confirmed. Your products are ready on your dashboard.");
           clearCart();
           window.clearInterval(interval);
-          window.location.href = "/dashboard";
+          redirectToSuccess(uroPayCheckout.gatewayOrderId);
         }
       } catch {
         // Ignore polling errors and retry later.
@@ -197,7 +201,7 @@ export default function CartPage() {
       if (data.gatewayStatus === "COMPLETED") {
         toast.success("Payment confirmed. Your products are ready on your dashboard.");
         clearCart();
-        window.location.href = "/dashboard";
+        redirectToSuccess(uroPayCheckout.gatewayOrderId);
         return;
       }
 

@@ -13,6 +13,10 @@ type UroPayCheckout = {
   amountInRupees: string;
 };
 
+function redirectToSuccess(gatewayOrderId: string) {
+  window.location.href = `/checkout/success?gatewayOrderId=${encodeURIComponent(gatewayOrderId)}`;
+}
+
 export function CheckoutButton({ product }: { product: Product }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState<"none" | "uropay" | "wallet" | "reference">("none");
@@ -43,7 +47,7 @@ export function CheckoutButton({ product }: { product: Product }) {
         if (data.gatewayStatus === "COMPLETED") {
           toast.success("Payment confirmed. Subscription activated.");
           window.clearInterval(interval);
-          window.location.href = "/dashboard";
+          redirectToSuccess(uroPayCheckout.gatewayOrderId);
         }
       } catch {
         // Ignore polling errors and retry on the next interval.
@@ -172,7 +176,7 @@ export function CheckoutButton({ product }: { product: Product }) {
 
       if (data.gatewayStatus === "COMPLETED") {
         toast.success("Payment confirmed. Subscription activated.");
-        window.location.href = "/dashboard";
+        redirectToSuccess(uroPayCheckout.gatewayOrderId);
         return;
       }
 
