@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/store/use-app-store";
 import { FEATURED_CATEGORY_SLUG, getStarterCategoryMeta, isFeaturedCategory } from "@/lib/catalog";
+import { formatCurrency } from "@/lib/utils";
 
 const offerGlowTones = ["bg-primary/20", "bg-accent/18", "bg-white/10"];
 
@@ -32,6 +33,20 @@ export function ProductCatalog({
     [categories]
   );
   const featuredMeta = featuredCategory ? getStarterCategoryMeta(featuredCategory.slug) : null;
+  const categoryStats = useMemo(() => {
+    return categories.map((item) => {
+      const matchingProducts = products.filter((product) => product.categoryId === item.id);
+      const startingPrice = matchingProducts.length
+        ? Math.min(...matchingProducts.map((product) => product.salePrice || product.price))
+        : null;
+
+      return {
+        category: item,
+        count: matchingProducts.length,
+        startingPrice
+      };
+    });
+  }, [categories, products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -138,6 +153,87 @@ export function ProductCatalog({
             </div>
           </div>
         </motion.div>
+      ) : null}
+
+      {categoryStats.length ? (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {categoryStats.map(({ category: item, count, startingPrice }, index) => {
+            const highlighted = isFeaturedCategory(item);
+            const active = category === item.id;
+
+            return (
+              <motion.button
+                key={item.id}
+                type="button"
+                onClick={() => setCategory(item.id)}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.04 }}
+                className={`group relative overflow-hidden rounded-[1.75rem] border text-left transition-all duration-300 hover:-translate-y-1 ${
+                  highlighted
+                    ? "border-primary/22 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_22px_48px_rgba(15,23,42,0.14)] xl:col-span-2"
+                    : "border-border/70 bg-[hsl(var(--surface)/0.9)] text-foreground shadow-[0_16px_36px_rgba(15,23,42,0.06)]"
+                } ${active ? "ring-2 ring-primary/35" : ""}`}
+              >
+                {item.imageUrl ? (
+                  <div className={`relative ${highlighted ? "aspect-[16/7]" : "aspect-[16/9]"}`}>
+                    <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition duration-500 group-hover:scale-105" />
+                    <div
+                      className={`absolute inset-0 ${
+                        highlighted
+                          ? "bg-gradient-to-t from-slate-950/85 via-slate-950/28 to-transparent"
+                          : "bg-gradient-to-t from-slate-950/72 via-slate-950/12 to-transparent"
+                      }`}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className={`flex ${highlighted ? "aspect-[16/7]" : "aspect-[16/9]"} items-center justify-center ${
+                      highlighted ? "bg-white/8" : "bg-primary/8"
+                    }`}
+                  >
+                    <span className={`text-3xl font-black tracking-tight ${highlighted ? "text-white/92" : "text-foreground/75"}`}>
+                      {item.name
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((word) => word[0])
+                        .join("")}
+                    </span>
+                  </div>
+                )}
+
+                <div className="space-y-3 p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className={`text-lg font-black tracking-tight ${highlighted ? "text-white" : "text-foreground"}`}>{item.name}</p>
+                      <p className={`mt-1 text-xs uppercase tracking-[0.14em] ${highlighted ? "text-white/62" : "text-muted-foreground"}`}>
+                        {count > 0 ? `${count} live item${count === 1 ? "" : "s"}` : "Ready for products"}
+                      </p>
+                    </div>
+                    {highlighted ? (
+                      <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                        Main lane
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <p className={`line-clamp-3 text-sm leading-6 ${highlighted ? "text-white/82" : "text-muted-foreground"}`}>
+                    {item.description || "Category ready for manual uploads and stronger descriptions."}
+                  </p>
+
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className={highlighted ? "text-white/78" : "text-muted-foreground"}>
+                      {startingPrice ? `Starts at ${formatCurrency(startingPrice)}` : "Add products to activate"}
+                    </span>
+                    <span className={`inline-flex items-center gap-1 font-semibold ${highlighted ? "text-white" : "text-primary"}`}>
+                      Open category <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
       ) : null}
 
       <div className="section-shell p-5 md:p-6">

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { Box, Pencil, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Box, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -16,12 +16,14 @@ type CategoryForm = {
   name: string;
   description: string;
   imageUrl: string;
+  order: string;
 };
 
 const initialForm: CategoryForm = {
   name: "",
   description: "",
-  imageUrl: ""
+  imageUrl: "",
+  order: ""
 };
 
 export function CategoryManager({
@@ -33,6 +35,7 @@ export function CategoryManager({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reorderingId, setReorderingId] = useState<string | null>(null);
   const [form, setForm] = useState<CategoryForm>(initialForm);
 
   const categoryUsage = useMemo(() => {
@@ -52,7 +55,8 @@ export function CategoryManager({
       id: category.id,
       name: category.name,
       description: category.description || "",
-      imageUrl: category.imageUrl || ""
+      imageUrl: category.imageUrl || "",
+      order: String(category.order ?? 0)
     });
   }
 
@@ -63,7 +67,8 @@ export function CategoryManager({
         id: form.id,
         name: form.name.trim(),
         description: form.description.trim(),
-        imageUrl: form.imageUrl.trim()
+        imageUrl: form.imageUrl.trim(),
+        order: form.order === "" ? undefined : Number(form.order)
       };
 
       if (!payload.name) {
@@ -88,6 +93,45 @@ export function CategoryManager({
       toast.error(error instanceof Error ? error.message : "Category save failed.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function reorderCategory(category: Category, direction: "up" | "down") {
+    const currentIndex = categories.findIndex((item) => item.id === category.id);
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    const target = categories[targetIndex];
+
+    if (currentIndex < 0 || !target) {
+      return;
+    }
+
+    const currentOrder = Number(category.order ?? currentIndex);
+    const targetOrder = Number(target.order ?? targetIndex);
+
+    setReorderingId(category.id);
+    try {
+      const response = await fetch("/api/admin/categories", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          updates: [
+            { id: category.id, order: targetOrder },
+            { id: target.id, order: currentOrder }
+          ]
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to reorder categories.");
+      }
+
+      toast.success("Category order updated.");
+      window.location.reload();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Category reorder failed.");
+    } finally {
+      setReorderingId(null);
     }
   }
 
@@ -137,11 +181,19 @@ export function CategoryManager({
           placeholder="Category name"
           required
         />
+        <Input
+          type="number"
+          min="0"
+          value={form.order}
+          onChange={(event) => setForm((current) => ({ ...current, order: event.target.value }))}
+          placeholder="Sort order"
+        />
+        <p className="text-xs text-muted-foreground">Lower numbers appear first. Use `0` for the top category.</p>
         <textarea
           value={form.description}
           onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
           placeholder="Category description"
-          className="field min-h-28 py-3"
+          className="min-h-28 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
         />
 
         <div className="space-y-3">
@@ -179,11 +231,12 @@ export function CategoryManager({
       </div>
 
       <div className="mt-6 grid gap-3">
-        {categories.map((category) => {
+        {categories.map((category, index) => {
           const productCount = categoryUsage.get(category.id) || 0;
           const inUse = productCount > 0;
           const isDeleting = deletingId === category.id;
           const highlighted = category.slug === FEATURED_CATEGORY_SLUG;
+          const isReordering = reorderingId === category.id;
 
           return (
             <div key={category.id} className="rounded-2xl border border-border/80 px-4 py-3">
@@ -201,6 +254,9 @@ export function CategoryManager({
                         Main product
                       </span>
                     ) : null}
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/65 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      Order {category.order ?? index}
+                    </span>
                     <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-muted/35 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       <Box className="h-3.5 w-3.5" />
                       {productCount} product{productCount === 1 ? "" : "s"}
@@ -216,6 +272,26 @@ export function CategoryManager({
                   )}
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => void reorderCategory(category, "up")}
+                      disabled={index === 0 || isReordering}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 text-foreground transition hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label={`Move ${category.name} up`}
+                    >
+                      <ArrowUp className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void reorderCategory(category, "down")}
+                      disabled={index === categories.length - 1 || isReordering}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 text-foreground transition hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label={`Move ${category.name} down`}
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </button>
+                  </div>
                   <button
                     type="button"
                     onClick={() => editCategory(category)}

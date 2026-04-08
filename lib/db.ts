@@ -48,6 +48,14 @@ function withDeliveryAndStock(product: Product, seatMap: Map<string, number>): P
 
   return {
     ...product,
+    shortDescription: product.shortDescription || String(product.description || "").slice(0, 120),
+    durationInDays: Number(product.durationInDays || 30),
+    features:
+      Array.isArray(product.features) && product.features.length
+        ? product.features
+        : ["Instant activation", "Secure payment verification", "Priority support"],
+    featured: Boolean(product.featured),
+    bestSelling: Boolean(product.bestSelling),
     imageUrls,
     deliveryMode,
     otpSupportNumber: product.otpSupportNumber || "",
@@ -105,6 +113,7 @@ async function ensureStarterCategories(categories: Category[]) {
       {
         name: category.name,
         slug: category.slug,
+        order: category.order,
         description: category.description,
         featured: category.slug === FEATURED_CATEGORY_SLUG,
         seeded: true,
@@ -123,6 +132,8 @@ async function ensureStarterCategories(categories: Category[]) {
       id: category.slug,
       name: category.name,
       slug: category.slug,
+      order: category.order,
+      featured: category.slug === FEATURED_CATEGORY_SLUG,
       description: category.description
     }))
   ];

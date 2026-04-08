@@ -7,7 +7,8 @@ import { slugify } from "@/lib/utils";
 const categorySchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
-  imageUrl: z.string().url().optional().or(z.literal(""))
+  imageUrl: z.string().url().optional().or(z.literal("")),
+  order: z.coerce.number().int().min(0).optional()
 });
 
 export async function POST(request: Request) {
@@ -20,6 +21,9 @@ export async function POST(request: Request) {
     const parsed = categorySchema.parse(await request.json());
     const slug = slugify(parsed.name);
     const timestamp = new Date().toISOString();
+    const orderSnapshot = await adminDb.collection("categories").get();
+    const nextOrder =
+      orderSnapshot.docs.reduce((max, doc) => Math.max(max, Number(doc.data().order ?? -1)), -1) + 1;
 
     const duplicate = await adminDb.collection("categories").where("slug", "==", slug).limit(1).get();
     if (!duplicate.empty) {
@@ -31,6 +35,7 @@ export async function POST(request: Request) {
       slug,
       description: parsed.description || "",
       imageUrl: parsed.imageUrl || "",
+      order: parsed.order ?? nextOrder,
       createdAt: timestamp,
       updatedAt: timestamp
     });
@@ -81,6 +86,7 @@ export async function PUT(request: Request) {
         slug,
         description: parsed.description || "",
         imageUrl: parsed.imageUrl || "",
+        ...(parsed.order !== undefined ? { order: parsed.order } : {}),
         updatedAt: timestamp
       },
       { merge: true }
@@ -102,6 +108,50 @@ export async function PUT(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to update category." },
+      { status: 400 }
+    );
+  }
+}
+
+const reorderSchema = z.object({
+  updates: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        order: z.coerce.number().int().min(0)
+      })
+    )
+    .min(1)
+});
+
+export async function PATCH(request: Request) {
+  const allowed = await isAdminAuthorized();
+  if (!allowed) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  try {
+    const parsed = reorderSchema.parse(await request.json());
+    const batch = adminDb.batch();
+    const timestamp = new Date().toISOString();
+
+    parsed.updates.forEach((item) => {
+      const ref = adminDb.collection("categories").doc(item.id);
+      batch.set(
+        ref,
+        {
+          order: item.order,
+          updatedAt: timestamp
+        },
+        { merge: true }
+      );
+    });
+
+    await batch.commit();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to reorder categories." },
       { status: 400 }
     );
   }

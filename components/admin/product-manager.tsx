@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import { Pencil, Search, Trash2 } from "lucide-react";
+import { Pencil, Search, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
 import { formatCurrency } from "@/lib/utils";
@@ -15,11 +16,15 @@ import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 type ProductForm = {
   id?: string;
   name: string;
+  shortDescription: string;
   description: string;
+  featuresText: string;
   categoryId: string;
   imageUrl: string;
   price: string;
   discount: string;
+  durationInDays: string;
+  featured: boolean;
   bestSelling: boolean;
   deliveryMode: "direct_credentials" | "otp_manual" | "email_invite";
   otpSupportNumber: string;
@@ -28,11 +33,15 @@ type ProductForm = {
 
 const initialForm: ProductForm = {
   name: "",
+  shortDescription: "",
   description: "",
+  featuresText: "",
   categoryId: "",
   imageUrl: "",
   price: "",
   discount: "0",
+  durationInDays: "30",
+  featured: false,
   bestSelling: false,
   deliveryMode: "direct_credentials",
   otpSupportNumber: "",
@@ -71,14 +80,23 @@ export function ProductManager({
     event.preventDefault();
     setSubmitting(true);
     try {
+      const features = form.featuresText
+        .split("\n")
+        .map((line) => line.replace(/^(?:[-*]|\d+\.)\s*/, "").trim())
+        .filter(Boolean);
+
       const payload = {
         id: form.id,
         name: form.name.trim(),
+        shortDescription: form.shortDescription.trim(),
         description: form.description.trim(),
+        features,
         categoryId: form.categoryId,
         imageUrl: form.imageUrl.trim(),
         price: Number(form.price),
         discount: Number(form.discount || "0"),
+        durationInDays: Number(form.durationInDays || "30"),
+        featured: form.featured,
         bestSelling: form.bestSelling,
         deliveryMode: form.deliveryMode,
         otpSupportNumber: form.otpSupportNumber.trim(),
@@ -86,8 +104,17 @@ export function ProductManager({
         stockStatus: "active"
       };
 
-      if (!payload.name || !payload.description || !payload.imageUrl || !payload.categoryId || !payload.price) {
-        throw new Error("Please fill all required product fields.");
+      if (
+        !payload.name ||
+        !payload.shortDescription ||
+        !payload.description ||
+        !payload.imageUrl ||
+        !payload.categoryId ||
+        !payload.price ||
+        !payload.durationInDays ||
+        features.length === 0
+      ) {
+        throw new Error("Please fill all required product fields, including at least one feature bullet.");
       }
 
       const response = await fetch("/api/admin/products", {
@@ -132,18 +159,23 @@ export function ProductManager({
   }
 
   function editProduct(product: Product) {
-    const discount = product.price > 0 && product.salePrice
-      ? Math.max(Math.round(((product.price - product.salePrice) / product.price) * 100), 0)
-      : 0;
+    const discount =
+      product.price > 0 && product.salePrice
+        ? Math.max(Math.round(((product.price - product.salePrice) / product.price) * 100), 0)
+        : 0;
 
     setForm({
       id: product.id,
       name: product.name,
+      shortDescription: product.shortDescription,
       description: product.description,
+      featuresText: product.features.join("\n"),
       categoryId: product.categoryId,
       imageUrl: product.imageUrls[0] || "",
       price: String(product.price),
       discount: String(discount),
+      durationInDays: String(product.durationInDays || 30),
+      featured: Boolean(product.featured),
       bestSelling: Boolean(product.bestSelling),
       deliveryMode: product.deliveryMode || "direct_credentials",
       otpSupportNumber: product.otpSupportNumber || "",
@@ -162,7 +194,7 @@ export function ProductManager({
           <select
             value={form.categoryId}
             onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}
-            className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm dark:bg-white/5"
+            className="field"
             required
           >
             {categories.map((category) => (
@@ -171,36 +203,67 @@ export function ProductManager({
               </option>
             ))}
           </select>
+
           {selectedCategory?.slug === FEATURED_CATEGORY_SLUG ? (
             <div className="rounded-[1.25rem] border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-foreground">
-              Telegram auto software is your featured lane. Use stronger copy, fuller descriptions, and better delivery notes here.
+              Telegram auto software is your featured lane. Use fuller descriptions, stronger bullet points, and mark
+              the best products as featured so they can lead the homepage.
             </div>
           ) : null}
+
           <Input
             value={form.name}
             onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
             placeholder="Product name"
             required
           />
+
+          <Input
+            value={form.shortDescription}
+            onChange={(event) => setForm((current) => ({ ...current, shortDescription: event.target.value }))}
+            placeholder="Short description for cards and quick previews"
+            required
+          />
+
           <textarea
             value={form.description}
             onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-            placeholder="Product description"
-            className="min-h-24 rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+            placeholder="Full product description"
+            className="min-h-32 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
             required
           />
+
+          <textarea
+            value={form.featuresText}
+            onChange={(event) => setForm((current) => ({ ...current, featuresText: event.target.value }))}
+            placeholder={"Feature bullets, one per line\nInstant delivery\nSafe support\nPrivate setup notes"}
+            className="min-h-28 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+            required
+          />
+
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Product image</p>
-            <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
+            <div className="flex flex-wrap items-center gap-3">
+              <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
+              {form.imageUrl ? (
+                <Button type="button" variant="ghost" onClick={() => setForm((current) => ({ ...current, imageUrl: "" }))}>
+                  Remove image
+                </Button>
+              ) : null}
+            </div>
             {form.imageUrl ? (
-              <div className="rounded-xl border border-border/80 bg-muted/30 p-3 text-xs text-muted-foreground">
-                Uploaded image ready.
+              <div className="surface overflow-hidden rounded-[1.5rem] p-3">
+                <div className="relative aspect-[16/8] overflow-hidden rounded-[1.15rem]">
+                  <Image src={form.imageUrl} alt={form.name || "Product preview"} fill className="object-cover" />
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">Uploaded image ready.</p>
               </div>
             ) : (
               <p className="text-xs text-rose-600">Please upload an image before saving.</p>
             )}
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+
+          <div className="grid gap-4 md:grid-cols-3">
             <Input
               type="number"
               min="1"
@@ -218,16 +281,37 @@ export function ProductManager({
               placeholder="Discount %"
               required
             />
-          </div>
-          <label className="flex items-center gap-2 text-sm text-muted-foreground">
-            <input
-              type="checkbox"
-              checked={form.bestSelling}
-              onChange={(event) => setForm((current) => ({ ...current, bestSelling: event.target.checked }))}
-              className="h-4 w-4"
+            <Input
+              type="number"
+              min="1"
+              value={form.durationInDays}
+              onChange={(event) => setForm((current) => ({ ...current, durationInDays: event.target.value }))}
+              placeholder="Duration in days"
+              required
             />
-            Mark as best-selling
-          </label>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <label className="flex items-center gap-2 rounded-[1.25rem] border border-border/70 px-4 py-3 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={form.featured}
+                onChange={(event) => setForm((current) => ({ ...current, featured: event.target.checked }))}
+                className="h-4 w-4"
+              />
+              Feature on storefront
+            </label>
+            <label className="flex items-center gap-2 rounded-[1.25rem] border border-border/70 px-4 py-3 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={form.bestSelling}
+                onChange={(event) => setForm((current) => ({ ...current, bestSelling: event.target.checked }))}
+                className="h-4 w-4"
+              />
+              Mark as best-selling
+            </label>
+          </div>
+
           <select
             value={form.deliveryMode}
             onChange={(event) =>
@@ -236,12 +320,13 @@ export function ProductManager({
                 deliveryMode: event.target.value as ProductForm["deliveryMode"]
               }))
             }
-            className="h-11 rounded-2xl border border-border/80 bg-white/80 px-4 text-sm dark:bg-white/5"
+            className="field"
           >
             <option value="direct_credentials">Direct ID &amp; Password</option>
             <option value="otp_manual">OTP Login (manual OTP from admin)</option>
             <option value="email_invite">Email/Invitation Activation</option>
           </select>
+
           {form.deliveryMode === "otp_manual" ? (
             <Input
               value={form.otpSupportNumber}
@@ -250,14 +335,16 @@ export function ProductManager({
               required
             />
           ) : null}
+
           {form.deliveryMode !== "direct_credentials" ? (
             <textarea
               value={form.deliveryNotes}
               onChange={(event) => setForm((current) => ({ ...current, deliveryNotes: event.target.value }))}
-              placeholder="Delivery instructions for admin/user"
-              className="min-h-20 rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+              placeholder="Delivery instructions for admin or user"
+              className="min-h-24 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
             />
           ) : null}
+
           <div className="flex gap-3">
             <Button type="submit" disabled={submitting}>
               {submitting ? "Saving..." : form.id ? "Update product" : "Create product"}
@@ -286,13 +373,21 @@ export function ProductManager({
               <p>Status</p>
               <p className="text-right">Actions</p>
             </div>
-            <div className="max-h-[26rem] divide-y divide-border/70 overflow-y-auto">
+            <div className="max-h-[28rem] divide-y divide-border/70 overflow-y-auto">
               {filteredProducts.map((product) => (
                 <div key={product.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-3 px-4 py-3">
-                  <div>
-                    <p className="font-semibold">{product.name}</p>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="truncate font-semibold">{product.name}</p>
+                      {product.featured ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
+                          <Sparkles className="h-3 w-3" />
+                          Featured
+                        </span>
+                      ) : null}
+                    </div>
                     <p className="text-xs text-muted-foreground">
-                      {product.categoryName} • {formatCurrency(product.salePrice || product.price)}
+                      {product.categoryName} - {formatCurrency(product.salePrice || product.price)} - {product.durationInDays}d
                     </p>
                   </div>
                   <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{product.stockStatus}</p>

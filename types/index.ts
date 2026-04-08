@@ -6,6 +6,8 @@ export type Category = {
   slug: string;
   description?: string;
   imageUrl?: string;
+  order?: number;
+  featured?: boolean;
 };
 
 export type CartItem = {
