@@ -53,7 +53,7 @@ export function SiteFooter() {
       </div>
 
       <div className="container py-14">
-        <div className="grid gap-10 rounded-[2rem] border border-border/70 bg-white/78 p-8 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="section-shell grid gap-10 p-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-primary shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
@@ -75,7 +75,7 @@ export function SiteFooter() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-white/82 text-muted-foreground transition-all hover:border-primary/24 hover:bg-primary/8 hover:text-primary dark:bg-white/5"
+                  className="control-surface flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-primary"
                 >
                   <social.icon className="h-4 w-4" />
                 </Link>

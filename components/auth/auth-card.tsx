@@ -74,7 +74,7 @@ export function AuthCard() {
   }
 
   return (
-    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-border/70 bg-white/82 p-7 shadow-[0_24px_56px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:bg-white/5 md:p-8">
+    <div className="section-shell relative w-full max-w-md overflow-hidden p-7 md:p-8">
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-accent" />
       <div className="absolute -top-16 left-1/2 h-32 w-56 -translate-x-1/2 rounded-full bg-primary/12 blur-3xl" />
 
@@ -104,7 +104,7 @@ export function AuthCard() {
       <div className="relative mb-6 grid grid-cols-2 rounded-2xl border border-border/60 bg-muted/35 p-1">
         <motion.div
           layoutId="auth-tab"
-          className="absolute inset-y-1 rounded-xl bg-white shadow-sm dark:bg-white/10"
+          className="absolute inset-y-1 rounded-xl bg-[hsl(var(--surface))] shadow-sm dark:bg-[hsl(var(--surface)/0.98)]"
           style={{ width: "calc(50% - 4px)", x: mode === "login" ? 0 : "calc(100% + 2px)" }}
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
         />

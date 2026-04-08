@@ -49,7 +49,7 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           placeholder="Describe your issue in detail"
-          className="min-h-24 rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+          className="field min-h-24 py-3"
           required
         />
         <Button type="submit" disabled={submitting}>

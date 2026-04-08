@@ -29,7 +29,7 @@ export function MobileNav() {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
-        className="flex items-center justify-between rounded-[2.5rem] border border-border/70 bg-background/86 p-2.5 shadow-[0_18px_36px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:bg-black/55"
+        className="flex items-center justify-between rounded-[2.5rem] border border-border/80 bg-[hsl(var(--surface)/0.92)] p-2.5 shadow-[0_18px_36px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:bg-[hsl(var(--surface)/0.94)]"
       >
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));

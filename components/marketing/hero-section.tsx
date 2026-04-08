@@ -108,7 +108,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
               </Link>
             </div>
 
-            <div className="grid gap-3 rounded-[1.75rem] border border-border/70 bg-white/78 p-4 shadow-[0_16px_40px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 sm:grid-cols-3">
+            <div className="section-shell grid gap-3 rounded-[1.75rem] p-4 sm:grid-cols-3">
               {quickStats.map((stat) => (
                 <div key={stat.label} className="rounded-[1.25rem] border border-border/50 bg-background/70 px-4 py-4">
                   <p className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">{stat.label}</p>
@@ -125,7 +125,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.08 }}
-                  className="rounded-[1.5rem] border border-border/70 bg-white/78 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] dark:bg-white/4"
+                  className="surface rounded-[1.5rem] p-4"
                 >
                   <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                     <item.icon className="h-5 w-5" />
@@ -143,7 +143,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-white/82 p-6 shadow-[0_24px_56px_rgba(15,23,42,0.08)] backdrop-blur-md dark:bg-white/4 md:p-7"
+            className="section-shell relative overflow-hidden p-6 md:p-7"
           >
             <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-primary/10 to-transparent" />
             <div className="relative space-y-5">
@@ -182,7 +182,7 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
               {livePreview.length ? (
                 <div className="grid gap-3 md:grid-cols-3">
                   {livePreview.map((product) => (
-                    <div key={product.id} className="rounded-2xl border border-border/60 bg-background/78 p-4 dark:bg-white/10">
+                    <div key={product.id} className="surface rounded-2xl p-4">
                       <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{product.categoryName}</p>
                       <p className="mt-2 line-clamp-2 text-sm font-semibold">{product.name}</p>
                       <p className="mt-3 text-lg font-black text-primary">
@@ -206,15 +206,15 @@ export function HeroSection({ products = [] }: { products?: Product[] }) {
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted-foreground">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white/80 px-3 py-1 dark:bg-white/5">
+                        <span className="control-surface inline-flex items-center gap-1 rounded-full px-3 py-1">
                           <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                           Real products only
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white/80 px-3 py-1 dark:bg-white/5">
+                        <span className="control-surface inline-flex items-center gap-1 rounded-full px-3 py-1">
                           <MessageCircleHeart className="h-3.5 w-3.5 text-success" />
                           Human support ready
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white/80 px-3 py-1 dark:bg-white/5">
+                        <span className="control-surface inline-flex items-center gap-1 rounded-full px-3 py-1">
                           <Wallet className="h-3.5 w-3.5 text-primary" />
                           Gateway can return later
                         </span>

@@ -72,7 +72,7 @@ export function CommandPalette() {
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="relative mx-4 w-full max-w-xl overflow-hidden rounded-[2rem] border border-border/70 bg-white/92 shadow-[0_28px_70px_rgba(15,23,42,0.12)] backdrop-blur-2xl dark:bg-[hsl(var(--card)/0.96)]"
+            className="relative mx-4 w-full max-w-xl overflow-hidden rounded-[2rem] border border-border/80 bg-[hsl(var(--surface)/0.96)] shadow-[0_28px_70px_rgba(15,23,42,0.12)] backdrop-blur-2xl dark:bg-[hsl(var(--surface)/0.97)]"
           >
             <div className="flex items-center border-b border-border/50 px-4">
               <Search className="mr-3 h-5 w-5 text-muted-foreground" />

@@ -98,7 +98,7 @@ export function SiteHeader() {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-full border border-border/70 bg-white/82 p-1 shadow-[0_8px_20px_rgba(15,23,42,0.05)] dark:bg-white/5 md:flex">
+          <nav className="control-surface hidden items-center gap-1 rounded-full p-1 md:flex">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
@@ -124,7 +124,7 @@ export function SiteHeader() {
           <div className="flex items-center gap-2.5">
             <Link
               href="/cart"
-              className="relative inline-flex h-10 items-center gap-2 rounded-full border border-border/70 bg-white/82 px-3.5 text-sm font-semibold transition-all hover:border-primary/24 hover:bg-primary/5 dark:bg-white/5"
+              className="control-surface relative inline-flex h-10 items-center gap-2 rounded-full px-3.5 text-sm font-semibold"
             >
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">Cart</span>
@@ -143,7 +143,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="hidden h-10 rounded-full border border-border/70 bg-white/82 px-5 text-sm font-semibold text-foreground transition-all hover:border-rose-500/28 hover:bg-rose-500/8 hover:text-rose-600 md:inline-flex dark:bg-white/5"
+                className="control-surface hidden h-10 rounded-full px-5 text-sm font-semibold text-foreground hover:border-rose-500/28 hover:bg-rose-500/8 hover:text-rose-600 md:inline-flex"
               >
                 Sign out
               </button>
@@ -159,7 +159,7 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setOpen((s) => !s)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-white/82 text-foreground transition-all hover:border-primary/24 md:hidden dark:bg-white/5"
+              className="control-surface inline-flex h-10 w-10 items-center justify-center rounded-full md:hidden"
               aria-label="Toggle menu"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -188,7 +188,7 @@ export function SiteHeader() {
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                       active
                         ? "bg-primary/10 text-foreground"
-                        : "border border-border/70 bg-white/82 text-foreground hover:bg-muted/50 dark:bg-white/5"
+                        : "control-surface text-foreground hover:bg-muted/50"
                     }`}
                   >
                     {link.label}

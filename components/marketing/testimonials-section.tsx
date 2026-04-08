@@ -83,7 +83,7 @@ export function TestimonialsSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-12 rounded-[2rem] border border-border/70 bg-white/78 p-6 text-center shadow-[0_18px_42px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4"
+        className="section-shell mt-12 p-6 text-center"
       >
         <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Keep these rules</p>
         <div className="mt-5 grid gap-3 md:grid-cols-3">

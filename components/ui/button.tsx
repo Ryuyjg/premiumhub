@@ -17,7 +17,7 @@ const variants: Record<ButtonVariant, string> = {
   ghost:
     "border border-transparent bg-transparent text-foreground hover:border-border/60 hover:bg-foreground/5",
   outline:
-    "border border-border/70 bg-white/90 text-foreground hover:border-primary/24 hover:bg-primary/8 dark:bg-white/5",
+    "control-surface hover:border-primary/24 hover:bg-primary/8",
   danger:
     "border border-rose-500/20 bg-rose-600 text-white shadow-md shadow-rose-500/20 hover:bg-rose-700"
 };

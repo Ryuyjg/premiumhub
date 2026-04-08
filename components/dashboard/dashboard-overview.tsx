@@ -142,7 +142,7 @@ export function DashboardOverview({
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[1.75rem] border border-border/70 bg-white/78 p-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-6">
+        <div className="section-shell rounded-[1.75rem] p-5 md:p-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-black tracking-tight">Your active access</h2>
             <Link href="/products" className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.12em] text-primary">
@@ -205,7 +205,7 @@ export function DashboardOverview({
           </div>
         </div>
 
-        <div className="rounded-[1.75rem] border border-border/70 bg-white/78 p-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-6">
+        <div className="section-shell rounded-[1.75rem] p-5 md:p-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-black tracking-tight">Order timeline</h2>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />

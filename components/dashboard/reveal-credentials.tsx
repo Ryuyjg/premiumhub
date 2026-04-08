@@ -119,7 +119,7 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
             initial={{ opacity: 0, y: 12, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ type: "spring", damping: 15, stiffness: 150 }}
-            className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/50 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
+            className="section-shell relative overflow-hidden rounded-2xl p-4"
           >
             <div className="absolute -top-12 left-1/2 h-24 w-48 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
 

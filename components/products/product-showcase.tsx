@@ -29,7 +29,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
   return (
     <section className="container py-18 md:py-24">
       <Reveal>
-        <div className="mb-10 rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-8">
+        <div className="section-shell mb-10 p-7 md:p-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3">
               <span className="glow-badge">

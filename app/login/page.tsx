@@ -30,7 +30,7 @@ export default function LoginPage() {
       </div>
 
       <div className="container grid min-h-[calc(100vh-8rem)] items-center gap-10 lg:grid-cols-[1fr_1fr]">
-        <div className="rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 lg:p-8">
+        <div className="section-shell p-7 lg:p-8">
           <div className="space-y-4">
             <span className="glow-badge">{APP_NAME} Account Area</span>
             <h1 className="text-4xl font-black tracking-tight xl:text-5xl">

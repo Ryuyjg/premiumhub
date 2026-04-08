@@ -79,7 +79,7 @@ export default function CartPage() {
 
   return (
     <div className="container py-16">
-      <div className="mb-10 rounded-[2rem] border border-border/70 bg-white/78 p-7 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4">
+      <div className="section-shell mb-10 p-7">
         <p className="glow-badge w-fit">Your cart</p>
         <h1 className="text-3xl font-black tracking-tight md:text-5xl">
           {cartItems.length > 0 ? (
@@ -119,7 +119,7 @@ export default function CartPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             {emptyCartIdeas.map((idea) => (
-              <div key={idea} className="rounded-[1.75rem] border border-border/70 bg-white/78 p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4">
+              <div key={idea} className="surface rounded-[1.75rem] p-6">
                 <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <Sparkles className="h-4 w-4" />
                 </div>

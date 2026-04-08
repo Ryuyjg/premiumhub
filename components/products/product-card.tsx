@@ -82,7 +82,7 @@ export function ProductCard({
       style={{ rotateX: springX, rotateY: springY, boxShadow: shadow, transformStyle: "preserve-3d" }}
       className="relative"
     >
-      <div className={`group overflow-hidden rounded-[1.75rem] border border-border/70 bg-white/84 shadow-[0_16px_36px_rgba(15,23,42,0.05)] backdrop-blur-md transition-all hover:-translate-y-1 dark:bg-white/4 ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
+      <div className={`group overflow-hidden rounded-[1.75rem] border border-border/80 bg-[hsl(var(--surface)/0.92)] shadow-[0_16px_36px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all hover:-translate-y-1 dark:bg-[hsl(var(--surface)/0.95)] ${variant === "list" ? "md:rounded-[1.35rem]" : ""}`}>
         <Link href={`/products/${product.slug}`} className="block">
           <div className={`relative overflow-hidden ${variant === "list" ? "aspect-[16/8] md:aspect-[16/6]" : "aspect-[16/10]"}`}>
             <Image
@@ -119,7 +119,7 @@ export function ProductCard({
                   <p className="text-sm text-muted-foreground line-through">{formatCurrency(product.price)}</p>
                 ) : null}
               </div>
-              <div className="flex items-center gap-2 rounded-full border border-border/70 bg-white/80 px-3 py-1 text-xs text-muted-foreground dark:bg-white/5">
+              <div className="control-surface flex items-center gap-2 rounded-full px-3 py-1 text-xs text-muted-foreground">
                 <Clock3 className="h-3.5 w-3.5" />
                 {product.durationInDays} days
               </div>

@@ -78,7 +78,7 @@ export function ProductCatalog({
         </div>
       ) : null}
 
-      <div className="rounded-[2rem] border border-border/70 bg-white/78 p-5 shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-6">
+      <div className="section-shell p-5 md:p-6">
         <div className="mb-4 overflow-x-auto pb-1">
           <div className="flex min-w-max gap-2">
             <motion.button
@@ -131,7 +131,7 @@ export function ProductCatalog({
             >
               <List className="h-4 w-4" />
             </button>
-            <div className="rounded-full border border-border/70 bg-white/82 px-3 py-1.5 text-sm text-muted-foreground dark:bg-white/5">
+            <div className="control-surface rounded-full px-3 py-1.5 text-sm text-muted-foreground">
               Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> items
             </div>
           </div>
@@ -164,7 +164,7 @@ export function ProductCatalog({
                 whileTap={{ scale: 0.98 }}
                 whileHover={{ y: -2 }}
                 onClick={() => setVisibleCount((count) => count + 6)}
-                className="rounded-full border border-border/70 bg-white/82 px-5 py-2.5 text-sm font-semibold transition hover:border-primary/24 hover:bg-primary/4 dark:bg-white/5"
+                className="control-surface rounded-full px-5 py-2.5 text-sm font-semibold"
               >
                 Load more items
               </motion.button>
@@ -172,7 +172,7 @@ export function ProductCatalog({
           ) : null}
         </>
       ) : catalogIsEmpty ? (
-        <div className="rounded-[2.25rem] border border-dashed border-border/70 bg-white/78 p-8 shadow-[0_22px_52px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4 md:p-10">
+        <div className="section-shell rounded-[2.25rem] border-dashed p-8 md:p-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
             <div className="space-y-4">
               <span className="glow-badge">
@@ -211,7 +211,7 @@ export function ProductCatalog({
           </div>
         </div>
       ) : (
-        <div className="rounded-[2rem] border border-border/70 bg-white/78 p-8 text-center shadow-[0_20px_48px_rgba(15,23,42,0.05)] backdrop-blur-md dark:bg-white/4">
+        <div className="section-shell p-8 text-center">
           <p className="text-lg font-semibold">No products match your filters</p>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
             Try a different search term or reset the active category filter to see more results.
