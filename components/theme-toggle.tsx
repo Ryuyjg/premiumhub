@@ -10,7 +10,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className="glass-panel flex h-11 w-11 items-center justify-center rounded-full"
+      className="control-surface flex h-11 w-11 items-center justify-center rounded-full"
       aria-label="Toggle theme"
     >
       {resolvedTheme === "dark" ? <SunMedium className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
