@@ -94,12 +94,12 @@ export function ProductCatalog({
   return (
     <div className="space-y-8">
       {categoryStats.length ? (
-        <div className="sticky top-[5.4rem] z-30">
-          <div className="section-shell border border-border/70 bg-background/90 p-4 shadow-[0_18px_42px_rgba(15,23,42,0.08)] backdrop-blur-2xl md:p-5">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="section-shell border border-border/65 bg-background/82 p-3 shadow-[0_12px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl md:p-4">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
+                <p className="mt-1 hidden text-sm leading-7 text-muted-foreground sm:block">
                   Swipe on mobile or scroll sideways on desktop to move across the catalog.
                 </p>
               </div>
@@ -116,10 +116,10 @@ export function ProductCatalog({
                   type="button"
                   onClick={() => setCategory("all")}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-[210px] shrink-0 snap-start rounded-[1.45rem] border p-4 text-left transition-all duration-300 ${
+                  className={`w-[175px] shrink-0 snap-start rounded-[1.25rem] border px-3.5 py-3 text-left transition-all duration-300 ${
                     category === "all"
-                      ? "border-primary/30 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
-                      : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+                      ? "border-primary/30 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
+                      : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
                   }`}
                 >
                   <p
@@ -129,9 +129,9 @@ export function ProductCatalog({
                   >
                     All categories
                   </p>
-                  <p className="mt-3 text-lg font-black tracking-tight">Everything live</p>
+                  <p className="mt-2 text-base font-black tracking-tight">Everything live</p>
                   <p
-                    className={`mt-2 line-clamp-2 text-sm leading-6 ${
+                    className={`mt-1.5 line-clamp-2 text-xs leading-5 ${
                       category === "all" ? "text-white/82" : "text-muted-foreground"
                     }`}
                   >
@@ -152,14 +152,14 @@ export function ProductCatalog({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
                       whileTap={{ scale: 0.985 }}
-                      className={`group relative w-[230px] shrink-0 snap-start overflow-hidden rounded-[1.45rem] border p-4 text-left transition-all duration-300 ${
+                      className={`group relative w-[185px] shrink-0 snap-start overflow-hidden rounded-[1.25rem] border px-3.5 py-3 text-left transition-all duration-300 ${
                         highlighted
-                          ? "border-primary/24 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
-                          : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+                          ? "border-primary/24 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
+                          : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
                       } ${active ? "ring-2 ring-primary/35" : ""}`}
                     >
                       {item.imageUrl ? (
-                        <div className="absolute inset-y-0 right-0 w-24 overflow-hidden">
+                        <div className="absolute inset-y-0 right-0 w-16 overflow-hidden">
                           <div className="relative h-full w-full">
                             <Image
                               src={item.imageUrl}
@@ -188,7 +188,7 @@ export function ProductCatalog({
                             >
                               {count > 0 ? `${count} item${count === 1 ? "" : "s"}` : "Ready for upload"}
                             </p>
-                            <p className="mt-3 text-lg font-black tracking-tight">{item.name}</p>
+                            <p className="mt-2 text-base font-black tracking-tight">{item.name}</p>
                           </div>
                           {highlighted ? (
                             <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
@@ -198,14 +198,14 @@ export function ProductCatalog({
                         </div>
 
                         <p
-                          className={`mt-2 line-clamp-2 max-w-[86%] text-sm leading-6 ${
+                          className={`mt-1.5 line-clamp-2 max-w-[84%] text-xs leading-5 ${
                             highlighted ? "text-white/82" : "text-muted-foreground"
                           }`}
                         >
                           {item.description || "Category ready for manual uploads and stronger product copy."}
                         </p>
 
-                        <div className="mt-4 flex items-center justify-between gap-3 text-xs">
+                        <div className="mt-3 flex items-center justify-between gap-3 text-[11px]">
                           <span className={highlighted ? "text-white/76" : "text-muted-foreground"}>
                             {startingPrice ? `From ${formatCurrency(startingPrice)}` : "No pricing yet"}
                           </span>
