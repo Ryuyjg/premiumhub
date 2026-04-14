@@ -31,6 +31,7 @@ import { ReviewManager } from "@/components/admin/review-manager";
 import { SupportManager } from "@/components/admin/support-manager";
 import { OfferManager } from "@/components/admin/offer-manager";
 import { SiteContentManager } from "@/components/admin/site-content-manager";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
@@ -73,6 +74,7 @@ export function AdminDashboard({
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [resettingCatalog, setResettingCatalog] = useState(false);
+  const [confirmResetCatalog, setConfirmResetCatalog] = useState(false);
 
   const paidOrders = useMemo(() => orders.filter((order) => order.status === "paid").length, [orders]);
   const failedOrders = useMemo(() => orders.filter((order) => order.status === "failed").length, [orders]);
@@ -93,10 +95,6 @@ export function AdminDashboard({
   ], [analytics]);
 
   async function handleResetCatalog() {
-    if (!confirm("This will delete products, categories, offers, coupons, reviews, account pools, and old gateway transaction data. Continue?")) {
-      return;
-    }
-
     try {
       setResettingCatalog(true);
       const response = await fetch("/api/admin/catalog/reset", { method: "POST" });
@@ -112,6 +110,7 @@ export function AdminDashboard({
 
       toast.success(`Catalog cleared. ${deleted} records removed.`);
       setActiveTab("catalog");
+      setConfirmResetCatalog(false);
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to clear catalog.");
@@ -137,7 +136,7 @@ export function AdminDashboard({
             <p className="max-w-xl text-white/75 text-sm">Manage catalog, orders, users, and growth tools from one place.</p>
             <button
               type="button"
-              onClick={handleResetCatalog}
+              onClick={() => setConfirmResetCatalog(true)}
               disabled={resettingCatalog}
               className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-primary transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
             >
@@ -291,6 +290,17 @@ export function AdminDashboard({
           ) : null}
         </motion.div>
       </AnimatePresence>
+
+      <ConfirmDialog
+        open={confirmResetCatalog}
+        title="Clear catalog and start fresh?"
+        description="This will delete products, categories, offers, coupons, reviews, account pools, and old gateway transaction data."
+        confirmLabel="Yes, clear everything"
+        cancelLabel="No"
+        busy={resettingCatalog}
+        onCancel={() => setConfirmResetCatalog(false)}
+        onConfirm={() => void handleResetCatalog()}
+      />
     </div>
   );
 }

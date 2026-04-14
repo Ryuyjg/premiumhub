@@ -5,12 +5,14 @@ import { Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Product, Review } from "@/types";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function ReviewManager({ reviews, products }: { reviews: Review[]; products: Product[] }) {
   const [submitting, setSubmitting] = useState(false);
   const [query, setQuery] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState<Review | null>(null);
 
   const filtered = useMemo(() => {
     return reviews.filter((review) =>
@@ -69,6 +71,7 @@ export function ReviewManager({ reviews, products }: { reviews: Review[]; produc
       return;
     }
     toast.success("Review deleted.");
+    setConfirmDelete(null);
     window.location.reload();
   }
 
@@ -120,7 +123,7 @@ export function ReviewManager({ reviews, products }: { reviews: Review[]; produc
               <Button type="button" variant="outline" onClick={() => toggleReview(review.id, review.active)}>
                 {review.active ? "Hide" : "Activate"}
               </Button>
-              <Button type="button" variant="outline" onClick={() => deleteReview(review.id)}>
+              <Button type="button" variant="outline" onClick={() => setConfirmDelete(review)}>
                 <Trash2 className="mr-1 h-4 w-4" />
                 Delete
               </Button>
@@ -129,6 +132,20 @@ export function ReviewManager({ reviews, products }: { reviews: Review[]; produc
         ))}
         {filtered.length === 0 ? <p className="text-sm text-muted-foreground">No reviews found.</p> : null}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(confirmDelete)}
+        title="Delete review?"
+        description={confirmDelete ? `Delete the review from "${confirmDelete.name}"?` : ""}
+        confirmLabel="Yes, delete"
+        cancelLabel="No"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => {
+          if (confirmDelete) {
+            void deleteReview(confirmDelete.id);
+          }
+        }}
+      />
     </Card>
   );
 }

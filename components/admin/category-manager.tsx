@@ -8,6 +8,7 @@ import type { Category, Product } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 import { ImageUploader } from "@/components/admin/image-uploader";
 
@@ -36,6 +37,7 @@ export function CategoryManager({
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [reorderingId, setReorderingId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Category | null>(null);
   const [form, setForm] = useState<CategoryForm>(initialForm);
 
   const categoryUsage = useMemo(() => {
@@ -142,10 +144,6 @@ export function CategoryManager({
       return;
     }
 
-    if (!confirm(`Delete "${category.name}" category?`)) {
-      return;
-    }
-
     setDeletingId(category.id);
     try {
       const response = await fetch(`/api/admin/categories?id=${category.id}`, {
@@ -158,6 +156,7 @@ export function CategoryManager({
       }
 
       toast.success("Category deleted.");
+      setConfirmDelete(null);
       window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category delete failed.");
@@ -304,7 +303,7 @@ export function CategoryManager({
                   </button>
                   <button
                     type="button"
-                    onClick={() => void deleteCategory(category)}
+                    onClick={() => setConfirmDelete(category)}
                     disabled={inUse || isDeleting}
                     className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-rose-500/30 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-rose-600 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
                     aria-label={`Delete ${category.name}`}
@@ -319,6 +318,25 @@ export function CategoryManager({
           );
         })}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(confirmDelete)}
+        title="Delete category?"
+        description={
+          confirmDelete
+            ? `Delete "${confirmDelete.name}"? Products must already be moved out before this can be confirmed.`
+            : ""
+        }
+        confirmLabel="Yes, delete"
+        cancelLabel="No"
+        busy={Boolean(confirmDelete && deletingId === confirmDelete.id)}
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => {
+          if (confirmDelete) {
+            void deleteCategory(confirmDelete);
+          }
+        }}
+      />
     </Card>
   );
 }

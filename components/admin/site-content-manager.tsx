@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import type { SitePage, SitePageSection, SupportChannel } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 
 type PageForm = {
@@ -80,6 +81,8 @@ export function SiteContentManager({
   const [channelForm, setChannelForm] = useState<SupportChannelForm>(blankChannel);
   const [savingChannel, setSavingChannel] = useState(false);
   const [reorderingChannelId, setReorderingChannelId] = useState<string | null>(null);
+  const [confirmDeleteChannel, setConfirmDeleteChannel] = useState<SupportChannel | null>(null);
+  const [confirmRemoveSection, setConfirmRemoveSection] = useState<number | null>(null);
 
   useEffect(() => {
     setPageForm(buildPageForm(selectedPage));
@@ -147,6 +150,7 @@ export function SiteContentManager({
       ...current,
       sections: current.sections.filter((_, sectionIndex) => sectionIndex !== index)
     }));
+    setConfirmRemoveSection(null);
   }
 
   function resetChannelForm() {
@@ -194,10 +198,6 @@ export function SiteContentManager({
   }
 
   async function deleteSupportChannel(id: string) {
-    if (!confirm("Delete this support channel?")) {
-      return;
-    }
-
     try {
       const response = await fetch(`/api/admin/support-channels?id=${id}`, {
         method: "DELETE"
@@ -209,6 +209,7 @@ export function SiteContentManager({
       }
 
       toast.success("Support channel deleted.");
+      setConfirmDeleteChannel(null);
       window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to delete support channel.");
@@ -391,7 +392,7 @@ export function SiteContentManager({
                       </div>
                       <button
                         type="button"
-                        onClick={() => removeSection(index)}
+                        onClick={() => setConfirmRemoveSection(index)}
                         className="rounded-full border border-rose-500/25 p-2 text-rose-600"
                         aria-label="Remove page item"
                       >
@@ -557,7 +558,7 @@ export function SiteContentManager({
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteSupportChannel(channel.id)}
+                    onClick={() => setConfirmDeleteChannel(channel)}
                     className="rounded-full border border-rose-500/25 p-2 text-rose-600"
                     aria-label={`Delete ${channel.title}`}
                   >
@@ -575,6 +576,38 @@ export function SiteContentManager({
           </div>
         </div>
       </Card>
+
+      <ConfirmDialog
+        open={confirmRemoveSection !== null}
+        title="Remove page item?"
+        description="Remove this item from the page draft? You can save the page afterward to make it permanent."
+        confirmLabel="Yes, remove"
+        cancelLabel="No"
+        onCancel={() => setConfirmRemoveSection(null)}
+        onConfirm={() => {
+          if (confirmRemoveSection !== null) {
+            removeSection(confirmRemoveSection);
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={Boolean(confirmDeleteChannel)}
+        title="Delete support channel?"
+        description={
+          confirmDeleteChannel
+            ? `Delete "${confirmDeleteChannel.title}" from support options?`
+            : ""
+        }
+        confirmLabel="Yes, delete"
+        cancelLabel="No"
+        onCancel={() => setConfirmDeleteChannel(null)}
+        onConfirm={() => {
+          if (confirmDeleteChannel) {
+            void deleteSupportChannel(confirmDeleteChannel.id);
+          }
+        }}
+      />
     </div>
   );
 }

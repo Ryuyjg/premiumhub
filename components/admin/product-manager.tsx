@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 
@@ -61,6 +62,7 @@ export function ProductManager({
     ...initialForm,
     categoryId: categories[0]?.id || ""
   });
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null);
   const selectedCategory = categories.find((category) => category.id === form.categoryId) || null;
 
   const filteredProducts = useMemo(() => {
@@ -139,10 +141,6 @@ export function ProductManager({
   }
 
   async function deleteProduct(id: string) {
-    if (!confirm("Delete this product?")) {
-      return;
-    }
-
     try {
       const response = await fetch(`/api/admin/products?id=${id}`, {
         method: "DELETE"
@@ -152,6 +150,7 @@ export function ProductManager({
         throw new Error(data.error || "Unable to delete product.");
       }
       toast.success("Product deleted.");
+      setConfirmDelete(null);
       window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Delete failed.");
@@ -401,7 +400,7 @@ export function ProductManager({
                     </button>
                     <button
                       type="button"
-                      onClick={() => deleteProduct(product.id)}
+                      onClick={() => setConfirmDelete({ id: product.id, name: product.name })}
                       className="rounded-full border border-rose-500/20 p-2 text-rose-600"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -416,6 +415,25 @@ export function ProductManager({
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={Boolean(confirmDelete)}
+        title="Delete product?"
+        description={
+          confirmDelete
+            ? `Delete "${confirmDelete.name}" from the catalog? This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="Yes, delete"
+        cancelLabel="No"
+        busy={submitting}
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => {
+          if (confirmDelete) {
+            void deleteProduct(confirmDelete.id);
+          }
+        }}
+      />
     </Card>
   );
 }

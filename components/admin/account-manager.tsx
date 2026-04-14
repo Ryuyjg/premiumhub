@@ -7,6 +7,7 @@ import type { OttAccount, Product } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export function AccountManager({
   accounts,
@@ -20,6 +21,7 @@ export function AccountManager({
   const [limitByAccount, setLimitByAccount] = useState<Record<string, string>>({});
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ label: "", email: "", password: "" });
@@ -126,7 +128,6 @@ export function AccountManager({
   }
 
   async function deleteAccount(accountId: string) {
-    if (!window.confirm("Are you sure you want to permanently delete this credential? This cannot be undone.")) return;
     setDeletingId(accountId);
     try {
       const response = await fetch(`/api/admin/accounts?id=${accountId}`, {
@@ -138,6 +139,7 @@ export function AccountManager({
       }
 
       toast.success("Account deleted.");
+      setConfirmDeleteId(null);
       window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Account deletion failed.");
@@ -208,7 +210,6 @@ export function AccountManager({
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
                       className="h-8 px-3"
                       onClick={() => setEditingId(null)}
                     >
@@ -234,10 +235,9 @@ export function AccountManager({
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
-                    className="h-8 px-3 text-rose-600 hover:text-rose-700"
-                    onClick={() => deleteAccount(account.id)}
-                    disabled={deletingId === account.id}
+                      className="h-8 px-3 text-rose-600 hover:text-rose-700"
+                      onClick={() => setConfirmDeleteId(account.id)}
+                      disabled={deletingId === account.id}
                   >
                     <Trash2 className="mr-1 h-4 w-4" />
                     {deletingId === account.id ? "Deleting..." : "Delete"}
@@ -266,7 +266,6 @@ export function AccountManager({
                   </div>
                   <Button 
                     type="button" 
-                    size="sm" 
                     className="w-full gap-2 mt-1 h-9"
                     disabled={updatingId === account.id}
                     onClick={() => submitEditAccount(account.id)}
@@ -312,6 +311,21 @@ export function AccountManager({
           );
         })}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(confirmDeleteId)}
+        title="Delete credential?"
+        description="Permanently delete this credential from the vault? This cannot be undone."
+        confirmLabel="Yes, delete"
+        cancelLabel="No"
+        busy={Boolean(confirmDeleteId && deletingId === confirmDeleteId)}
+        onCancel={() => setConfirmDeleteId(null)}
+        onConfirm={() => {
+          if (confirmDeleteId) {
+            void deleteAccount(confirmDeleteId);
+          }
+        }}
+      />
     </Card>
   );
 }

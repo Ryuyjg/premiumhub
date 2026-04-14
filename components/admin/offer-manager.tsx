@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import type { Offer } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 
 type OfferForm = {
@@ -36,6 +37,7 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
   const [query, setQuery] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState<OfferForm>(initialForm);
+  const [confirmDelete, setConfirmDelete] = useState<Offer | null>(null);
 
   const filteredOffers = useMemo(
     () =>
@@ -106,10 +108,6 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
   }
 
   async function deleteOffer(id: string) {
-    if (!confirm("Delete this offer?")) {
-      return;
-    }
-
     try {
       const response = await fetch(`/api/admin/offers?id=${id}`, {
         method: "DELETE"
@@ -119,6 +117,7 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
         throw new Error(data.error || "Unable to delete offer.");
       }
       toast.success("Offer deleted.");
+      setConfirmDelete(null);
       window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Delete failed.");
@@ -242,7 +241,7 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => deleteOffer(offer.id)}
+                      onClick={() => setConfirmDelete(offer)}
                       className="rounded-full border border-rose-500/20 p-2 text-rose-600"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -257,6 +256,20 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={Boolean(confirmDelete)}
+        title="Delete offer?"
+        description={confirmDelete ? `Delete "${confirmDelete.title}" from the storefront?` : ""}
+        confirmLabel="Yes, delete"
+        cancelLabel="No"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => {
+          if (confirmDelete) {
+            void deleteOffer(confirmDelete.id);
+          }
+        }}
+      />
     </Card>
   );
 }

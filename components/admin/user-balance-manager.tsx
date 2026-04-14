@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import type { AppUser } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +16,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
   const [actionByUser, setActionByUser] = useState<Record<string, "add" | "deduct">>({});
   const [submittingUserId, setSubmittingUserId] = useState<string | null>(null);
   const [suspendingUserId, setSuspendingUserId] = useState<string | null>(null);
+  const [confirmSuspensionUser, setConfirmSuspensionUser] = useState<AppUser | null>(null);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) =>
@@ -54,8 +56,6 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
 
   async function toggleSuspension(user: AppUser) {
     const isSuspending = !user.suspended;
-    if (!window.confirm(`Are you sure you want to ${isSuspending ? "suspend" : "unsuspend"} this user?`)) return;
-
     setSuspendingUserId(user.id);
     try {
       const response = await fetch("/api/admin/users/suspend", {
@@ -67,6 +67,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
       if (!response.ok) throw new Error(data.error || "Failed to alter suspension status.");
 
       toast.success(isSuspending ? "User suspended." : "User unsuspended.");
+      setConfirmSuspensionUser(null);
       window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Action failed.");
@@ -134,7 +135,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
                     variant="outline"
                     className="h-9 gap-1.5 border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-700"
                     disabled={suspendingUserId === user.id}
-                    onClick={() => toggleSuspension(user)}
+                    onClick={() => setConfirmSuspensionUser(user)}
                   >
                     <CheckCircle className="h-4 w-4" />
                     Unsuspend
@@ -145,7 +146,7 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
                     variant="ghost"
                     className="h-9 gap-1.5 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-600"
                     disabled={suspendingUserId === user.id}
-                    onClick={() => toggleSuspension(user)}
+                    onClick={() => setConfirmSuspensionUser(user)}
                   >
                     <Ban className="h-4 w-4" />
                     Suspend
@@ -157,6 +158,26 @@ export function UserBalanceManager({ users }: { users: AppUser[] }) {
           {filteredUsers.length === 0 ? <p className="px-4 py-8 text-center text-sm text-muted-foreground">No users found. Users appear after signup/login.</p> : null}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={Boolean(confirmSuspensionUser)}
+        title={confirmSuspensionUser?.suspended ? "Unsuspend user?" : "Suspend user?"}
+        description={
+          confirmSuspensionUser
+            ? `Are you sure you want to ${confirmSuspensionUser.suspended ? "unsuspend" : "suspend"} ${confirmSuspensionUser.email || "this user"}?`
+            : ""
+        }
+        confirmLabel={confirmSuspensionUser?.suspended ? "Yes, unsuspend" : "Yes, suspend"}
+        cancelLabel="No"
+        tone="default"
+        busy={Boolean(confirmSuspensionUser && suspendingUserId === confirmSuspensionUser.id)}
+        onCancel={() => setConfirmSuspensionUser(null)}
+        onConfirm={() => {
+          if (confirmSuspensionUser) {
+            void toggleSuspension(confirmSuspensionUser);
+          }
+        }}
+      />
     </Card>
   );
 }
