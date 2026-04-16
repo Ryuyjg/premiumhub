@@ -17,7 +17,7 @@ const features = [
   {
     icon: ShoppingBag,
     title: "Manual catalog control",
-    description: "Publish each product intentionally instead of filling the storefront with noisy starter stock.",
+    description: "Publish each plan intentionally instead of flooding the storefront with low-quality listings.",
     gradient: "from-primary/14 to-primary/5",
     iconBg: "bg-primary/12",
     iconColor: "text-primary",
@@ -26,7 +26,7 @@ const features = [
   {
     icon: Sparkles,
     title: "Flexible digital product mix",
-    description: "Use the same storefront for subscriptions, software, private offers, account access, and niche digital items.",
+    description: "Sell subscriptions, software, private offers, and account access from one clean storefront.",
     gradient: "from-primary/16 to-primary/6",
     iconBg: "bg-primary/12",
     iconColor: "text-primary",
@@ -35,7 +35,7 @@ const features = [
   {
     icon: Search,
     title: "Fast browse and filter flow",
-    description: "Search, category filters, and clean product cards keep the catalog easy to scan when you start adding items.",
+    description: "Search, filters, and premium cards help buyers find the right plan in seconds.",
     gradient: "from-foreground/8 to-primary/5",
     iconBg: "bg-foreground/8",
     iconColor: "text-foreground",
@@ -44,7 +44,7 @@ const features = [
   {
     icon: LayoutDashboard,
     title: "Private customer workspace",
-    description: "Orders, delivery notes, credentials, and renewals all live in one account area instead of scattered chats.",
+    description: "Orders, delivery notes, credentials, and renewals stay organized in one account area.",
     gradient: "from-foreground/8 to-primary/7",
     iconBg: "bg-foreground/8",
     iconColor: "text-foreground",
@@ -53,7 +53,7 @@ const features = [
   {
     icon: ShieldCheck,
     title: "Security-first structure",
-    description: "Protected sessions, clear policies, and stored delivery records make the store feel legitimate from day one.",
+    description: "Protected sessions and clear policy pages increase trust from the first visit.",
     gradient: "from-success/14 to-success/5",
     iconBg: "bg-success/12",
     iconColor: "text-success",
@@ -62,7 +62,7 @@ const features = [
   {
     icon: HeadphonesIcon,
     title: "Human support channels",
-    description: "Direct WhatsApp and Telegram support stay visible so buyers know help exists before and after purchase.",
+    description: "Direct support channels stay visible before and after purchase to reduce hesitation.",
     gradient: "from-success/14 to-primary/6",
     iconBg: "bg-success/12",
     iconColor: "text-success",
@@ -71,7 +71,7 @@ const features = [
   {
     icon: CreditCard,
     title: "Checkout-ready architecture",
-    description: "You can keep payment paused while the storefront improves, then plug the next crypto gateway in later.",
+    description: "Payment integrations can be swapped without rebuilding the storefront experience.",
     gradient: "from-foreground/8 to-foreground/3",
     iconBg: "bg-foreground/8",
     iconColor: "text-foreground",
@@ -80,7 +80,7 @@ const features = [
   {
     icon: Zap,
     title: "Launch-ready presentation",
-    description: "Stronger visuals, better copy, and better empty states make the store feel polished even while restocking.",
+    description: "Clean visuals, hierarchy, and copy turn your store into a premium SaaS-grade buying experience.",
     gradient: "from-primary/16 to-foreground/5",
     iconBg: "bg-primary/10",
     iconColor: "text-primary",
@@ -93,14 +93,13 @@ export function FeatureGrid() {
     <section className="container py-20 md:py-28">
       <Reveal>
         <div className="mx-auto mb-16 max-w-3xl text-center">
-          <span className="glow-badge mb-5">Built for a serious relaunch</span>
+          <span className="glow-badge mb-5">Built for high-conversion growth</span>
           <h2 className="mt-5 text-3xl font-black tracking-tight md:text-5xl">
-            A premium storefront without the
-            <span className="gradient-text block">cheap signals.</span>
+            Crafted storefront UX with
+            <span className="gradient-text block">enterprise-level polish.</span>
           </h2>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
-            The rebuild focuses on control, clarity, and trust, so the site feels stronger before you even start
-            promoting the next drop.
+            Design, trust cues, and buyer flow are tuned to improve conversion while keeping your existing backend intact.
           </p>
         </div>
       </Reveal>

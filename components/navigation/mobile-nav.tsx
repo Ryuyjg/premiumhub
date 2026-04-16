@@ -48,7 +48,7 @@ export function MobileNav() {
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-pill"
-                    className="absolute inset-0 z-[-1] rounded-2xl border border-foreground/10 bg-foreground shadow-[0_10px_24px_rgba(15,23,42,0.16)]"
+                    className="absolute inset-0 z-[-1] rounded-2xl border border-primary/24 bg-primary shadow-[0_10px_24px_rgba(15,23,42,0.16)]"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}

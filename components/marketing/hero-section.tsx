@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  CheckCircle2,
-  LayoutDashboard,
-  MessageCircleHeart,
-  ShieldCheck,
-  ShoppingBag,
-  Sparkles,
-  Wallet
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types";
@@ -19,213 +10,152 @@ import type { Product } from "@/types";
 export function HeroSection({ products = [] }: { products?: Product[] }) {
   const productCount = products.length;
   const categoryCount = new Set(products.map((product) => product.categoryName).filter(Boolean)).size;
-  const startingPrice = productCount
-    ? Math.min(...products.map((product) => product.salePrice || product.price))
-    : null;
+  const pricing = products
+    .map((product) => product.salePrice || product.price)
+    .filter((price) => Number.isFinite(price))
+    .sort((a, b) => a - b);
 
-  const quickStats = [
-    { label: "Live items", value: String(productCount).padStart(2, "0") },
+  const startingPrice = pricing[0] ?? null;
+  const midPrice = pricing[Math.floor(pricing.length / 2)] ?? null;
+
+  const proofItems = [
+    { label: "Active plans", value: String(productCount).padStart(2, "0") },
     { label: "Categories", value: String(categoryCount).padStart(2, "0") },
-    { label: "Starting price", value: startingPrice ? formatCurrency(startingPrice) : "Ready to stock" }
+    { label: "Entry point", value: startingPrice ? formatCurrency(startingPrice) : "Updating" }
   ];
 
-  const livePreview = products.slice(0, 3);
-
-  const launchBoard = [
+  const planSignals = [
     {
-      title: "Catalog",
-      description:
-        productCount > 0
-          ? `${productCount} item${productCount === 1 ? "" : "s"} are already visible on the storefront.`
-          : "The catalog is empty on purpose, so you can rebuild it cleanly.",
-      tone: "bg-success"
+      title: "Starter Access",
+      subtitle: "For first-time buyers",
+      price: startingPrice ? formatCurrency(startingPrice) : "Set first plan",
+      badge: "Starter"
     },
     {
-      title: "Fulfillment",
-      description: "Dashboard delivery, notes, and support handling stay available for future orders.",
-      tone: "bg-foreground"
+      title: "Growth Bundle",
+      subtitle: "Most selected setup",
+      price: midPrice ? formatCurrency(midPrice) : "Add pricing",
+      badge: "Popular"
     },
     {
-      title: "Payments",
-      description: "Gateway checkout is intentionally paused until the next crypto integration is added.",
-      tone: "bg-primary"
-    },
-    {
-      title: "Support",
-      description: "WhatsApp and Telegram remain wired in for fast human help.",
-      tone: "bg-success"
-    }
-  ];
-
-  const highlights = [
-    {
-      icon: ShoppingBag,
-      label: "Manual product control",
-      description: "Only the products you approve go live."
-    },
-    {
-      icon: LayoutDashboard,
-      label: "Private customer area",
-      description: "Orders, credentials, and support stay organized."
-    },
-    {
-      icon: ShieldCheck,
-      label: "Trust-first structure",
-      description: "Clear policies and human support over gimmicks."
+      title: "Elite Stack",
+      subtitle: "High-value private offers",
+      price: pricing.length ? formatCurrency(pricing[pricing.length - 1]) : "Configure",
+      badge: "Premium"
     }
   ];
 
   return (
-    <section className="page-grid relative overflow-hidden py-16 md:py-24">
-      <div className="orb -left-20 -top-16 h-[420px] w-[420px] bg-primary/12" />
-      <div className="orb -right-12 top-12 h-[420px] w-[420px] bg-foreground/7" />
+    <section className="page-grid relative overflow-hidden pb-16 pt-14 md:pb-24 md:pt-20">
+      <div className="orb -left-28 -top-16 h-[380px] w-[380px] bg-primary/16" />
+      <div className="orb -right-16 top-0 h-[340px] w-[340px] bg-accent/14" />
 
-      <div className="container grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="container space-y-10">
         <Reveal>
-          <div className="space-y-8">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="glow-badge w-fit">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
-              Rebuilt for a cleaner launch
-            </motion.div>
+          <div className="section-shell relative overflow-hidden px-6 py-10 md:px-10 md:py-14">
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/10 to-transparent" />
+            <div className="relative mx-auto max-w-4xl text-center">
+              <motion.span
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glow-badge"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Premium subscription marketplace
+              </motion.span>
 
-            <div className="space-y-4">
-              <h1 className="max-w-3xl text-5xl font-black leading-[1.02] md:text-6xl xl:text-7xl">
-                A sharper digital storefront for
-                <span className="gradient-text block">curated sales.</span>
+              <h1 className="mt-6 text-4xl font-extrabold leading-[1.03] md:text-6xl lg:text-7xl">
+                Sell digital subscriptions
+                <span className="gradient-text block">with trust built in.</span>
               </h1>
-              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-                The store now starts from a clean slate, with stronger branding, better trust signals, and room to add
-                your own catalog before the next payment gateway comes back.
+
+              <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-muted-foreground md:text-lg">
+                High-conversion storefront design, clean checkout flow, and account-first delivery so buyers feel
+                confident from landing to purchase.
               </p>
-            </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Link href="/products" className="btn-primary">
-                Browse catalog <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/login" className="btn-ghost">
-                Open account area
-              </Link>
-            </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/products" className="btn-primary">
+                  Explore plans <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/login" className="btn-ghost">
+                  Open customer account
+                </Link>
+              </div>
 
-            <div className="section-shell grid gap-3 rounded-[1.75rem] p-4 sm:grid-cols-3">
-              {quickStats.map((stat) => (
-                <div key={stat.label} className="rounded-[1.25rem] border border-border/50 bg-background/70 px-4 py-4">
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-muted-foreground">{stat.label}</p>
-                  <p className="mt-2 text-2xl font-black">{stat.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {highlights.map((item, index) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.08 }}
-                  className="surface rounded-[1.5rem] p-4"
-                >
-                  <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                  <p className="font-semibold">{item.label}</p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
-                </motion.div>
-              ))}
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
+                <span className="control-surface inline-flex items-center gap-2 rounded-full px-4 py-2">
+                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  Secure account area
+                </span>
+                <span className="control-surface inline-flex items-center gap-2 rounded-full px-4 py-2">
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  Manual quality control
+                </span>
+                <span className="control-surface inline-flex items-center gap-2 rounded-full px-4 py-2">
+                  <Star className="h-4 w-4 text-warning" />
+                  Conversion-focused layout
+                </span>
+              </div>
             </div>
           </div>
         </Reveal>
 
-        <Reveal delay={0.08}>
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="section-shell relative overflow-hidden p-6 md:p-7"
-          >
-            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-primary/10 to-transparent" />
-            <div className="relative space-y-5">
-              <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-muted/35 px-4 py-3">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Store readiness</p>
-                  <p className="text-sm font-semibold">Fresh foundation, premium shell, manual catalog</p>
-                </div>
-                <span className="rounded-full bg-success/14 px-3 py-1 text-xs font-semibold text-success">
-                  CLEAN RESET
-                </span>
+        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <Reveal delay={0.03}>
+            <div className="section-shell p-5 md:p-6">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Live pricing pulse</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                {planSignals.map((plan, index) => (
+                  <motion.article
+                    key={plan.title}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.08 }}
+                    className={`rounded-[1.4rem] border p-4 ${
+                      plan.badge === "Popular"
+                        ? "border-primary/35 bg-primary/10"
+                        : "border-border/70 bg-background/72"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-bold">{plan.title}</p>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${
+                          plan.badge === "Popular"
+                            ? "bg-primary text-white"
+                            : "border border-border/70 text-muted-foreground"
+                        }`}
+                      >
+                        {plan.badge}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">{plan.subtitle}</p>
+                    <p className="mt-4 text-2xl font-extrabold">{plan.price}</p>
+                  </motion.article>
+                ))}
               </div>
-
-              <div className="surface rounded-[1.5rem] p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">Launch board</p>
-                  <span className="rounded-full border border-border/60 bg-background/80 px-2.5 py-1 text-[10px] font-bold text-foreground">
-                    OWNER VIEW
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {launchBoard.map((item) => (
-                    <div key={item.title} className="rounded-2xl border border-border/50 bg-background/70 p-3.5">
-                      <div className="flex items-start gap-3">
-                        <span className={`mt-1 h-2.5 w-2.5 rounded-full ${item.tone}`} />
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold">{item.title}</p>
-                          <p className="text-sm leading-6 text-muted-foreground">{item.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {livePreview.length ? (
-                <div className="grid gap-3 md:grid-cols-3">
-                  {livePreview.map((product) => (
-                    <div key={product.id} className="surface rounded-2xl p-4">
-                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{product.categoryName}</p>
-                      <p className="mt-2 line-clamp-2 text-sm font-semibold">{product.name}</p>
-                      <p className="mt-3 text-lg font-black text-primary">
-                        {formatCurrency(product.salePrice || product.price)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-[1.75rem] border border-dashed border-border/70 bg-background/65 p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                      <Sparkles className="h-5 w-5" />
-                    </div>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-lg font-black">Catalog cleared and ready for your first drop</p>
-                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                          Add real products, upload final creatives, write delivery notes, and bring payment back only
-                          when the catalog feels right.
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted-foreground">
-                        <span className="control-surface inline-flex items-center gap-1 rounded-full px-3 py-1">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                          Real products only
-                        </span>
-                        <span className="control-surface inline-flex items-center gap-1 rounded-full px-3 py-1">
-                          <MessageCircleHeart className="h-3.5 w-3.5 text-success" />
-                          Human support ready
-                        </span>
-                        <span className="control-surface inline-flex items-center gap-1 rounded-full px-3 py-1">
-                          <Wallet className="h-3.5 w-3.5 text-primary" />
-                          Gateway can return later
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
-          </motion.div>
-        </Reveal>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="section-shell p-5 md:p-6">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Storeproof</p>
+              <div className="mt-4 space-y-3">
+                {proofItems.map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/72 px-4 py-3"
+                  >
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                    <p className="text-lg font-extrabold">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 import { AppProviders } from "@/components/providers/app-providers";
 import { AppShell } from "@/components/navigation/app-shell";
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap"
 });
 
-const spaceGrotesk = Space_Grotesk({
+const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-display",
+  weight: ["500", "600", "700", "800"],
   display: "swap"
 });
 
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${manrope.variable} ${spaceGrotesk.variable} font-sans`}>
+      <body className={`${inter.variable} ${poppins.variable} font-sans`}>
         <AppProviders>
           <AppShell>{children}</AppShell>
         </AppProviders>

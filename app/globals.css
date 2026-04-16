@@ -3,47 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: 214 42% 97%;
-  --foreground: 222 47% 11%;
+  --background: 220 33% 98%;
+  --foreground: 222 31% 12%;
   --card: 0 0% 100%;
-  --border: 214 28% 86%;
-  --input: 214 28% 86%;
-  --ring: 221 83% 53%;
-  --muted: 214 32% 94%;
-  --muted-foreground: 220 18% 38%;
-  --primary: 221 83% 53%;
+  --border: 220 18% 86%;
+  --input: 220 18% 86%;
+  --ring: 215 90% 54%;
+  --muted: 220 20% 95%;
+  --muted-foreground: 220 13% 39%;
+  --primary: 215 90% 54%;
   --primary-foreground: 0 0% 100%;
-  --accent: 198 93% 60%;
-  --accent-foreground: 222 47% 11%;
-  --success: 158 64% 38%;
-  --warning: 34 94% 47%;
+  --accent: 193 92% 48%;
+  --accent-foreground: 220 40% 10%;
+  --success: 159 64% 37%;
+  --warning: 36 92% 49%;
   --surface: 0 0% 100%;
-  --surface-foreground: 222 47% 11%;
-  --gradient-start: 221 70% 30%;
-  --gradient-mid: 222 55% 18%;
-  --gradient-end: 198 93% 60%;
+  --surface-foreground: 222 31% 12%;
+  --gradient-start: 220 80% 34%;
+  --gradient-mid: 220 36% 18%;
+  --gradient-end: 191 88% 50%;
 }
 
 .dark {
-  --background: 222 47% 8%;
-  --foreground: 214 32% 95%;
-  --card: 222 34% 12%;
-  --border: 217 24% 22%;
-  --input: 217 24% 22%;
-  --ring: 214 94% 68%;
-  --muted: 222 24% 16%;
-  --muted-foreground: 216 20% 72%;
-  --primary: 214 94% 68%;
-  --primary-foreground: 222 47% 11%;
-  --accent: 195 92% 64%;
-  --accent-foreground: 222 47% 11%;
+  --background: 222 34% 9%;
+  --foreground: 214 30% 96%;
+  --card: 223 29% 13%;
+  --border: 221 18% 25%;
+  --input: 221 18% 25%;
+  --ring: 214 95% 70%;
+  --muted: 222 22% 17%;
+  --muted-foreground: 216 16% 75%;
+  --primary: 214 95% 70%;
+  --primary-foreground: 222 31% 12%;
+  --accent: 191 86% 62%;
+  --accent-foreground: 222 31% 12%;
   --success: 158 63% 52%;
   --warning: 34 100% 58%;
-  --surface: 222 34% 12%;
-  --surface-foreground: 214 32% 95%;
-  --gradient-start: 221 72% 36%;
-  --gradient-mid: 222 52% 16%;
-  --gradient-end: 195 92% 64%;
+  --surface: 223 29% 13%;
+  --surface-foreground: 214 30% 96%;
+  --gradient-start: 217 77% 42%;
+  --gradient-mid: 222 42% 17%;
+  --gradient-end: 191 86% 62%;
 }
 
 html {
@@ -68,18 +68,18 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 72% 56% at 10% -10%, rgba(37, 99, 235, 0.24) 0%, transparent 56%),
-    radial-gradient(ellipse 50% 40% at 92% 0%, rgba(34, 211, 238, 0.14) 0%, transparent 54%),
-    linear-gradient(180deg, rgba(8, 15, 30, 0.96), rgba(8, 15, 30, 1)),
-    hsl(222 47% 8%);
+    radial-gradient(ellipse 72% 56% at 8% -10%, rgba(37, 99, 235, 0.2) 0%, transparent 56%),
+    radial-gradient(ellipse 50% 40% at 92% 0%, rgba(14, 116, 144, 0.14) 0%, transparent 54%),
+    linear-gradient(180deg, rgba(10, 15, 28, 0.98), rgba(10, 15, 28, 1)),
+    hsl(222 34% 9%);
 }
 
 html:not(.dark) body {
   background:
-    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(59, 130, 246, 0.14) 0%, transparent 58%),
-    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(248, 250, 252, 0.72)),
-    hsl(214 42% 97%);
+    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(37, 99, 235, 0.12) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(14, 116, 144, 0.09) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(248, 250, 252, 0.74)),
+    hsl(220 33% 98%);
 }
 
 ::selection {
@@ -115,14 +115,14 @@ html:not(.dark) body {
   .section-shell {
     @apply rounded-[2rem] border backdrop-blur-xl;
     border-color: hsl(var(--border) / 0.78);
-    background-color: hsl(var(--surface) / 0.9);
+    background-color: hsl(var(--surface) / 0.88);
     box-shadow: 0 20px 48px rgba(15, 23, 42, 0.06);
   }
 
   .surface {
     @apply rounded-3xl border backdrop-blur-md;
     border-color: hsl(var(--border) / 0.82);
-    background-color: hsl(var(--surface) / 0.93);
+    background-color: hsl(var(--surface) / 0.9);
     color: hsl(var(--surface-foreground));
     box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);
   }
@@ -173,12 +173,12 @@ html:not(.dark) body {
   .btn-primary {
     @apply inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-sm font-semibold text-white transition-all duration-200;
     background-image: linear-gradient(
-      135deg,
+      128deg,
       hsl(var(--gradient-mid)),
       hsl(var(--gradient-start)),
       hsl(var(--gradient-end))
     );
-    box-shadow: 0 16px 34px rgba(37, 99, 235, 0.22);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.2);
   }
 
   .btn-ghost {

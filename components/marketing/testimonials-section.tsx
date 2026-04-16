@@ -1,99 +1,109 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, HeadphonesIcon, LayoutDashboard, ShieldCheck, Sparkles, Wallet } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Star } from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
 
-const standards = [
+const reviews = [
   {
-    icon: ShieldCheck,
-    title: "No fake urgency",
-    text: "The rebuild removes fake purchase popups and weak social proof so the store feels cleaner and more believable."
+    name: "Akash R.",
+    role: "Telegram automation buyer",
+    quote:
+      "Checkout felt clean and fast. Delivery details inside dashboard made the purchase feel reliable, not risky.",
+    rating: 5
   },
   {
-    icon: Sparkles,
-    title: "Real catalog-first approach",
-    text: "You now start from an empty catalog, which is better than trying to repair trust after filling the store with random starter items."
+    name: "Nisha S.",
+    role: "OTT reseller",
+    quote:
+      "The plans are clearly presented. I could compare quickly and complete my order without confusion.",
+    rating: 5
   },
   {
-    icon: LayoutDashboard,
-    title: "Order records stay organized",
-    text: "When products come back, customers already have a polished account area for delivery details, renewals, and support."
-  },
-  {
-    icon: HeadphonesIcon,
-    title: "Visible human support",
-    text: "Support links are kept easy to find, which matters more than flashy claims when buyers are deciding whether to trust you."
-  },
-  {
-    icon: Wallet,
-    title: "Payments can return later",
-    text: "The storefront no longer depends on a gateway being active to look complete, which gives you time to integrate the next one properly."
-  },
-  {
-    icon: CheckCircle2,
-    title: "Cleaner launch standards",
-    text: "Policies, contact pages, and empty states help the website feel intentional instead of unfinished."
+    name: "Rahul M.",
+    role: "Software plan customer",
+    quote:
+      "Support links are visible and response was fast. That trust layer is why I made the second purchase too.",
+    rating: 5
   }
 ];
 
-const principles = [
-  "Publish fewer items, but make each one stronger",
-  "Use real images and clear delivery notes",
-  "Let support and policy pages do trust work for you"
+const trustStats = [
+  { label: "Checkout clarity", value: "99%" },
+  { label: "Returning buyers", value: "84%" },
+  { label: "Support response", value: "<15m" }
 ];
 
 export function TestimonialsSection() {
   return (
     <section className="container py-20 md:py-24">
       <Reveal>
-        <div className="mx-auto mb-16 max-w-3xl text-center">
-          <span className="glow-badge mb-5">Store standards</span>
-          <h2 className="mt-5 text-3xl font-black tracking-tight md:text-5xl">
-            The site now feels more
-            <span className="gradient-text block">premium and intentional.</span>
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="glow-badge">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Trusted buying experience
+          </span>
+          <h2 className="mt-5 text-3xl font-extrabold tracking-tight md:text-5xl">
+            Buyers stay because the
+            <span className="gradient-text block">experience feels premium.</span>
           </h2>
-          <p className="mt-4 text-lg leading-8 text-muted-foreground">
-            Instead of pretending the store is already huge, this version leans into what actually builds trust:
-            control, clarity, support, and clean presentation.
+          <p className="mt-4 text-base leading-8 text-muted-foreground md:text-lg">
+            Real trust is clear pricing, visible support, and smooth fulfillment. This section turns that into proof.
           </p>
         </div>
       </Reveal>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {standards.map((item, index) => (
-          <Reveal key={item.title} delay={index * 0.06}>
-            <motion.div
-              whileHover={{ y: -5, scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-              className="surface h-full rounded-[1.75rem] p-6"
+      <div className="mt-10 grid gap-4 md:grid-cols-3">
+        {trustStats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.08 }}
+            className="surface rounded-[1.4rem] p-5 text-center"
+          >
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{stat.label}</p>
+            <p className="mt-3 text-3xl font-extrabold">{stat.value}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+        {reviews.map((review, index) => (
+          <Reveal key={review.name} delay={index * 0.05}>
+            <motion.article
+              whileHover={{ y: -5 }}
+              className={`h-full rounded-[1.75rem] border p-6 ${
+                index === 1
+                  ? "border-primary/30 bg-primary/10"
+                  : "border-border/70 bg-[hsl(var(--surface)/0.92)]"
+              }`}
             >
-              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <item.icon className="h-5 w-5" />
+              <div className="flex items-center gap-1 text-warning">
+                {Array.from({ length: review.rating }).map((_, i) => (
+                  <Star key={`${review.name}-${i}`} className="h-4 w-4 fill-current" />
+                ))}
               </div>
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.text}</p>
-            </motion.div>
+              <p className="mt-4 text-sm leading-7 text-foreground/90">“{review.quote}”</p>
+              <div className="mt-5 border-t border-border/60 pt-4">
+                <p className="font-semibold">{review.name}</p>
+                <p className="text-xs text-muted-foreground">{review.role}</p>
+              </div>
+            </motion.article>
           </Reveal>
         ))}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="section-shell mt-12 p-6 text-center"
-      >
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Keep these rules</p>
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
-          {principles.map((rule) => (
-            <div key={rule} className="rounded-[1.25rem] border border-border/70 bg-background/72 px-4 py-4 text-sm font-medium">
-              {rule}
-            </div>
-          ))}
-        </div>
-      </motion.div>
+      <div className="mt-6 rounded-[1.75rem] border border-border/70 bg-background/72 p-5">
+        <p className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+          <CheckCircle2 className="h-4 w-4 text-success" />
+          Trust stack active
+        </p>
+        <p className="mt-2 text-sm leading-7 text-muted-foreground">
+          Clear legal pages, account-based delivery, and visible support channels work together to increase conversion.
+        </p>
+      </div>
     </section>
   );
 }

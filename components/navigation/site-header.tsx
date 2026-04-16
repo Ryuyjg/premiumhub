@@ -29,7 +29,7 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -72,7 +72,9 @@ export function SiteHeader() {
   async function handleSignOut() {
     await fetch("/api/auth/session", { method: "DELETE" });
     const auth = getClientAuth();
-    if (auth) await signOut(auth);
+    if (auth) {
+      await signOut(auth);
+    }
     setOpen(false);
     router.push("/login");
     router.refresh();
@@ -81,24 +83,24 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40">
       <div
-        className={`transition-all duration-300 ${
+        className={`border-b transition-all duration-300 ${
           scrolled
-            ? "border-b border-border/50 bg-background/88 shadow-[0_10px_34px_rgba(15,23,42,0.08)] backdrop-blur-2xl"
-            : "border-b border-transparent bg-background/72 backdrop-blur-xl"
+            ? "border-border/55 bg-background/84 shadow-[0_14px_36px_rgba(15,23,42,0.08)] backdrop-blur-2xl"
+            : "border-transparent bg-background/72 backdrop-blur-xl"
         }`}
       >
-        <div className="container flex h-[4.75rem] items-center justify-between gap-4">
+        <div className="container flex h-[4.8rem] items-center justify-between gap-3">
           <Link href="/" className="group inline-flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-primary shadow-[0_12px_24px_rgba(15,23,42,0.14)] transition-transform group-hover:scale-105">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] shadow-[0_14px_26px_rgba(15,23,42,0.16)] transition-transform group-hover:scale-105">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm font-black tracking-tight">{APP_NAME}</p>
+              <p className="text-sm font-extrabold tracking-tight">{APP_NAME}</p>
               <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{APP_TAGLINE}</p>
             </div>
           </Link>
 
-          <nav className="control-surface hidden items-center gap-1 rounded-full p-1 md:flex">
+          <nav className="control-surface hidden items-center gap-1 rounded-full p-1.5 md:flex">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
@@ -112,7 +114,7 @@ export function SiteHeader() {
                   {active ? (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full border border-primary/20 bg-primary/10"
+                      className="absolute inset-0 -z-10 rounded-full border border-primary/22 bg-primary/10"
                     />
                   ) : null}
                   {link.label}
@@ -138,7 +140,7 @@ export function SiteHeader() {
             <ThemeToggle />
 
             {authLoading ? (
-              <div className="hidden h-10 w-24 animate-pulse rounded-full bg-muted/60 md:block" />
+              <div className="hidden h-10 w-24 animate-pulse rounded-full bg-muted/70 md:block" />
             ) : isLoggedIn ? (
               <button
                 type="button"
@@ -150,7 +152,7 @@ export function SiteHeader() {
             ) : (
               <Link
                 href="/login"
-                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-primary px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.16)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(15,23,42,0.2)] md:inline-flex"
+                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] px-5 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(15,23,42,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(15,23,42,0.22)] md:inline-flex"
               >
                 Sign in
               </Link>
@@ -174,8 +176,8 @@ export function SiteHeader() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
-            className="border-b border-border/40 bg-background/96 px-5 py-5 backdrop-blur-2xl md:hidden"
+            transition={{ duration: 0.2 }}
+            className="border-b border-border/45 bg-background/96 px-5 py-5 backdrop-blur-2xl md:hidden"
           >
             <div className="space-y-2">
               {NAV_LINKS.map((link) => {
@@ -187,7 +189,7 @@ export function SiteHeader() {
                     onClick={() => setOpen(false)}
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                       active
-                        ? "bg-primary/10 text-foreground"
+                        ? "border border-primary/25 bg-primary/10 text-foreground"
                         : "control-surface text-foreground hover:bg-muted/50"
                     }`}
                   >
@@ -210,7 +212,7 @@ export function SiteHeader() {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-foreground via-[hsl(var(--gradient-start))] to-primary px-4 py-3 text-sm font-semibold text-white"
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] px-4 py-3 text-sm font-semibold text-white"
                   >
                     Sign in
                   </Link>

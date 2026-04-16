@@ -10,18 +10,18 @@ import { Reveal } from "@/components/marketing/reveal";
 const resetSteps = [
   {
     icon: Sparkles,
-    title: "Add the right categories",
-    text: "Build a tighter catalog structure before you start listing individual items."
+    title: "Lead with flagship plans",
+    text: "Keep your first fold focused on the plans that convert best."
   },
   {
     icon: ShieldCheck,
-    title: "Publish stronger product pages",
-    text: "Use real images, direct copy, and delivery notes that answer obvious questions."
+    title: "Strengthen offer clarity",
+    text: "Price, duration, and delivery expectations should be visible in seconds."
   },
   {
     icon: LayoutDashboard,
-    title: "Keep support and delivery clean",
-    text: "Use the dashboard and contact pages to make post-purchase handling feel reliable."
+    title: "Protect post-purchase trust",
+    text: "Dashboard-based delivery and support improve repeat purchase confidence."
   }
 ];
 
@@ -34,25 +34,25 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             <div className="space-y-3">
               <span className="glow-badge">
                 <Sparkles className="h-3 w-3" />
-                Catalog spotlight
+                Pricing spotlight
               </span>
               <h2 className="text-3xl font-black tracking-tight md:text-4xl lg:text-5xl">
                 {products.length ? (
                   <>
-                    Live listings ready for
-                    <span className="gradient-text block">your storefront.</span>
+                    High-intent plans ready for
+                    <span className="gradient-text block">faster conversion.</span>
                   </>
                 ) : (
                   <>
-                    The storefront is clean and
-                    <span className="gradient-text block">ready to restock.</span>
+                    Plan showcase area is ready
+                    <span className="gradient-text block">for your best offers.</span>
                   </>
                 )}
               </h2>
               <p className="max-w-2xl text-muted-foreground">
                 {products.length
-                  ? "Featured products appear here once you choose them for the storefront."
-                  : "Use this reset to add better products, better visuals, and better delivery details instead of reviving the old starter catalog."}
+                  ? "These are your featured plans. Keep this section focused on the most trusted and best-selling products."
+                  : "Publish your strongest offers here first so new visitors see quality before quantity."}
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.text}</p>
                 <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
                   <CheckCircle2 className="h-4 w-4" />
-                  Better foundation for the next launch
+                  Conversion-first foundation
                 </div>
               </div>
             </Reveal>

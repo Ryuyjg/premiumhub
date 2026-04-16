@@ -12,9 +12,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/providers/auth-provider";
 
 const emptyCartIdeas = [
-  "Add your strongest products first, not every product at once.",
-  "Write clearer delivery notes before turning traffic back on.",
-  "Reconnect the next gateway only after the catalog feels premium."
+  "Start with your highest-converting plans instead of listing everything.",
+  "Use clear delivery notes so buyers understand exactly what they receive.",
+  "Keep trust pages and support links visible before launching paid traffic."
 ];
 
 export default function CartPage() {
@@ -85,14 +85,14 @@ export default function CartPage() {
           {cartItems.length > 0 ? (
             <>
               Review your
-              <span className="gradient-text block">selected products.</span>
+              <span className="gradient-text block">selected plans.</span>
             </>
           ) : (
             "Your cart is empty"
           )}
         </h1>
         <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-          Keep the bag focused on the products you are actually ready to deliver cleanly and support properly.
+          Keep checkout clean and focused. Buyers convert better when plan details are clear and trust signals are visible.
         </p>
       </div>
 
@@ -224,8 +224,7 @@ export default function CartPage() {
 
               <div className="space-y-3">
                 <div className="rounded-[1.5rem] border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  External gateway checkout is paused while the store is being rebuilt. Wallet checkout stays available
-                  for approved users.
+                  Wallet checkout is active for approved users. Gateway integration can be plugged back in anytime.
                 </div>
 
                 <Button
@@ -239,7 +238,7 @@ export default function CartPage() {
                   ) : (
                     <>
                       <Wallet className="h-5 w-5 text-primary" />
-                      Checkout with wallet
+                      Secure wallet checkout
                     </>
                   )}
                 </Button>

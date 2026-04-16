@@ -1,6 +1,15 @@
 import Link from "next/link";
+import {
+  ArrowUpRight,
+  HeadphonesIcon,
+  Mail,
+  MessageCircle,
+  Send,
+  Shield,
+  ShieldCheck,
+  Sparkles
+} from "lucide-react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
-import { ArrowUpRight, HeadphonesIcon, Mail, MessageCircle, Send, Shield, ShieldCheck, Sparkles } from "lucide-react";
 import { getSupportChannelIconType } from "@/lib/site-content-defaults";
 import type { SupportChannel } from "@/types";
 
@@ -20,9 +29,9 @@ const exploreLinks = [
 ];
 
 const trustBadges = [
-  { icon: Shield, label: "Owner-managed catalog" },
-  { icon: ShieldCheck, label: "Protected sessions" },
-  { icon: Sparkles, label: "Direct support channels" }
+  { icon: Shield, label: "Secure customer accounts" },
+  { icon: ShieldCheck, label: "Curated plan quality checks" },
+  { icon: Sparkles, label: "Visible support channels" }
 ];
 
 function getChannelIcon(channel: Pick<SupportChannel, "title" | "href">) {
@@ -57,39 +66,36 @@ export function SiteFooter({
     .sort((a, b) => Number(a.order || 0) - Number(b.order || 0))
     .map((page) => ({ label: page.label, href: `/${page.slug}` }));
 
-  const socialLinks = supportChannels.filter((channel) => channel.active).slice(0, 3);
+  const socialLinks = supportChannels.filter((channel) => channel.active).slice(0, 4);
 
   return (
-    <footer className="mt-12 border-t border-border/40 bg-gradient-to-b from-transparent to-muted/35">
-      <div className="border-b border-border/35">
-        <div className="container grid gap-3 py-5 md:grid-cols-4 md:items-center">
+    <footer className="mt-14 border-t border-border/45 bg-gradient-to-b from-transparent to-muted/35">
+      <div className="border-b border-border/40">
+        <div className="container grid gap-3 py-5 md:grid-cols-3 md:items-center">
           {trustBadges.map((badge) => (
             <div key={badge.label} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-              <badge.icon className={`h-4 w-4 ${badge.label === "Direct support channels" ? "text-success" : "text-primary"}`} />
+              <badge.icon className="h-4 w-4 text-primary" />
               <span className="font-semibold">{badge.label}</span>
             </div>
           ))}
-          <p className="text-sm text-muted-foreground md:text-right">
-            Product pages, legal pages, and support links can now be updated from admin.
-          </p>
         </div>
       </div>
 
-      <div className="container py-14">
-        <div className="section-shell grid gap-10 p-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="container py-12">
+        <div className="section-shell grid gap-10 px-6 py-8 md:grid-cols-[1.35fr_1fr_1fr_1fr] md:px-8">
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-primary shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                 <Shield className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-lg font-black tracking-tight">{APP_NAME}</p>
+                <p className="text-lg font-extrabold tracking-tight">{APP_NAME}</p>
                 <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{APP_TAGLINE}</p>
               </div>
             </Link>
 
             <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-              Built for curated digital access, software, subscriptions, and private offers with full control over what goes live and how delivery is handled.
+              Premium subscription storefront for OTT plans, software, gaming products, and high-trust digital delivery.
             </p>
 
             <div className="flex items-center gap-2.5">
@@ -118,7 +124,7 @@ export function SiteFooter({
             </div>
 
             <Link href="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-              Explore catalog <ArrowUpRight className="h-4 w-4" />
+              View all plans <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
 
@@ -162,11 +168,11 @@ export function SiteFooter({
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-border/40 pt-6 text-xs text-muted-foreground md:flex-row">
+        <div className="mt-7 flex flex-col items-center justify-between gap-3 border-t border-border/45 pt-6 text-xs text-muted-foreground md:flex-row">
           <p>
             {APP_NAME} Copyright {new Date().getFullYear()}. All rights reserved.
           </p>
-          <p>Manual catalog, editable footer content, and human support built in.</p>
+          <p>Designed for high-trust conversions and repeat subscription sales.</p>
         </div>
       </div>
     </footer>

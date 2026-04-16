@@ -63,17 +63,17 @@ export function CheckoutButton({ product }: { product: Product }) {
   return (
     <div className="grid gap-3">
       {deliveryMode === "otp_manual" ? (
-        <p className="rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-foreground">
+        <p className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
           Manual OTP delivery item. Final access details are shared after payment confirmation.
         </p>
       ) : null}
       {deliveryMode === "email_invite" ? (
-        <p className="rounded-xl border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+        <p className="rounded-2xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
           Invite-based item. Enter the customer email that should receive access.
         </p>
       ) : null}
       {isOutOfStock ? (
-        <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm font-medium text-rose-700 dark:text-rose-300">
+        <p className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-300">
           No stock
         </p>
       ) : null}
@@ -91,11 +91,16 @@ export function CheckoutButton({ product }: { product: Product }) {
         onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
         placeholder="Coupon code (optional)"
       />
-      <div className="rounded-xl border border-dashed border-border/70 bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
-        External gateway checkout is paused for now. Wallet balance checkout remains available for approved customers.
+      <div className="rounded-2xl border border-dashed border-border/70 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+        Secure checkout note: wallet balance flow is active, and external gateway can be enabled again later.
       </div>
-      <Button onClick={handleWalletCheckout} variant="outline" className="h-12 w-full" disabled={loading !== "none" || isOutOfStock}>
-        {loading === "wallet" ? "Processing wallet checkout..." : "Checkout with wallet balance"}
+      <Button
+        onClick={handleWalletCheckout}
+        variant="outline"
+        className="h-12 w-full rounded-2xl"
+        disabled={loading !== "none" || isOutOfStock}
+      >
+        {loading === "wallet" ? "Processing secure checkout..." : "Pay with wallet balance"}
       </Button>
       <div className="flex flex-wrap gap-3 pt-1 text-xs font-semibold text-muted-foreground">
         <Link href="/refund-policy" className="transition-colors hover:text-primary">

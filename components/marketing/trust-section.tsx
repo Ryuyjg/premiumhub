@@ -9,7 +9,7 @@ const trustCards = [
   {
     icon: ShieldCheck,
     title: "Clear policies",
-    description: "Refund, privacy, FAQ, and terms pages are now visible so customers can verify how the store operates.",
+    description: "Refund, privacy, FAQ, and terms pages are visible so buyers can verify store operations instantly.",
     href: "/refund-policy",
     cta: "Read policies",
     iconTone: "bg-primary/10 text-primary",
@@ -18,7 +18,7 @@ const trustCards = [
   {
     icon: HeadphonesIcon,
     title: "Direct support",
-    description: "Customers can find WhatsApp, Telegram, and dashboard support without hunting through the site.",
+    description: "Customers can find WhatsApp, Telegram, and dashboard support without hunting around the site.",
     href: "/contact",
     cta: "Open contact",
     iconTone: "bg-success/12 text-success",
@@ -27,7 +27,7 @@ const trustCards = [
   {
     icon: BadgeCheck,
     title: "Tracked delivery",
-    description: "Orders, renewals, and support history stay tied to the customer account instead of disappearing in chat.",
+    description: "Orders, renewals, and support history stay tied to each account instead of disappearing in chat.",
     href: "/login",
     cta: "View account flow",
     iconTone: "bg-success/12 text-success",
@@ -36,7 +36,7 @@ const trustCards = [
   {
     icon: Wallet,
     title: "Safer rollout",
-    description: "Checkout is intentionally paused until the next gateway is ready, which is better than forcing a weak payment flow live.",
+    description: "Checkout architecture is ready for integration while customer trust flow stays stable and polished.",
     href: "/faq",
     cta: "See how it works",
     iconTone: "bg-primary/10 text-primary",
@@ -51,12 +51,11 @@ export function TrustSection() {
         <div className="section-shell mb-10 p-7 md:p-8">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Trust layer</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">
-            A buyer should be able to trust the store
-            <span className="gradient-text block">before paying.</span>
+            Conversion improves when trust is
+            <span className="gradient-text block">visible by default.</span>
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-8 text-muted-foreground">
-            Strong support visibility, cleaner policies, and organized account delivery matter more than flashy claims.
-            This section makes those signals obvious from the home page.
+            Structured support visibility, legal transparency, and account-based delivery create a serious buying experience.
           </p>
         </div>
       </Reveal>

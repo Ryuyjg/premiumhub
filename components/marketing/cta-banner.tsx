@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 const checklist = [
-  "Add your real catalog manually",
-  "Upload stronger product creatives",
-  "Write clear delivery and refund notes",
-  "Reconnect crypto checkout when the store is ready"
+  "Prioritize best-selling plans on top",
+  "Use clear plan inclusions and durations",
+  "Keep support and legal pages one click away",
+  "Launch paid traffic only after trust stack is complete"
 ];
 
 export function CtaBanner() {
@@ -36,11 +36,11 @@ export function CtaBanner() {
             <div className="max-w-2xl space-y-6">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                Fresh start checklist
+                Conversion launch checklist
               </span>
               <h2 className="text-3xl font-black tracking-tight text-white md:text-4xl xl:text-5xl">
-                Build the catalog first.
-                <span className="block">Bring payments back second.</span>
+                Turn design quality into
+                <span className="block">consistent sales confidence.</span>
               </h2>
               <div className="grid gap-2.5 sm:grid-cols-2">
                 {checklist.map((item) => (
@@ -57,7 +57,7 @@ export function CtaBanner() {
                 href="/products"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-7 text-sm font-bold text-foreground shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl"
               >
-                Preview catalog <ArrowRight className="h-4 w-4" />
+                Browse premium plans <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/contact"
