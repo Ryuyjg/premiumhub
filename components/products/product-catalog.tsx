@@ -260,8 +260,8 @@ export function ProductCatalog({
             </div>
           ) : null}
 
-          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-cyan-300/20 blur-3xl" />
-          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-blue-400/18 blur-3xl" />
+          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-emerald-300/20 blur-3xl" />
+          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-amber-300/14 blur-3xl" />
 
           <div className="relative grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
             <div className="space-y-4">
@@ -346,8 +346,8 @@ export function ProductCatalog({
               <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-950/50 to-slate-950/85" />
             </div>
           ) : null}
-          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-cyan-300/20 blur-3xl" />
-          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-blue-400/18 blur-3xl" />
+          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-emerald-300/20 blur-3xl" />
+          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-amber-300/14 blur-3xl" />
           <div className="relative grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-4">
               <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em]">

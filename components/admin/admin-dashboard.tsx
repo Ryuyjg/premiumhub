@@ -89,7 +89,7 @@ export function AdminDashboard({
   
   const kpiCards = useMemo(() => [
     { icon: Wallet, label: "Total Revenue", value: formatCurrency(analytics.revenue), gradient: "from-primary/20 to-accent/10", iconBg: "bg-primary/15", iconColor: "text-primary" },
-    { icon: BarChart3, label: "Total Orders", value: String(analytics.orders), gradient: "from-blue-500/15 to-cyan-500/8", iconBg: "bg-blue-500/10", iconColor: "text-blue-500" },
+    { icon: BarChart3, label: "Total Orders", value: String(analytics.orders), gradient: "from-emerald-500/15 to-teal-500/8", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500" },
     { icon: Users2, label: "Active Users", value: String(analytics.activeUsers), gradient: "from-emerald-500/15 to-teal-500/8", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500" },
     { icon: TicketPercent, label: "Live Subscriptions", value: String(analytics.activeSubscriptions), gradient: "from-amber-500/15 to-orange-500/8", iconBg: "bg-amber-500/10", iconColor: "text-amber-500" }
   ], [analytics]);

@@ -8,10 +8,10 @@
   --card: 0 0% 100%;
   --border: 220 14% 88%;
   --input: 220 14% 88%;
-  --ring: 221 78% 53%;
+  --ring: 157 61% 42%;
   --muted: 210 18% 95%;
   --muted-foreground: 220 11% 42%;
-  --primary: 221 78% 53%;
+  --primary: 157 61% 42%;
   --primary-foreground: 0 0% 100%;
   --accent: 210 18% 93%;
   --accent-foreground: 222 24% 12%;
@@ -19,9 +19,9 @@
   --warning: 35 90% 50%;
   --surface: 0 0% 100%;
   --surface-foreground: 222 24% 12%;
-  --gradient-start: 221 68% 46%;
-  --gradient-mid: 223 42% 22%;
-  --gradient-end: 214 74% 60%;
+  --gradient-start: 157 54% 40%;
+  --gradient-mid: 162 26% 18%;
+  --gradient-end: 147 40% 54%;
 }
 
 .dark {
@@ -30,10 +30,10 @@
   --card: 222 19% 14%;
   --border: 220 13% 24%;
   --input: 220 13% 24%;
-  --ring: 219 86% 68%;
+  --ring: 156 64% 62%;
   --muted: 222 16% 18%;
   --muted-foreground: 216 13% 73%;
-  --primary: 219 86% 68%;
+  --primary: 156 64% 62%;
   --primary-foreground: 222 24% 12%;
   --accent: 222 15% 20%;
   --accent-foreground: 214 24% 95%;
@@ -41,9 +41,9 @@
   --warning: 35 96% 60%;
   --surface: 222 19% 14%;
   --surface-foreground: 214 24% 95%;
-  --gradient-start: 219 66% 53%;
-  --gradient-mid: 223 34% 20%;
-  --gradient-end: 213 62% 61%;
+  --gradient-start: 156 51% 52%;
+  --gradient-mid: 162 20% 21%;
+  --gradient-end: 147 38% 61%;
 }
 
 html {
@@ -68,16 +68,16 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 70% 52% at 8% -10%, rgba(59, 130, 246, 0.16) 0%, transparent 56%),
-    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 52% at 8% -10%, rgba(16, 185, 129, 0.14) 0%, transparent 56%),
+    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(245, 158, 11, 0.07) 0%, transparent 52%),
     linear-gradient(180deg, rgba(12, 16, 28, 0.98), rgba(12, 16, 28, 1)),
     hsl(222 22% 10%);
 }
 
 html:not(.dark) body {
   background:
-    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(59, 130, 246, 0.09) 0%, transparent 58%),
-    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(148, 163, 184, 0.08) 0%, transparent 52%),
+    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(16, 185, 129, 0.09) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 52%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(248, 250, 252, 0.78)),
     hsl(210 20% 98%);
 }

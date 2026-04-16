@@ -31,8 +31,8 @@ export function TelegramFeatureSection({
     <section className="container py-18 md:py-24">
       <Reveal>
         <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94),rgba(51,65,85,0.9))] p-7 text-white shadow-[0_26px_62px_rgba(15,23,42,0.16)] md:p-8">
-          <div className="absolute -left-14 top-0 h-40 w-40 rounded-full bg-indigo-300/18 blur-3xl" />
-          <div className="absolute -right-12 bottom-0 h-44 w-44 rounded-full bg-slate-300/14 blur-3xl" />
+          <div className="absolute -left-14 top-0 h-40 w-40 rounded-full bg-emerald-300/18 blur-3xl" />
+          <div className="absolute -right-12 bottom-0 h-44 w-44 rounded-full bg-amber-200/12 blur-3xl" />
           {category.imageUrl ? (
             <div className="absolute inset-y-0 right-0 hidden w-[34%] overflow-hidden lg:block">
               <Image src={category.imageUrl} alt={category.name} fill className="object-cover opacity-30" />

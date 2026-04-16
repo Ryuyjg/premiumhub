@@ -26,7 +26,7 @@ const initialForm: OfferForm = {
   title: "",
   description: "",
   badge: "",
-  accent: "from-cyan-500 to-blue-600",
+    accent: "from-emerald-500 to-teal-600",
   ctaLabel: "Explore",
   ctaUrl: "/products",
   order: "0",
@@ -99,7 +99,7 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
       title: offer.title,
       description: offer.description,
       badge: offer.badge || "",
-      accent: offer.accent || "from-cyan-500 to-blue-600",
+        accent: offer.accent || "from-emerald-500 to-teal-600",
       ctaLabel: offer.ctaLabel || "Explore",
       ctaUrl: offer.ctaUrl || "/products",
       order: String(offer.order ?? 0),
@@ -175,7 +175,7 @@ export function OfferManager({ offers }: { offers: Offer[] }) {
             <Input
               value={form.accent}
               onChange={(event) => setForm((current) => ({ ...current, accent: event.target.value }))}
-              placeholder="from-cyan-500 to-blue-600"
+              placeholder="from-emerald-500 to-teal-600"
             />
           </label>
           <label className="flex items-center gap-2 text-sm text-muted-foreground">

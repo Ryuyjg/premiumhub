@@ -20,7 +20,7 @@ function buildPayload(parsed: z.infer<typeof offerSchema>) {
     title: parsed.title.trim(),
     description: parsed.description.trim(),
     badge: (parsed.badge || "").trim(),
-    accent: (parsed.accent || "").trim() || "from-cyan-500 to-blue-600",
+      accent: (parsed.accent || "").trim() || "from-emerald-500 to-teal-600",
     ctaLabel: (parsed.ctaLabel || "").trim(),
     ctaUrl: (parsed.ctaUrl || "").trim(),
     active: parsed.active !== false,
