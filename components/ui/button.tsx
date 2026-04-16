@@ -9,9 +9,9 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "relative overflow-hidden bg-gradient-to-r from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-accent text-white shadow-[0_18px_36px_rgba(37,99,235,0.22)] " +
+    "relative overflow-hidden bg-gradient-to-r from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] text-white shadow-[0_14px_26px_rgba(37,99,235,0.18)] " +
     "before:absolute before:inset-0 before:-translate-x-full before:bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.22),transparent)] " +
-    "before:transition-transform before:duration-700 hover:shadow-[0_22px_40px_rgba(37,99,235,0.28)] hover:-translate-y-px hover:before:translate-x-full",
+    "before:transition-transform before:duration-700 hover:shadow-[0_18px_34px_rgba(37,99,235,0.22)] hover:-translate-y-px hover:before:translate-x-full",
   secondary:
     "border border-primary/20 bg-primary/10 text-foreground shadow-[0_12px_28px_rgba(15,23,42,0.06)] hover:bg-primary/14",
   ghost:

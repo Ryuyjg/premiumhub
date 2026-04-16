@@ -215,7 +215,7 @@ export function ProductCatalog({
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.06 }}
-              className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(160deg,rgba(15,23,42,0.98),rgba(30,41,59,0.96))] p-5 text-white shadow-[0_18px_48px_rgba(15,23,42,0.14)]"
+              className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(160deg,rgba(17,24,39,0.96),rgba(30,41,59,0.92))] p-5 text-white shadow-[0_18px_42px_rgba(15,23,42,0.14)]"
             >
               <div
                 className={`absolute -right-10 -top-10 h-36 w-36 rounded-full ${
@@ -246,7 +246,7 @@ export function ProductCatalog({
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] p-6 text-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] md:p-7"
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94),rgba(51,65,85,0.92))] p-6 text-white shadow-[0_24px_56px_rgba(15,23,42,0.18)] md:p-7"
         >
           {selectedCategoryStat.category.imageUrl ? (
             <div className="absolute inset-y-0 right-0 hidden w-[40%] overflow-hidden lg:block">
@@ -333,7 +333,7 @@ export function ProductCatalog({
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] p-6 text-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] md:p-7"
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94),rgba(51,65,85,0.92))] p-6 text-white shadow-[0_24px_56px_rgba(15,23,42,0.18)] md:p-7"
         >
           {featuredCategory.imageUrl ? (
             <div className="absolute inset-y-0 right-0 hidden w-[38%] overflow-hidden lg:block">
@@ -507,7 +507,7 @@ export function ProductCatalog({
                         key={item.id}
                         className={
                           highlighted
-                            ? "sm:col-span-2 rounded-[1.6rem] border border-primary/20 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] px-5 py-4 text-white shadow-[0_20px_42px_rgba(15,23,42,0.14)]"
+                            ? "sm:col-span-2 rounded-[1.6rem] border border-primary/20 bg-[linear-gradient(145deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94),rgba(51,65,85,0.92))] px-5 py-4 text-white shadow-[0_20px_40px_rgba(15,23,42,0.14)]"
                             : "rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4"
                         }
                       >

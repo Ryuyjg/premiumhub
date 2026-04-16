@@ -19,7 +19,7 @@ export function CtaBanner() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.55 }}
-        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-accent p-[1px]"
+        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] p-[1px]"
       >
         <div className="relative overflow-hidden rounded-[calc(2.5rem-1px)] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_35%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(30,41,59,0.96))] px-8 py-14 md:px-14 md:py-16">
           <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/18 blur-3xl" />

@@ -3,47 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 33% 98%;
-  --foreground: 222 31% 12%;
+  --background: 210 20% 98%;
+  --foreground: 222 24% 12%;
   --card: 0 0% 100%;
-  --border: 220 18% 86%;
-  --input: 220 18% 86%;
-  --ring: 215 90% 54%;
-  --muted: 220 20% 95%;
-  --muted-foreground: 220 13% 39%;
-  --primary: 215 90% 54%;
+  --border: 220 14% 88%;
+  --input: 220 14% 88%;
+  --ring: 221 78% 53%;
+  --muted: 210 18% 95%;
+  --muted-foreground: 220 11% 42%;
+  --primary: 221 78% 53%;
   --primary-foreground: 0 0% 100%;
-  --accent: 193 92% 48%;
-  --accent-foreground: 220 40% 10%;
-  --success: 159 64% 37%;
-  --warning: 36 92% 49%;
+  --accent: 210 18% 93%;
+  --accent-foreground: 222 24% 12%;
+  --success: 157 58% 37%;
+  --warning: 35 90% 50%;
   --surface: 0 0% 100%;
-  --surface-foreground: 222 31% 12%;
-  --gradient-start: 220 80% 34%;
-  --gradient-mid: 220 36% 18%;
-  --gradient-end: 191 88% 50%;
+  --surface-foreground: 222 24% 12%;
+  --gradient-start: 221 68% 46%;
+  --gradient-mid: 223 42% 22%;
+  --gradient-end: 214 74% 60%;
 }
 
 .dark {
-  --background: 222 34% 9%;
-  --foreground: 214 30% 96%;
-  --card: 223 29% 13%;
-  --border: 221 18% 25%;
-  --input: 221 18% 25%;
-  --ring: 214 95% 70%;
-  --muted: 222 22% 17%;
-  --muted-foreground: 216 16% 75%;
-  --primary: 214 95% 70%;
-  --primary-foreground: 222 31% 12%;
-  --accent: 191 86% 62%;
-  --accent-foreground: 222 31% 12%;
-  --success: 158 63% 52%;
-  --warning: 34 100% 58%;
-  --surface: 223 29% 13%;
-  --surface-foreground: 214 30% 96%;
-  --gradient-start: 217 77% 42%;
-  --gradient-mid: 222 42% 17%;
-  --gradient-end: 191 86% 62%;
+  --background: 222 22% 10%;
+  --foreground: 214 24% 95%;
+  --card: 222 19% 14%;
+  --border: 220 13% 24%;
+  --input: 220 13% 24%;
+  --ring: 219 86% 68%;
+  --muted: 222 16% 18%;
+  --muted-foreground: 216 13% 73%;
+  --primary: 219 86% 68%;
+  --primary-foreground: 222 24% 12%;
+  --accent: 222 15% 20%;
+  --accent-foreground: 214 24% 95%;
+  --success: 158 57% 50%;
+  --warning: 35 96% 60%;
+  --surface: 222 19% 14%;
+  --surface-foreground: 214 24% 95%;
+  --gradient-start: 219 66% 53%;
+  --gradient-mid: 223 34% 20%;
+  --gradient-end: 213 62% 61%;
 }
 
 html {
@@ -68,18 +68,18 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 72% 56% at 8% -10%, rgba(37, 99, 235, 0.2) 0%, transparent 56%),
-    radial-gradient(ellipse 50% 40% at 92% 0%, rgba(14, 116, 144, 0.14) 0%, transparent 54%),
-    linear-gradient(180deg, rgba(10, 15, 28, 0.98), rgba(10, 15, 28, 1)),
-    hsl(222 34% 9%);
+    radial-gradient(ellipse 70% 52% at 8% -10%, rgba(59, 130, 246, 0.16) 0%, transparent 56%),
+    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(12, 16, 28, 0.98), rgba(12, 16, 28, 1)),
+    hsl(222 22% 10%);
 }
 
 html:not(.dark) body {
   background:
-    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(37, 99, 235, 0.12) 0%, transparent 58%),
-    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(14, 116, 144, 0.09) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(248, 250, 252, 0.74)),
-    hsl(220 33% 98%);
+    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(59, 130, 246, 0.09) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(148, 163, 184, 0.08) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(248, 250, 252, 0.78)),
+    hsl(210 20% 98%);
 }
 
 ::selection {
@@ -146,10 +146,9 @@ html:not(.dark) body {
 
   .gradient-text {
     background-image: linear-gradient(
-      135deg,
-      hsl(var(--primary)),
-      hsl(var(--gradient-mid)),
-      hsl(var(--gradient-end))
+      130deg,
+      hsl(var(--foreground)),
+      hsl(var(--gradient-start))
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -178,7 +177,7 @@ html:not(.dark) body {
       hsl(var(--gradient-start)),
       hsl(var(--gradient-end))
     );
-    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.16);
   }
 
   .btn-ghost {
@@ -282,7 +281,7 @@ html:not(.dark) body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 38px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 18px 32px rgba(37, 99, 235, 0.2);
 }
 
 .btn-primary:active {
