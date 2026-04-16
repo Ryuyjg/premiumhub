@@ -95,47 +95,47 @@ export function ProductCatalog({
     <div className="space-y-8">
       {categoryStats.length ? (
         <div>
-          <div className="section-shell border border-border/65 bg-background/82 p-3 shadow-[0_12px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl md:p-4">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="section-shell border border-border/65 bg-background/84 p-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] backdrop-blur-xl md:p-5">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
-                <p className="mt-1 hidden text-sm leading-7 text-muted-foreground sm:block">
-                  Swipe on mobile or scroll sideways on desktop to move across the catalog.
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  Swipe on mobile, scroll on desktop, and jump directly into any category.
                 </p>
               </div>
               {category !== "all" ? (
-                <button type="button" onClick={resetFilters} className="pill-filter whitespace-nowrap">
-                  View all categories
+                <button type="button" onClick={resetFilters} className="pill-filter h-10 whitespace-nowrap">
+                  Clear category
                 </button>
               ) : null}
             </div>
 
             <div className="overflow-x-auto pb-1 [scrollbar-width:none]">
-              <div className="flex min-w-max gap-3 snap-x snap-mandatory">
+              <div className="flex min-w-max gap-2.5 snap-x snap-mandatory">
                 <motion.button
                   type="button"
                   onClick={() => setCategory("all")}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-[175px] shrink-0 snap-start rounded-[1.25rem] border px-3.5 py-3 text-left transition-all duration-300 ${
+                  className={`group w-[170px] shrink-0 snap-start rounded-2xl border px-3.5 py-3 text-left transition-all duration-200 ${
                     category === "all"
-                      ? "border-primary/30 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
-                      : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
+                      ? "border-primary/30 bg-primary/10 text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.08)]"
+                      : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground hover:border-primary/20 hover:bg-primary/5"
                   }`}
                 >
                   <p
                     className={`text-[11px] font-black uppercase tracking-[0.16em] ${
-                      category === "all" ? "text-white/66" : "text-muted-foreground"
+                      category === "all" ? "text-primary" : "text-muted-foreground"
                     }`}
                   >
                     All categories
                   </p>
-                  <p className="mt-2 text-base font-black tracking-tight">Everything live</p>
+                  <p className="mt-1.5 text-[15px] font-black tracking-tight">Everything live</p>
                   <p
                     className={`mt-1.5 line-clamp-2 text-xs leading-5 ${
-                      category === "all" ? "text-white/82" : "text-muted-foreground"
+                      category === "all" ? "text-foreground/75" : "text-muted-foreground"
                     }`}
                   >
-                    See the full catalog without limiting results to one lane.
+                    Browse all products without category filtering.
                   </p>
                 </motion.button>
 
@@ -152,29 +152,23 @@ export function ProductCatalog({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
                       whileTap={{ scale: 0.985 }}
-                      className={`group relative w-[185px] shrink-0 snap-start overflow-hidden rounded-[1.25rem] border px-3.5 py-3 text-left transition-all duration-300 ${
-                        highlighted
-                          ? "border-primary/24 bg-[linear-gradient(145deg,rgba(5,12,26,0.98),rgba(18,44,95,0.96),rgba(14,116,144,0.92))] text-white shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
-                          : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
-                      } ${active ? "ring-2 ring-primary/35" : ""}`}
+                      className={`group relative w-[182px] shrink-0 snap-start overflow-hidden rounded-2xl border px-3.5 py-3 text-left transition-all duration-200 ${
+                        active
+                          ? "border-primary/32 bg-primary/10 text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.08)]"
+                          : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground hover:border-primary/20 hover:bg-primary/5"
+                      }`}
                     >
                       {item.imageUrl ? (
-                        <div className="absolute inset-y-0 right-0 w-16 overflow-hidden">
+                        <div className="absolute inset-y-0 right-0 w-14 overflow-hidden">
                           <div className="relative h-full w-full">
                             <Image
                               src={item.imageUrl}
                               alt={item.name}
                               fill
-                              className="object-cover opacity-30 transition duration-500 group-hover:scale-105"
+                              className="object-cover opacity-25 transition duration-500 group-hover:scale-105"
                             />
                           </div>
-                          <div
-                            className={`absolute inset-0 ${
-                              highlighted
-                                ? "bg-gradient-to-l from-transparent to-slate-950/88"
-                                : "bg-gradient-to-l from-transparent to-background/95"
-                            }`}
-                          />
+                          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-background/94" />
                         </div>
                       ) : null}
 
@@ -182,35 +176,25 @@ export function ProductCatalog({
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p
-                              className={`text-[11px] font-black uppercase tracking-[0.16em] ${
-                                highlighted ? "text-white/66" : "text-muted-foreground"
-                              }`}
+                              className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground"
                             >
                               {count > 0 ? `${count} item${count === 1 ? "" : "s"}` : "Ready for upload"}
                             </p>
-                            <p className="mt-2 text-base font-black tracking-tight">{item.name}</p>
+                            <p className="mt-1.5 pr-8 text-[15px] font-black tracking-tight">{item.name}</p>
                           </div>
                           {highlighted ? (
-                            <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
+                            <span className="rounded-full border border-primary/25 bg-primary/12 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.16em] text-primary">
                               Main
                             </span>
                           ) : null}
                         </div>
 
-                        <p
-                          className={`mt-1.5 line-clamp-2 max-w-[84%] text-xs leading-5 ${
-                            highlighted ? "text-white/82" : "text-muted-foreground"
-                          }`}
-                        >
-                          {item.description || "Category ready for manual uploads and stronger product copy."}
-                        </p>
-
-                        <div className="mt-3 flex items-center justify-between gap-3 text-[11px]">
-                          <span className={highlighted ? "text-white/76" : "text-muted-foreground"}>
+                        <div className="mt-2.5 flex items-center justify-between gap-3 text-[11px]">
+                          <span className="text-muted-foreground">
                             {startingPrice ? `From ${formatCurrency(startingPrice)}` : "No pricing yet"}
                           </span>
-                          <span className={highlighted ? "text-white/76" : "text-muted-foreground"}>
-                            {bestSellingCount ? `${bestSellingCount} best seller${bestSellingCount === 1 ? "" : "s"}` : "Build this lane"}
+                          <span className="text-muted-foreground">
+                            {bestSellingCount ? `${bestSellingCount} top` : "Build lane"}
                           </span>
                         </div>
                       </div>
