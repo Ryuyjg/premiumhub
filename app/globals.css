@@ -3,47 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 20% 98%;
-  --foreground: 222 24% 12%;
+  --background: 40 36% 96%;
+  --foreground: 30 20% 10%;
   --card: 0 0% 100%;
-  --border: 220 14% 88%;
-  --input: 220 14% 88%;
-  --ring: 157 61% 42%;
-  --muted: 210 18% 95%;
-  --muted-foreground: 220 11% 42%;
-  --primary: 157 61% 42%;
-  --primary-foreground: 0 0% 100%;
-  --accent: 210 18% 93%;
-  --accent-foreground: 222 24% 12%;
+  --border: 36 22% 82%;
+  --input: 36 22% 82%;
+  --ring: 42 89% 52%;
+  --muted: 40 22% 92%;
+  --muted-foreground: 30 12% 35%;
+  --primary: 42 89% 52%;
+  --primary-foreground: 28 40% 8%;
+  --accent: 40 30% 90%;
+  --accent-foreground: 30 20% 10%;
   --success: 157 58% 37%;
   --warning: 35 90% 50%;
-  --surface: 0 0% 100%;
-  --surface-foreground: 222 24% 12%;
-  --gradient-start: 157 54% 40%;
-  --gradient-mid: 162 26% 18%;
-  --gradient-end: 147 40% 54%;
+  --surface: 38 40% 98%;
+  --surface-foreground: 30 20% 10%;
+  --gradient-start: 43 92% 56%;
+  --gradient-mid: 32 58% 22%;
+  --gradient-end: 36 78% 40%;
 }
 
 .dark {
-  --background: 222 22% 10%;
-  --foreground: 214 24% 95%;
-  --card: 222 19% 14%;
-  --border: 220 13% 24%;
-  --input: 220 13% 24%;
-  --ring: 156 64% 62%;
-  --muted: 222 16% 18%;
-  --muted-foreground: 216 13% 73%;
-  --primary: 156 64% 62%;
-  --primary-foreground: 222 24% 12%;
-  --accent: 222 15% 20%;
-  --accent-foreground: 214 24% 95%;
-  --success: 158 57% 50%;
-  --warning: 35 96% 60%;
-  --surface: 222 19% 14%;
-  --surface-foreground: 214 24% 95%;
-  --gradient-start: 156 51% 52%;
-  --gradient-mid: 162 20% 21%;
-  --gradient-end: 147 38% 61%;
+  --background: 24 14% 6%;
+  --foreground: 40 30% 92%;
+  --card: 24 14% 9%;
+  --border: 35 15% 20%;
+  --input: 35 15% 20%;
+  --ring: 43 86% 60%;
+  --muted: 26 11% 13%;
+  --muted-foreground: 38 16% 70%;
+  --primary: 43 86% 60%;
+  --primary-foreground: 28 42% 10%;
+  --accent: 28 12% 16%;
+  --accent-foreground: 40 30% 92%;
+  --success: 150 45% 52%;
+  --warning: 38 94% 62%;
+  --surface: 24 14% 9%;
+  --surface-foreground: 40 30% 92%;
+  --gradient-start: 44 88% 62%;
+  --gradient-mid: 30 42% 19%;
+  --gradient-end: 37 74% 47%;
 }
 
 html {
@@ -68,18 +68,18 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 70% 52% at 8% -10%, rgba(16, 185, 129, 0.14) 0%, transparent 56%),
-    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(245, 158, 11, 0.07) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(12, 16, 28, 0.98), rgba(12, 16, 28, 1)),
-    hsl(222 22% 10%);
+    radial-gradient(ellipse 70% 52% at 8% -10%, rgba(245, 158, 11, 0.16) 0%, transparent 56%),
+    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(234, 179, 8, 0.09) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(14, 11, 8, 0.99), rgba(10, 8, 6, 1)),
+    hsl(24 14% 6%);
 }
 
 html:not(.dark) body {
   background:
-    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(16, 185, 129, 0.09) 0%, transparent 58%),
-    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(248, 250, 252, 0.78)),
-    hsl(210 20% 98%);
+    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(245, 158, 11, 0.1) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(146, 64, 14, 0.06) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(255, 252, 245, 0.68), rgba(250, 244, 232, 0.78)),
+    hsl(40 36% 96%);
 }
 
 ::selection {
