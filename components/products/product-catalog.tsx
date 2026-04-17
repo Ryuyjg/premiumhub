@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Grid2X2, List, Search, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
@@ -91,114 +91,78 @@ export function ProductCatalog({
     });
   }
 
+  function handleCategoryKey(event: KeyboardEvent<HTMLDivElement>, value: string) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setCategory(value);
+    }
+  }
+
   return (
     <div className="space-y-8">
       {categoryStats.length ? (
         <div>
-          <div className="section-shell border border-border/65 bg-background/84 p-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] backdrop-blur-xl md:p-5">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="section-shell border border-border/65 bg-background/84 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] backdrop-blur-xl md:px-5">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Browse by category</p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  Swipe on mobile, scroll on desktop, and jump directly into any category.
-                </p>
+                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Categories</p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">Top horizontal category strip</p>
               </div>
               {category !== "all" ? (
-                <button type="button" onClick={resetFilters} className="pill-filter h-10 whitespace-nowrap">
-                  Clear category
+                <button type="button" onClick={resetFilters} className="text-sm font-semibold text-primary">
+                  Show all
                 </button>
               ) : null}
             </div>
 
-            <div className="overflow-x-auto pb-1 [scrollbar-width:none]">
-              <div className="flex min-w-max gap-2.5 snap-x snap-mandatory">
-                <motion.button
-                  type="button"
+            <div className="overflow-x-auto [scrollbar-width:none]">
+              <div className="flex min-w-max items-center gap-6 border-b border-border/60 pb-1">
+                <motion.div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setCategory("all")}
+                  onKeyDown={(event) => handleCategoryKey(event, "all")}
                   whileTap={{ scale: 0.98 }}
-                  className={`group w-[170px] shrink-0 snap-start rounded-2xl border px-3.5 py-3 text-left transition-all duration-200 ${
+                  className={`shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm font-semibold transition-colors ${
                     category === "all"
-                      ? "border-primary/30 bg-primary/10 text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.08)]"
-                      : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground hover:border-primary/20 hover:bg-primary/5"
+                      ? "border-primary text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <p
-                    className={`text-[11px] font-black uppercase tracking-[0.16em] ${
-                      category === "all" ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  >
-                    All categories
-                  </p>
-                  <p className="mt-1.5 text-[15px] font-black tracking-tight">Everything live</p>
-                  <p
-                    className={`mt-1.5 line-clamp-2 text-xs leading-5 ${
-                      category === "all" ? "text-foreground/75" : "text-muted-foreground"
-                    }`}
-                  >
-                    Browse all products without category filtering.
-                  </p>
-                </motion.button>
+                  All categories
+                </motion.div>
 
-                {categoryStats.map(({ category: item, count, startingPrice, bestSellingCount }, index) => {
+                {categoryStats.map(({ category: item, count }, index) => {
                   const highlighted = isFeaturedCategory(item);
                   const active = category === item.id;
 
                   return (
-                    <motion.button
+                    <motion.div
                       key={item.id}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setCategory(item.id)}
+                      onKeyDown={(event) => handleCategoryKey(event, item.id)}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
                       whileTap={{ scale: 0.985 }}
-                      className={`group relative w-[182px] shrink-0 snap-start overflow-hidden rounded-2xl border px-3.5 py-3 text-left transition-all duration-200 ${
+                      className={`group shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm font-semibold transition-colors ${
                         active
-                          ? "border-primary/32 bg-primary/10 text-foreground shadow-[0_10px_22px_rgba(15,23,42,0.08)]"
-                          : "border-border/70 bg-[hsl(var(--surface)/0.92)] text-foreground hover:border-primary/20 hover:bg-primary/5"
+                          ? "border-primary text-foreground"
+                          : "border-transparent text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      {item.imageUrl ? (
-                        <div className="absolute inset-y-0 right-0 w-14 overflow-hidden">
-                          <div className="relative h-full w-full">
-                            <Image
-                              src={item.imageUrl}
-                              alt={item.name}
-                              fill
-                              className="object-cover opacity-25 transition duration-500 group-hover:scale-105"
-                            />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-background/94" />
-                        </div>
+                      <span>{item.name}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {count > 0 ? count : "0"}
+                      </span>
+                      {highlighted ? (
+                        <span className="ml-2 rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-primary">
+                          Main
+                        </span>
                       ) : null}
-
-                      <div className="relative">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p
-                              className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground"
-                            >
-                              {count > 0 ? `${count} item${count === 1 ? "" : "s"}` : "Ready for upload"}
-                            </p>
-                            <p className="mt-1.5 pr-8 text-[15px] font-black tracking-tight">{item.name}</p>
-                          </div>
-                          {highlighted ? (
-                            <span className="rounded-full border border-primary/25 bg-primary/12 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.16em] text-primary">
-                              Main
-                            </span>
-                          ) : null}
-                        </div>
-
-                        <div className="mt-2.5 flex items-center justify-between gap-3 text-[11px]">
-                          <span className="text-muted-foreground">
-                            {startingPrice ? `From ${formatCurrency(startingPrice)}` : "No pricing yet"}
-                          </span>
-                          <span className="text-muted-foreground">
-                            {bestSellingCount ? `${bestSellingCount} top` : "Build lane"}
-                          </span>
-                        </div>
-                      </div>
-                    </motion.button>
+                    </motion.div>
                   );
                 })}
               </div>
