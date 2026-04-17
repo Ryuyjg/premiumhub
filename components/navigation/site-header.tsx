@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { LogIn, LogOut, Menu, Settings, Shield, ShoppingCart, X } from "lucide-react";
 import { signOut } from "firebase/auth";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { useAppStore } from "@/store/use-app-store";
@@ -14,7 +14,6 @@ import { STARTER_CATEGORIES } from "@/lib/catalog";
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -26,7 +25,7 @@ export function SiteHeader() {
   const cartItemsCount = useAppStore((state) => state.cartItems.length);
   const { user, loading } = useAuth();
   const isAdminRoute = pathname.startsWith("/admin");
-  const activeCategorySlug = searchParams.get("category");
+  const [activeCategorySlug, setActiveCategorySlug] = useState<string | null>(null);
 
   useEffect(() => {
     setHydrated(true);
@@ -85,6 +84,15 @@ export function SiteHeader() {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [settingsOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const nextSlug = new URLSearchParams(window.location.search).get("category");
+    setActiveCategorySlug((prev) => (prev === nextSlug ? prev : nextSlug));
+  });
 
   const isLoggedIn = Boolean(user) || sessionAuthenticated || isAdminRoute;
   const authLoading = loading || checkingSession;
