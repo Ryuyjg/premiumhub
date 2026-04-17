@@ -3,13 +3,17 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Grid2X2, List, Search, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
+import { ArrowRight, Grid2X2, List, LogIn, LogOut, Search, Settings, ShoppingCart, Sparkles } from "lucide-react";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/store/use-app-store";
 import { FEATURED_CATEGORY_SLUG, getStarterCategoryMeta, isFeaturedCategory } from "@/lib/catalog";
+import { useAuth } from "@/components/providers/auth-provider";
+import { getClientAuth } from "@/lib/firebase/client";
 import { formatCurrency } from "@/lib/utils";
 
 const offerGlowTones = ["bg-primary/20", "bg-accent/18", "bg-white/10"];
@@ -23,9 +27,13 @@ export function ProductCatalog({
   categories: Category[];
   offers: Offer[];
 }) {
+  const router = useRouter();
+  const { user } = useAuth();
   const { search, category, setSearch, setCategory } = useAppStore();
   const [visibleCount, setVisibleCount] = useState(6);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsRef = useRef<HTMLDivElement | null>(null);
 
   const activeOffers = useMemo(() => offers.filter((offer) => offer.active).slice(0, 3), [offers]);
   const featuredCategory = useMemo(
@@ -75,6 +83,22 @@ export function ProductCatalog({
     setVisibleCount(6);
   }, [search, category]);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setSettingsOpen(false);
+      }
+    }
+
+    if (settingsOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [settingsOpen]);
+
   function resetFilters() {
     setSearch("");
     setCategory("all");
@@ -98,6 +122,17 @@ export function ProductCatalog({
     }
   }
 
+  async function handleLogout() {
+    await fetch("/api/auth/session", { method: "DELETE" });
+    const auth = getClientAuth();
+    if (auth) {
+      await signOut(auth);
+    }
+    setSettingsOpen(false);
+    router.push("/login");
+    router.refresh();
+  }
+
   return (
     <div className="space-y-8">
       {categoryStats.length ? (
@@ -108,11 +143,91 @@ export function ProductCatalog({
                 <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Categories</p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">Top horizontal category strip</p>
               </div>
-              {category !== "all" ? (
-                <button type="button" onClick={resetFilters} className="text-sm font-semibold text-primary">
-                  Show all
-                </button>
-              ) : null}
+              <div className="flex items-center gap-2">
+                {category !== "all" ? (
+                  <button type="button" onClick={resetFilters} className="text-sm font-semibold text-primary">
+                    Show all
+                  </button>
+                ) : null}
+                <Link
+                  href="/cart"
+                  className="control-surface inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm font-semibold"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Cart
+                </Link>
+
+                <div className="relative" ref={settingsRef}>
+                  <button
+                    type="button"
+                    onClick={() => setSettingsOpen((state) => !state)}
+                    className="control-surface inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm font-semibold"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </button>
+
+                  {settingsOpen ? (
+                    <div className="absolute right-0 top-11 z-30 w-56 rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.98)] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.14)]">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setSettingsOpen(false)}
+                        className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                      >
+                        My purchases
+                      </Link>
+                      <Link
+                        href="/support-channels"
+                        onClick={() => setSettingsOpen(false)}
+                        className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                      >
+                        Support
+                      </Link>
+                      <Link
+                        href="/privacy"
+                        onClick={() => setSettingsOpen(false)}
+                        className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                      >
+                        Privacy policy
+                      </Link>
+                      <Link
+                        href="/refund-policy"
+                        onClick={() => setSettingsOpen(false)}
+                        className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                      >
+                        Refund policy
+                      </Link>
+                      <Link
+                        href="/terms"
+                        onClick={() => setSettingsOpen(false)}
+                        className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                      >
+                        Terms of use
+                      </Link>
+                      <div className="my-1 border-t border-border/60" />
+                      {user ? (
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-500/10"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Logout
+                        </button>
+                      ) : (
+                        <Link
+                          href="/login"
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                        >
+                          <LogIn className="h-4 w-4" />
+                          Login
+                        </Link>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
             </div>
 
             <div className="overflow-x-auto [scrollbar-width:none]">
