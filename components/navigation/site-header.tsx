@@ -2,27 +2,31 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Shield, ShoppingCart, X } from "lucide-react";
+import { LogIn, LogOut, Menu, Settings, Shield, ShoppingCart, X } from "lucide-react";
 import { signOut } from "firebase/auth";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { APP_NAME, APP_TAGLINE, NAV_LINKS } from "@/lib/constants";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { useAppStore } from "@/store/use-app-store";
 import { useAuth } from "@/components/providers/auth-provider";
 import { getClientAuth } from "@/lib/firebase/client";
+import { STARTER_CATEGORIES } from "@/lib/catalog";
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [sessionAuthenticated, setSessionAuthenticated] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
+  const settingsRef = useRef<HTMLDivElement | null>(null);
   const cartItemsCount = useAppStore((state) => state.cartItems.length);
   const { user, loading } = useAuth();
   const isAdminRoute = pathname.startsWith("/admin");
+  const activeCategorySlug = searchParams.get("category");
 
   useEffect(() => {
     setHydrated(true);
@@ -66,6 +70,22 @@ export function SiteHeader() {
     };
   }, [pathname]);
 
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setSettingsOpen(false);
+      }
+    }
+
+    if (settingsOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [settingsOpen]);
+
   const isLoggedIn = Boolean(user) || sessionAuthenticated || isAdminRoute;
   const authLoading = loading || checkingSession;
 
@@ -76,6 +96,7 @@ export function SiteHeader() {
       await signOut(auth);
     }
     setOpen(false);
+    setSettingsOpen(false);
     router.push("/login");
     router.refresh();
   }
@@ -100,27 +121,25 @@ export function SiteHeader() {
             </div>
           </Link>
 
-          <nav className="control-surface hidden items-center gap-1 rounded-full p-1.5 md:flex">
-            {NAV_LINKS.map((link) => {
-              const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {active ? (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full border border-primary/22 bg-primary/10"
-                    />
-                  ) : null}
-                  {link.label}
-                </Link>
-              );
-            })}
+          <nav className="hidden flex-1 items-center justify-center overflow-x-auto [scrollbar-width:none] md:flex">
+            <div className="flex min-w-max items-center gap-5 border-b border-border/55 pb-1">
+              {STARTER_CATEGORIES.map((item) => {
+                const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
+                return (
+                  <Link
+                    key={item.slug}
+                    href={`/products?category=${item.slug}`}
+                    className={`relative whitespace-nowrap border-b-2 pb-2 text-sm font-semibold transition-colors ${
+                      active
+                        ? "border-primary text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
           </nav>
 
           <div className="flex items-center gap-2.5">
@@ -137,26 +156,78 @@ export function SiteHeader() {
               ) : null}
             </Link>
 
-            <ThemeToggle />
-
-            {authLoading ? (
-              <div className="hidden h-10 w-24 animate-pulse rounded-full bg-muted/70 md:block" />
-            ) : isLoggedIn ? (
+            <div className="relative hidden md:block" ref={settingsRef}>
               <button
                 type="button"
-                onClick={handleSignOut}
-                className="control-surface hidden h-10 rounded-full px-5 text-sm font-semibold text-foreground hover:border-rose-500/28 hover:bg-rose-500/8 hover:text-rose-600 md:inline-flex"
+                onClick={() => setSettingsOpen((state) => !state)}
+                className="control-surface inline-flex h-10 items-center gap-2 rounded-full px-3.5 text-sm font-semibold"
               >
-                Sign out
+                <Settings className="h-4 w-4" />
+                Settings
               </button>
-            ) : (
-              <Link
-                href="/login"
-                className="hidden h-10 items-center rounded-full bg-gradient-to-r from-[hsl(var(--gradient-mid))] via-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] px-5 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(15,23,42,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(15,23,42,0.22)] md:inline-flex"
-              >
-                Sign in
-              </Link>
-            )}
+
+              {settingsOpen ? (
+                <div className="absolute right-0 top-12 z-30 w-56 rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.98)] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.14)]">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setSettingsOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                  >
+                    My purchases
+                  </Link>
+                  <Link
+                    href="/support-channels"
+                    onClick={() => setSettingsOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                  >
+                    Support
+                  </Link>
+                  <Link
+                    href="/privacy"
+                    onClick={() => setSettingsOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                  >
+                    Privacy policy
+                  </Link>
+                  <Link
+                    href="/refund-policy"
+                    onClick={() => setSettingsOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                  >
+                    Refund policy
+                  </Link>
+                  <Link
+                    href="/terms"
+                    onClick={() => setSettingsOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                  >
+                    Terms of use
+                  </Link>
+                  <div className="my-1 border-t border-border/60" />
+                  {authLoading ? (
+                    <div className="px-3 py-2 text-sm text-muted-foreground">Checking session...</div>
+                  ) : isLoggedIn ? (
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-500/10"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={() => setSettingsOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Login
+                    </Link>
+                  )}
+                </div>
+              ) : null}
+            </div>
 
             <button
               type="button"
@@ -180,12 +251,21 @@ export function SiteHeader() {
             className="border-b border-border/45 bg-background/96 px-5 py-5 backdrop-blur-2xl md:hidden"
           >
             <div className="space-y-2">
-              {NAV_LINKS.map((link) => {
-                const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              <Link
+                href="/cart"
+                onClick={() => setOpen(false)}
+                className="control-surface flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-foreground"
+              >
+                Cart
+                <ShoppingCart className="h-4 w-4" />
+              </Link>
+
+              {STARTER_CATEGORIES.map((item) => {
+                const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
                 return (
                   <Link
-                    key={link.href}
-                    href={link.href}
+                    key={item.slug}
+                    href={`/products?category=${item.slug}`}
                     onClick={() => setOpen(false)}
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                       active
@@ -193,11 +273,50 @@ export function SiteHeader() {
                         : "control-surface text-foreground hover:bg-muted/50"
                     }`}
                   >
-                    {link.label}
+                    {item.name}
                     {active ? <span className="h-2 w-2 rounded-full bg-primary" /> : null}
                   </Link>
                 );
               })}
+
+              <div className="mt-2 rounded-2xl border border-border/60 bg-[hsl(var(--surface)/0.94)] p-2">
+                <p className="px-2 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Settings</p>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                >
+                  My purchases
+                </Link>
+                <Link
+                  href="/support-channels"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                >
+                  Support
+                </Link>
+                <Link
+                  href="/privacy"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                >
+                  Privacy policy
+                </Link>
+                <Link
+                  href="/refund-policy"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                >
+                  Refund policy
+                </Link>
+                <Link
+                  href="/terms"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
+                >
+                  Terms of use
+                </Link>
+              </div>
 
               {!authLoading &&
                 (isLoggedIn ? (
