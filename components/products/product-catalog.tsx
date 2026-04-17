@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight, Grid2X2, List, Search, Sparkles } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
+import { toast } from "sonner";
 import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
@@ -25,9 +26,10 @@ export function ProductCatalog({
   offers: Offer[];
 }) {
   const searchParams = useSearchParams();
-  const { search, category, setSearch, setCategory } = useAppStore();
+  const { search, category, setSearch, setCategory, addToCart } = useAppStore();
   const [visibleCount, setVisibleCount] = useState(6);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const activeOffers = useMemo(() => offers.filter((offer) => offer.active).slice(0, 3), [offers]);
   const featuredCategory = useMemo(
@@ -78,6 +80,16 @@ export function ProductCatalog({
   }, [search, category]);
 
   useEffect(() => {
+    if (!selectedProduct) {
+      return;
+    }
+    const stillVisible = filteredProducts.some((item) => item.id === selectedProduct.id);
+    if (!stillVisible) {
+      setSelectedProduct(null);
+    }
+  }, [filteredProducts, selectedProduct]);
+
+  useEffect(() => {
     const slug = searchParams.get("category");
     if (!slug) {
       if (category !== "all") {
@@ -113,6 +125,23 @@ export function ProductCatalog({
       event.preventDefault();
       setCategory(value);
     }
+  }
+
+  function handleInlineAddToCart(product: Product) {
+    if (product.isOutOfStock) {
+      toast.error("No stock available for this item.");
+      return;
+    }
+
+    addToCart({
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: product.salePrice || product.price,
+      imageUrl: product.imageUrls[0] || "",
+      categoryName: product.categoryName
+    });
+    toast.success(`${product.name} added to cart`);
   }
 
   return (
@@ -420,6 +449,53 @@ export function ProductCatalog({
         </div>
       </div>
 
+      {selectedProduct ? (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="section-shell overflow-hidden p-4 md:p-5"
+        >
+          <div className="grid gap-5 md:grid-cols-[220px_1fr] md:items-start">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/70 bg-muted/30">
+              <Image
+                src={selectedProduct.imageUrls[0] || "https://picsum.photos/seed/product-preview/900/700"}
+                alt={selectedProduct.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{selectedProduct.categoryName}</p>
+              <h3 className="mt-2 text-2xl font-black tracking-tight">{selectedProduct.name}</h3>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {selectedProduct.description || selectedProduct.shortDescription}
+              </p>
+
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <p className="text-3xl font-black">{formatCurrency(selectedProduct.salePrice || selectedProduct.price)}</p>
+                <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                  {selectedProduct.durationInDays} days
+                </span>
+              </div>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleInlineAddToCart(selectedProduct)}
+                  className="btn-primary"
+                  disabled={Boolean(selectedProduct.isOutOfStock)}
+                >
+                  {selectedProduct.isOutOfStock ? "No stock" : "Add to cart"}
+                </button>
+                <Link href={`/products/${selectedProduct.slug}`} className="btn-ghost">
+                  Full details
+                </Link>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ) : null}
+
       {visibleProducts.length ? (
         <>
           <motion.div layout className={layout === "grid" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : "grid gap-5"}>
@@ -433,7 +509,7 @@ export function ProductCatalog({
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.24 }}
                 >
-                  <ProductCard product={product} variant={layout} />
+                  <ProductCard product={product} variant={layout} onPreview={setSelectedProduct} />
                 </motion.div>
               ))}
             </AnimatePresence>

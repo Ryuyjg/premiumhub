@@ -14,10 +14,12 @@ import { useAppStore } from "@/store/use-app-store";
 
 export function ProductCard({
   product,
-  variant = "grid"
+  variant = "grid",
+  onPreview
 }: {
   product: Product;
   variant?: "grid" | "list";
+  onPreview?: (product: Product) => void;
 }) {
   const addToCart = useAppStore((state) => state.addToCart);
   const [isAdding, setIsAdding] = useState(false);
@@ -67,6 +69,14 @@ export function ProductCard({
     setIsAdding(false);
   }
 
+  function handlePreview(event: MouseEvent<HTMLAnchorElement>) {
+    if (!onPreview) {
+      return;
+    }
+    event.preventDefault();
+    onPreview(product);
+  }
+
   return (
     <motion.article
       onMouseMove={onMove}
@@ -86,7 +96,7 @@ export function ProductCard({
           </div>
         ) : null}
 
-        <Link href={`/products/${product.slug}`} className="block">
+        <Link href={`/products/${product.slug}`} className="block" onClick={handlePreview}>
           <div
             className={`relative overflow-hidden ${variant === "list" ? "aspect-[16/7] md:aspect-[16/6]" : "aspect-[16/10]"}`}
           >
