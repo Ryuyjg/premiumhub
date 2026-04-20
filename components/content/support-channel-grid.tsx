@@ -19,6 +19,10 @@ function getSupportIcon(channel: Pick<SupportChannel, "title" | "href">) {
   return HeadphonesIcon;
 }
 
+function isInternalPath(href: string) {
+  return href.startsWith("/");
+}
+
 export function SupportChannelGrid({
   channels,
   heading,
@@ -45,6 +49,7 @@ export function SupportChannelGrid({
         {channels.map((channel) => {
           const Icon = getSupportIcon(channel);
           const href = normalizeSupportHref(channel.href);
+          const internal = isInternalPath(href);
 
           return (
             <div key={channel.id} className="rounded-[1.75rem] border border-border/70 bg-background/72 p-6">
@@ -53,9 +58,20 @@ export function SupportChannelGrid({
               </div>
               <p className="text-lg font-semibold">{channel.title}</p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">{channel.description}</p>
-              <Link href={href} className="btn-primary mt-5 inline-flex h-11 px-5 text-sm">
-                {channel.buttonLabel}
-              </Link>
+              {internal ? (
+                <Link href={href} className="btn-primary mt-5 inline-flex h-11 px-5 text-sm">
+                  {channel.buttonLabel}
+                </Link>
+              ) : (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="btn-primary mt-5 inline-flex h-11 px-5 text-sm"
+                >
+                  {channel.buttonLabel}
+                </a>
+              )}
             </div>
           );
         })}

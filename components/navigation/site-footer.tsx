@@ -50,6 +50,10 @@ function getChannelIcon(channel: Pick<SupportChannel, "title" | "href">) {
   return HeadphonesIcon;
 }
 
+function isInternalPath(href: string) {
+  return href.startsWith("/");
+}
+
 export function SiteFooter({
   pages,
   supportChannels
@@ -103,15 +107,29 @@ export function SiteFooter({
               {socialLinks.map((channel) => {
                 const Icon = getChannelIcon(channel);
                 const href = normalizeSupportHref(channel.href);
+                const internal = isInternalPath(href);
                 return (
-                  <Link
-                    key={channel.id}
-                    href={href}
-                    aria-label={channel.title}
-                    className="control-surface flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-primary"
-                  >
-                    <Icon className="h-4 w-4" />
-                  </Link>
+                  internal ? (
+                    <Link
+                      key={channel.id}
+                      href={href}
+                      aria-label={channel.title}
+                      className="control-surface flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-primary"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <a
+                      key={channel.id}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={channel.title}
+                      className="control-surface flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-primary"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  )
                 );
               })}
               {socialLinks.length === 0 ? (

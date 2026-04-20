@@ -21,7 +21,7 @@ export function normalizeSupportHref(rawHref: string, fallback = "/support-chann
   }
 
   if (hasProtocol(href)) {
-    return href;
+    return ensureSafeHttpUrl(href, fallback);
   }
 
   if (href.startsWith("@")) {
@@ -43,8 +43,20 @@ export function normalizeSupportHref(rawHref: string, fallback = "/support-chann
   }
 
   if (href.startsWith("www.")) {
-    return `https://${href}`;
+    return ensureSafeHttpUrl(`https://${href}`, fallback);
   }
 
-  return `https://${href}`;
+  return ensureSafeHttpUrl(`https://${href}`, fallback);
+}
+
+function ensureSafeHttpUrl(candidate: string, fallback: string) {
+  try {
+    const url = new URL(candidate);
+    if (url.protocol === "http:" || url.protocol === "https:") {
+      return url.toString();
+    }
+    return fallback;
+  } catch {
+    return fallback;
+  }
 }
