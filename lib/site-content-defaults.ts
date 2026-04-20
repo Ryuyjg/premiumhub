@@ -26,14 +26,10 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     label: "About",
     footerGroup: "company",
     order: 0,
-    eyebrow: "About OTT SHOP",
-    title: "A cleaner store for curated digital sales.",
-    description:
-      "OTT SHOP is structured as an owner-managed digital storefront focused on trust, clarity, and better control over what goes live.",
-    body: [
-      "The catalog is meant to be added intentionally, not stuffed with filler just to look bigger.",
-      "The current version focuses on cleaner branding, better support visibility, and a stronger foundation for real products."
-    ].join("\n\n"),
+    eyebrow: "About",
+    title: "About OTT SHOP",
+    description: "OTT SHOP is a digital subscription store.",
+    body: ["We sell digital plans and software access.", "For help, use the support channels listed on the Contact page."].join("\n\n"),
     layout: "cards",
     sections: [
       createSection(
@@ -59,11 +55,9 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "company",
     order: 1,
     eyebrow: "Contact",
-    title: "Support should be easy to find.",
-    description: "Customers should always know where to ask questions before or after purchase.",
-    body: [
-      "Use the channel that matches the type of help you need. Include the order ID, product name, and a short explanation so support can respond faster."
-    ].join("\n\n"),
+    title: "Contact support",
+    description: "Use Telegram or WhatsApp for support.",
+    body: ["For faster help, send your order ID with your message."].join("\n\n"),
     layout: "cards",
     showSupportChannels: true,
     sections: [
@@ -86,8 +80,8 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "company",
     order: 2,
     eyebrow: "FAQ",
-    title: "Common questions, answered clearly.",
-    description: "This page sets expectations for how the store works, how delivery is handled, and what customers should expect.",
+    title: "Frequently asked questions",
+    description: "Quick answers about orders, delivery, and support.",
     body: "",
     layout: "faq",
     sections: [
@@ -105,9 +99,9 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "company",
     order: 3,
     eyebrow: "Support channels",
-    title: "Choose the support channel that fits your issue.",
-    description: "If multiple support links are active, customers can choose the fastest route for their situation.",
-    body: "When multiple support channels are available, choose the one that best matches your issue and include the product name or order ID in the first message.",
+    title: "Support channels",
+    description: "Choose any active support channel below.",
+    body: "Share your order ID and product name for faster help.",
     layout: "cards",
     showSupportChannels: true,
     sections: [
@@ -129,8 +123,8 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "policies",
     order: 4,
     eyebrow: "Refund policy",
-    title: "Clear expectations before and after purchase.",
-    description: "This policy keeps digital orders fair for both the customer and the store while still allowing help on legitimate issues.",
+    title: "Refund policy",
+    description: "Refund rules for digital purchases.",
     body: [
       "Refund requests should be raised as soon as the issue is noticed, along with the order ID and a clear explanation.",
       "Digital items that have already been fully delivered, revealed, activated, or consumed are generally not refundable.",
@@ -157,8 +151,8 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "policies",
     order: 5,
     eyebrow: "Terms",
-    title: "Simple rules for using the store.",
-    description: "These terms help set clear expectations around orders, accounts, support, and acceptable platform use.",
+    title: "Terms of use",
+    description: "Basic terms for using the store and services.",
     body: "",
     layout: "rules",
     sections: [
@@ -176,8 +170,8 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "policies",
     order: 6,
     eyebrow: "Privacy",
-    title: "Privacy matters because trust matters.",
-    description: "This page explains the basic kinds of information the store may handle and the reasons it is used.",
+    title: "Privacy policy",
+    description: "How we collect and use information.",
     body: "",
     layout: "cards",
     sections: [
@@ -194,8 +188,8 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     footerGroup: "policies",
     order: 7,
     eyebrow: "Store FAQ",
-    title: "Operational answers for shopping, delivery, and support.",
-    description: "Use this page for store-specific questions that customers often ask before buying.",
+    title: "Store FAQ",
+    description: "Store-related questions and answers.",
     body: "",
     layout: "faq",
     sections: [
@@ -211,7 +205,7 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
 export const DEFAULT_SUPPORT_CHANNELS: SupportChannelSeed[] = [
   {
     title: "WhatsApp",
-    description: "Best for quick pre-sale questions and urgent order follow-up.",
+    description: "Message support directly on WhatsApp.",
     href: "https://wa.me/917907102615",
     buttonLabel: "Open WhatsApp",
     order: 0,
@@ -219,18 +213,10 @@ export const DEFAULT_SUPPORT_CHANNELS: SupportChannelSeed[] = [
   },
   {
     title: "Telegram",
-    description: "Use this for updates, screenshots, and support conversations that need a longer thread.",
+    description: "Message @ogdigital on Telegram.",
     href: "https://t.me/ogdigital",
     buttonLabel: "Open Telegram",
     order: 1,
-    active: true
-  },
-  {
-    title: "Dashboard support",
-    description: "Signed-in customers can also use the support area inside the account dashboard for tracked requests.",
-    href: "/dashboard",
-    buttonLabel: "Open dashboard",
-    order: 2,
     active: true
   }
 ];

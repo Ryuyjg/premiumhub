@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { getSupportChannelIconType } from "@/lib/site-content-defaults";
+import { normalizeSupportHref } from "@/lib/url-normalize";
 import type { SupportChannel } from "@/types";
 
 type FooterPageLink = {
@@ -95,16 +96,17 @@ export function SiteFooter({
             </Link>
 
             <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-              Premium subscription storefront for OTT plans, software, gaming products, and high-trust digital delivery.
+              Digital subscription store for plans, software, and support-based delivery.
             </p>
 
             <div className="flex items-center gap-2.5">
               {socialLinks.map((channel) => {
                 const Icon = getChannelIcon(channel);
+                const href = normalizeSupportHref(channel.href);
                 return (
                   <Link
                     key={channel.id}
-                    href={channel.href}
+                    href={href}
                     aria-label={channel.title}
                     className="control-surface flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-primary"
                   >
@@ -172,7 +174,7 @@ export function SiteFooter({
           <p>
             {APP_NAME} Copyright {new Date().getFullYear()}. All rights reserved.
           </p>
-          <p>Designed for high-trust conversions and repeat subscription sales.</p>
+          <p>Need help? Use Contact or Support channels.</p>
         </div>
       </div>
     </footer>

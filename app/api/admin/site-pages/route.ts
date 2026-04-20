@@ -3,6 +3,7 @@ import { z } from "zod";
 import { isAdminAuthorized } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { EDITABLE_SITE_PAGE_SLUGS } from "@/lib/site-content-defaults";
+import { normalizeSupportHref } from "@/lib/url-normalize";
 
 const sectionSchema = z.object({
   id: z.string().min(1),
@@ -45,7 +46,7 @@ export async function PUT(request: Request) {
           id: section.id,
           title: section.title.trim(),
           description: section.description.trim(),
-          href: section.href?.trim() || "",
+          href: normalizeSupportHref(section.href?.trim() || "", ""),
           ctaLabel: section.ctaLabel?.trim() || ""
         })),
         updatedAt: timestamp

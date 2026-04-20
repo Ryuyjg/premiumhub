@@ -259,7 +259,7 @@ export function SiteContentManager({
           <div>
             <h2 className="text-xl font-semibold">Editable pages</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Update the footer pages, legal pages, and store help text from admin.
+              Select a page (About, Contact, FAQ, Support channels, Policies) and edit each section directly.
             </p>
           </div>
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{pages.length} pages</p>
@@ -343,9 +343,9 @@ export function SiteContentManager({
             <div className="space-y-3 rounded-[1.5rem] border border-border/70 p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold">Page items</p>
+                  <p className="text-sm font-semibold">Page sections</p>
                   <p className="text-xs text-muted-foreground">
-                    Use these as cards, rules, or FAQ rows depending on the page.
+                    Add, edit, or remove each section for this page. These sections are shown on the public page.
                   </p>
                 </div>
                 <Button
@@ -362,11 +362,14 @@ export function SiteContentManager({
               <div className="space-y-3">
                 {pageForm.sections.map((section, index) => (
                   <div key={section.id} className="rounded-[1.25rem] border border-border/70 bg-background/70 p-4">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      Section {index + 1}
+                    </p>
                     <div className="grid gap-3 md:grid-cols-2">
                       <Input
                         value={section.title}
                         onChange={(event) => updateSection(index, "title", event.target.value)}
-                        placeholder="Item title"
+                        placeholder="Section title"
                       />
                       <Input
                         value={section.ctaLabel || ""}
@@ -377,7 +380,7 @@ export function SiteContentManager({
                     <textarea
                       value={section.description}
                       onChange={(event) => updateSection(index, "description", event.target.value)}
-                      placeholder="Item text"
+                      placeholder="Section description"
                       className="field mt-3 min-h-24 resize-y"
                     />
                     <div className="mt-3 flex items-center gap-3">
@@ -462,12 +465,17 @@ export function SiteContentManager({
             />
 
             <div className="grid gap-4 md:grid-cols-[1fr_140px]">
-              <Input
-                value={channelForm.href}
-                onChange={(event) => setChannelForm((current) => ({ ...current, href: event.target.value }))}
-                placeholder="https://wa.me/..."
-                required
-              />
+              <div className="grid gap-1">
+                <Input
+                  value={channelForm.href}
+                  onChange={(event) => setChannelForm((current) => ({ ...current, href: event.target.value }))}
+                  placeholder="@ogdigital or +917907102615 or https://..."
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  You can enter a full URL, Telegram handle, or phone number.
+                </p>
+              </div>
               <Input
                 type="number"
                 min="0"

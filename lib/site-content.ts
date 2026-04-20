@@ -6,6 +6,7 @@ import {
   sortSitePages,
   sortSupportChannels
 } from "@/lib/site-content-defaults";
+import { normalizeSupportHref } from "@/lib/url-normalize";
 import type { SitePage, SitePageSection, SupportChannel } from "@/types";
 
 function sanitizeSections(value: unknown): SitePageSection[] {
@@ -27,7 +28,7 @@ function sanitizeSections(value: unknown): SitePageSection[] {
         id: String(record.id || `section-${index + 1}`),
         title,
         description,
-        href: String(record.href || "").trim(),
+        href: normalizeSupportHref(String(record.href || "").trim(), ""),
         ctaLabel: String(record.ctaLabel || "").trim()
       };
     })
@@ -58,7 +59,7 @@ function normalizeSupportChannel(id: string, data: Record<string, unknown>): Sup
     id,
     title: String(data.title || ""),
     description: String(data.description || ""),
-    href: String(data.href || ""),
+    href: normalizeSupportHref(String(data.href || "")),
     buttonLabel: String(data.buttonLabel || "Open"),
     order: Number(data.order || 0),
     active: data.active !== false,

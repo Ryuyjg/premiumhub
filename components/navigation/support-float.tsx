@@ -1,5 +1,6 @@
 import { HeadphonesIcon, Mail, MessageCircle, Send } from "lucide-react";
 import { getSupportChannelIconType } from "@/lib/site-content-defaults";
+import { normalizeSupportHref } from "@/lib/url-normalize";
 import type { SupportChannel } from "@/types";
 
 function getSupportIcon(channel: Pick<SupportChannel, "title" | "href">) {
@@ -34,13 +35,15 @@ export function SupportFloat({ supportChannels }: { supportChannels: SupportChan
           {channels.map((channel) => {
             const Icon = getSupportIcon(channel);
             const emphasized = getSupportChannelIconType(channel) === "whatsapp";
+            const href = normalizeSupportHref(channel.href);
+            const internal = href.startsWith("/");
 
             return (
               <a
                 key={channel.id}
-                href={channel.href}
-                target={channel.href.startsWith("/") ? undefined : "_blank"}
-                rel={channel.href.startsWith("/") ? undefined : "noreferrer noopener"}
+                href={href}
+                target={internal ? undefined : "_blank"}
+                rel={internal ? undefined : "noreferrer noopener"}
                 className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 ${
                   emphasized
                     ? "border border-success/30 bg-success shadow-[0_10px_24px_rgba(47,107,87,0.22)]"

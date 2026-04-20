@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminAuthorized } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
+import { normalizeSupportHref } from "@/lib/url-normalize";
 
 const supportChannelSchema = z.object({
   id: z.string().optional(),
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
     const ref = await adminDb.collection("supportChannels").add({
       title: parsed.title.trim(),
       description: parsed.description.trim(),
-      href: parsed.href.trim(),
+      href: normalizeSupportHref(parsed.href.trim()),
       buttonLabel: parsed.buttonLabel.trim(),
       order: parsed.order,
       active: parsed.active,
@@ -68,7 +69,7 @@ export async function PUT(request: Request) {
       {
         title: parsed.title.trim(),
         description: parsed.description.trim(),
-        href: parsed.href.trim(),
+        href: normalizeSupportHref(parsed.href.trim()),
         buttonLabel: parsed.buttonLabel.trim(),
         order: parsed.order,
         active: parsed.active,

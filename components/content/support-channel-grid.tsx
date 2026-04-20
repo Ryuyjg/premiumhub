@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HeadphonesIcon, Mail, MessageCircle, Send } from "lucide-react";
 import { getSupportChannelIconType } from "@/lib/site-content-defaults";
+import { normalizeSupportHref } from "@/lib/url-normalize";
 import type { SupportChannel } from "@/types";
 
 function getSupportIcon(channel: Pick<SupportChannel, "title" | "href">) {
@@ -43,6 +44,7 @@ export function SupportChannelGrid({
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {channels.map((channel) => {
           const Icon = getSupportIcon(channel);
+          const href = normalizeSupportHref(channel.href);
 
           return (
             <div key={channel.id} className="rounded-[1.75rem] border border-border/70 bg-background/72 p-6">
@@ -51,7 +53,7 @@ export function SupportChannelGrid({
               </div>
               <p className="text-lg font-semibold">{channel.title}</p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">{channel.description}</p>
-              <Link href={channel.href} className="btn-primary mt-5 inline-flex h-11 px-5 text-sm">
+              <Link href={href} className="btn-primary mt-5 inline-flex h-11 px-5 text-sm">
                 {channel.buttonLabel}
               </Link>
             </div>
