@@ -70,7 +70,7 @@ export function ProductCatalog({
               className="overflow-hidden rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.94)]"
             >
               <Link href={`/products/${product.slug}`} className="block">
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-square overflow-hidden bg-white">
                   <Image
                     src={
                       product.imageUrls[0] ||
@@ -78,7 +78,7 @@ export function ProductCatalog({
                     }
                     alt={product.name}
                     fill
-                    className="object-cover transition duration-300 hover:scale-105"
+                    className="object-contain p-2 transition duration-300 hover:scale-[1.02]"
                   />
                 </div>
               </Link>
