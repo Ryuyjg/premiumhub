@@ -11,7 +11,7 @@ import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/store/use-app-store";
-import { FEATURED_CATEGORY_SLUG, getStarterCategoryMeta, isFeaturedCategory } from "@/lib/catalog";
+import { getStarterCategoryMeta } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/utils";
 
 const offerGlowTones = ["bg-primary/20", "bg-accent/18", "bg-white/10"];
@@ -32,11 +32,6 @@ export function ProductCatalog({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const activeOffers = useMemo(() => offers.filter((offer) => offer.active).slice(0, 3), [offers]);
-  const featuredCategory = useMemo(
-    () => categories.find((item) => item.slug === FEATURED_CATEGORY_SLUG) || null,
-    [categories]
-  );
-  const featuredMeta = featuredCategory ? getStarterCategoryMeta(featuredCategory.slug) : null;
 
   const categoryStats = useMemo(() => {
     return categories.map((item) => {
@@ -202,11 +197,6 @@ export function ProductCatalog({
                   <Sparkles className="h-3.5 w-3.5" />
                   Active category
                 </span>
-                {isFeaturedCategory(selectedCategoryStat.category) ? (
-                  <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-white">
-                    Main lane
-                  </span>
-                ) : null}
               </div>
 
               <div>
@@ -258,67 +248,6 @@ export function ProductCatalog({
                 <p className="mt-3 text-2xl font-black">{selectedCategoryStat.bestSellingCount}</p>
                 <p className="mt-2 text-white/72">Products already marked as your stronger picks.</p>
               </div>
-            </div>
-          </div>
-        </motion.div>
-      ) : featuredCategory ? (
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94),rgba(51,65,85,0.92))] p-6 text-white shadow-[0_24px_56px_rgba(15,23,42,0.18)] md:p-7"
-        >
-          {featuredCategory.imageUrl ? (
-            <div className="absolute inset-y-0 right-0 hidden w-[38%] overflow-hidden lg:block">
-              <Image
-                src={featuredCategory.imageUrl}
-                alt={featuredCategory.name}
-                fill
-                className="object-cover opacity-28"
-              />
-              <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-950/50 to-slate-950/85" />
-            </div>
-          ) : null}
-          <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-emerald-300/20 blur-3xl" />
-          <div className="absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-amber-300/14 blur-3xl" />
-          <div className="relative grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div className="space-y-4">
-              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em]">
-                <Sparkles className="h-3.5 w-3.5" />
-                Main product category
-              </span>
-              <div>
-                <h3 className="text-2xl font-black tracking-tight md:text-3xl">{featuredCategory.name}</h3>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/84 md:text-base">
-                  {featuredMeta?.description ||
-                    featuredCategory.description ||
-                    "Built for your flagship Telegram automation products."}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setCategory(featuredCategory.id);
-                  setTimeout(scrollToResults, 60);
-                }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/16"
-              >
-                Check now <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              {[
-                "Use longer descriptions and setup notes here",
-                "Keep your best automation tools in this lane",
-                "Make this the category you lead the catalog with"
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-[1.4rem] border border-white/12 bg-white/8 px-4 py-4 text-sm leading-6 text-white/88"
-                >
-                  {item}
-                </div>
-              ))}
             </div>
           </div>
         </motion.div>
@@ -480,31 +409,15 @@ export function ProductCatalog({
             <div className="grid gap-3 sm:grid-cols-2">
               {categories.length
                 ? categories.map((item) => {
-                    const highlighted = isFeaturedCategory(item);
                     return (
                       <div
                         key={item.id}
-                        className={
-                          highlighted
-                            ? "sm:col-span-2 rounded-[1.6rem] border border-primary/20 bg-[linear-gradient(145deg,rgba(17,24,39,0.96),rgba(30,41,59,0.94),rgba(51,65,85,0.92))] px-5 py-4 text-white shadow-[0_20px_40px_rgba(15,23,42,0.14)]"
-                            : "rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4"
-                        }
+                        className="rounded-[1.5rem] border border-border/70 bg-background/72 px-5 py-4"
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <p className={`text-sm font-bold ${highlighted ? "text-white" : "text-foreground"}`}>
-                            {item.name}
-                          </p>
-                          {highlighted ? (
-                            <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white">
-                              Main
-                            </span>
-                          ) : null}
+                          <p className="text-sm font-bold text-foreground">{item.name}</p>
                         </div>
-                        <p
-                          className={`mt-2 text-sm leading-6 ${
-                            highlighted ? "text-white/82" : "text-muted-foreground"
-                          }`}
-                        >
+                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
                           {item.description || "Category ready for your manual product uploads."}
                         </p>
                       </div>
