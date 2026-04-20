@@ -92,7 +92,7 @@ export function SiteHeader() {
 
     const nextSlug = new URLSearchParams(window.location.search).get("category");
     setActiveCategorySlug((prev) => (prev === nextSlug ? prev : nextSlug));
-  });
+  }, [pathname]);
 
   const isLoggedIn = Boolean(user) || sessionAuthenticated || isAdminRoute;
   const authLoading = loading || checkingSession;
@@ -129,26 +129,7 @@ export function SiteHeader() {
             </div>
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center overflow-x-auto [scrollbar-width:none] md:flex">
-            <div className="flex min-w-max items-center gap-5 border-b border-border/55 pb-1">
-              {STARTER_CATEGORIES.map((item) => {
-                const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
-                return (
-                  <Link
-                    key={item.slug}
-                    href={`/products?category=${item.slug}`}
-                    className={`relative whitespace-nowrap border-b-2 pb-2 text-sm font-semibold transition-colors ${
-                      active
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
+          <div className="hidden flex-1 md:block" />
 
           <div className="flex items-center gap-2.5">
             <Link
@@ -247,6 +228,29 @@ export function SiteHeader() {
             </button>
           </div>
         </div>
+
+        <div className="border-t border-border/35">
+          <div className="container overflow-x-auto [scrollbar-width:thin]">
+            <nav className="flex min-w-max items-center gap-6 py-2.5">
+              {STARTER_CATEGORIES.map((item) => {
+                const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
+                return (
+                  <Link
+                    key={item.slug}
+                    href={`/products?category=${item.slug}`}
+                    className={`shrink-0 whitespace-nowrap border-b-2 pb-1.5 text-sm font-semibold transition-colors ${
+                      active
+                        ? "border-primary text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -267,25 +271,6 @@ export function SiteHeader() {
                 Cart
                 <ShoppingCart className="h-4 w-4" />
               </Link>
-
-              {STARTER_CATEGORIES.map((item) => {
-                const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
-                return (
-                  <Link
-                    key={item.slug}
-                    href={`/products?category=${item.slug}`}
-                    onClick={() => setOpen(false)}
-                    className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
-                      active
-                        ? "border border-primary/25 bg-primary/10 text-foreground"
-                        : "control-surface text-foreground hover:bg-muted/50"
-                    }`}
-                  >
-                    {item.name}
-                    {active ? <span className="h-2 w-2 rounded-full bg-primary" /> : null}
-                  </Link>
-                );
-              })}
 
               <div className="mt-2 rounded-2xl border border-border/60 bg-[hsl(var(--surface)/0.94)] p-2">
                 <p className="px-2 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Settings</p>
