@@ -62,28 +62,6 @@ export function ProductCatalog({
 
   return (
     <div className="space-y-5">
-      <div className="overflow-x-auto no-scrollbar">
-        <div className="flex min-w-max items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setCategory("all")}
-            className={category === "all" ? "pill-filter-active" : "pill-filter"}
-          >
-            All
-          </button>
-          {categories.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setCategory(item.id)}
-              className={category === item.id ? "pill-filter-active" : "pill-filter"}
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {filteredProducts.length ? (
         <div className="grid grid-cols-3 gap-3 md:gap-4 lg:grid-cols-4">
           {filteredProducts.map((product) => (
