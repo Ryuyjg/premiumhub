@@ -40,15 +40,15 @@ export function AdminLoginCard() {
   }
 
   return (
-    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-border/60 bg-white/78 p-7 shadow-[0_26px_70px_rgba(2,6,23,0.1)] backdrop-blur-2xl dark:bg-white/5 md:p-8">
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
+    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-amber-500/20 bg-[linear-gradient(180deg,rgba(11,11,12,0.96),rgba(7,7,8,0.98))] p-7 shadow-[0_28px_72px_rgba(0,0,0,0.5)] backdrop-blur-2xl md:p-8">
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500" />
       <div className="relative mb-7 flex flex-col items-center gap-3 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/25">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 shadow-lg shadow-orange-500/25">
           <Shield className="h-6 w-6 text-white" />
         </div>
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-black tracking-tight">Admin sign in</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h1 className="text-2xl font-black tracking-tight text-zinc-100">Admin sign in</h1>
+          <p className="mt-1 text-sm text-zinc-400">
             This area is only for store management, catalog changes, and order operations.
           </p>
         </motion.div>
@@ -63,7 +63,7 @@ export function AdminLoginCard() {
             type="email"
             placeholder="Admin email"
             required
-            className="field pl-10"
+            className="field border-zinc-700/90 bg-zinc-900/80 pl-10 text-zinc-100 placeholder:text-zinc-500 focus:border-orange-500/60 focus:bg-zinc-900"
           />
         </div>
 
@@ -75,7 +75,7 @@ export function AdminLoginCard() {
             type="password"
             placeholder="Admin password"
             required
-            className="field pl-10"
+            className="field border-zinc-700/90 bg-zinc-900/80 pl-10 text-zinc-100 placeholder:text-zinc-500 focus:border-orange-500/60 focus:bg-zinc-900"
           />
         </div>
 
