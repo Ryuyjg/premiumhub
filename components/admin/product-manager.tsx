@@ -70,6 +70,9 @@ export function ProductManager({
       `${product.name} ${product.categoryName} ${product.stockStatus}`.toLowerCase().includes(query.toLowerCase())
     );
   }, [products, query]);
+  const inputToneClass =
+    "border-zinc-700/90 bg-zinc-900/80 text-zinc-100 placeholder:text-zinc-500 focus:border-orange-500/60 focus:bg-zinc-900";
+  const fieldLabelClass = "grid gap-2 text-sm text-zinc-200";
 
   function resetForm() {
     setForm({
@@ -183,79 +186,109 @@ export function ProductManager({
   }
 
   return (
-    <Card className="h-full">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{form.id ? "Edit product" : "Add product"}</h2>
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{products.length} products</p>
+    <Card className="mx-auto h-full w-full max-w-7xl">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="text-2xl font-black tracking-tight">{form.id ? "Edit product" : "Add product"}</h2>
+          <p className="mt-1 text-sm text-zinc-400">Create a clean product listing with strong copy and complete details.</p>
+        </div>
+        <p className="rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-amber-300">
+          {products.length} products
+        </p>
       </div>
-      <div className="mt-5 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <form onSubmit={saveProduct} className="grid gap-4">
-          <select
-            value={form.categoryId}
-            onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}
-            className="field"
-            required
-          >
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <form
+          onSubmit={saveProduct}
+          className="grid gap-5 rounded-[1.75rem] border border-amber-500/20 bg-zinc-950/70 p-5 shadow-[0_20px_45px_rgba(0,0,0,0.35)] md:p-6"
+        >
+          <label className={fieldLabelClass}>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Category</span>
+            <select
+              value={form.categoryId}
+              onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}
+              className={`field ${inputToneClass}`}
+              required
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
           {selectedCategory?.slug === FEATURED_CATEGORY_SLUG ? (
-            <div className="rounded-[1.25rem] border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-foreground">
+            <div className="rounded-[1.25rem] border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
               Telegram auto software is your featured lane. Use fuller descriptions, stronger bullet points, and mark
               the best products as featured so they can lead the homepage.
             </div>
           ) : null}
 
-          <Input
-            value={form.name}
-            onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-            placeholder="Product name"
-            required
-          />
+          <label className={fieldLabelClass}>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Product name</span>
+            <Input
+              value={form.name}
+              onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+              placeholder="Product name"
+              className={inputToneClass}
+              required
+            />
+          </label>
 
-          <Input
-            value={form.shortDescription}
-            onChange={(event) => setForm((current) => ({ ...current, shortDescription: event.target.value }))}
-            placeholder="Short description for cards and quick previews"
-            required
-          />
+          <label className={fieldLabelClass}>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Short description</span>
+            <Input
+              value={form.shortDescription}
+              onChange={(event) => setForm((current) => ({ ...current, shortDescription: event.target.value }))}
+              placeholder="Short description for cards and quick previews"
+              className={inputToneClass}
+              required
+            />
+          </label>
 
-          <textarea
-            value={form.description}
-            onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-            placeholder="Full product description"
-            className="min-h-32 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
-            required
-          />
+          <label className={fieldLabelClass}>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Full description</span>
+            <textarea
+              value={form.description}
+              onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
+              placeholder="Full product description"
+              className={`field h-auto min-h-32 py-3 ${inputToneClass}`}
+              required
+            />
+          </label>
 
-          <textarea
-            value={form.featuresText}
-            onChange={(event) => setForm((current) => ({ ...current, featuresText: event.target.value }))}
-            placeholder={"Feature bullets, one per line\nInstant delivery\nSafe support\nPrivate setup notes"}
-            className="min-h-28 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
-            required
-          />
+          <label className={fieldLabelClass}>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Features (bullets)</span>
+            <textarea
+              value={form.featuresText}
+              onChange={(event) => setForm((current) => ({ ...current, featuresText: event.target.value }))}
+              placeholder={"Feature bullets, one per line\nInstant delivery\nSafe support\nPrivate setup notes"}
+              className={`field h-auto min-h-28 py-3 ${inputToneClass}`}
+              required
+            />
+          </label>
 
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Product image</p>
+          <div className="space-y-3 rounded-[1.25rem] border border-zinc-700/80 bg-zinc-900/45 p-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-zinc-400">Product image</p>
             <div className="flex flex-wrap items-center gap-3">
               <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
               {form.imageUrl ? (
-                <Button type="button" variant="ghost" onClick={() => setForm((current) => ({ ...current, imageUrl: "" }))}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="border border-zinc-700/80 bg-zinc-900/80 text-zinc-100 hover:bg-zinc-800"
+                  onClick={() => setForm((current) => ({ ...current, imageUrl: "" }))}
+                >
                   Remove image
                 </Button>
               ) : null}
             </div>
             {form.imageUrl ? (
-              <div className="surface overflow-hidden rounded-[1.5rem] p-3">
+              <div className="overflow-hidden rounded-[1.25rem] border border-zinc-700/80 bg-zinc-900/80 p-3">
                 <div className="relative aspect-[16/8] overflow-hidden rounded-[1.15rem]">
                   <Image src={form.imageUrl} alt={form.name || "Product preview"} fill className="object-cover" />
                 </div>
-                <p className="mt-3 text-xs text-muted-foreground">Uploaded image ready.</p>
+                <p className="mt-3 text-xs text-zinc-400">Uploaded image ready.</p>
               </div>
             ) : (
               <p className="text-xs text-rose-600">Please upload an image before saving.</p>
@@ -269,6 +302,7 @@ export function ProductManager({
               value={form.price}
               onChange={(event) => setForm((current) => ({ ...current, price: event.target.value }))}
               placeholder="Price"
+              className={inputToneClass}
               required
             />
             <Input
@@ -278,6 +312,7 @@ export function ProductManager({
               value={form.discount}
               onChange={(event) => setForm((current) => ({ ...current, discount: event.target.value }))}
               placeholder="Discount %"
+              className={inputToneClass}
               required
             />
             <Input
@@ -286,12 +321,13 @@ export function ProductManager({
               value={form.durationInDays}
               onChange={(event) => setForm((current) => ({ ...current, durationInDays: event.target.value }))}
               placeholder="Duration in days"
+              className={inputToneClass}
               required
             />
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
-            <label className="flex items-center gap-2 rounded-[1.25rem] border border-border/70 px-4 py-3 text-sm text-muted-foreground">
+            <label className="flex items-center gap-2 rounded-[1.25rem] border border-zinc-700/80 bg-zinc-900/65 px-4 py-3 text-sm text-zinc-300">
               <input
                 type="checkbox"
                 checked={form.featured}
@@ -300,7 +336,7 @@ export function ProductManager({
               />
               Feature on storefront
             </label>
-            <label className="flex items-center gap-2 rounded-[1.25rem] border border-border/70 px-4 py-3 text-sm text-muted-foreground">
+            <label className="flex items-center gap-2 rounded-[1.25rem] border border-zinc-700/80 bg-zinc-900/65 px-4 py-3 text-sm text-zinc-300">
               <input
                 type="checkbox"
                 checked={form.bestSelling}
@@ -319,7 +355,7 @@ export function ProductManager({
                 deliveryMode: event.target.value as ProductForm["deliveryMode"]
               }))
             }
-            className="field"
+            className={`field ${inputToneClass}`}
           >
             <option value="direct_credentials">Direct ID &amp; Password</option>
             <option value="otp_manual">OTP Login (manual OTP from admin)</option>
@@ -331,6 +367,7 @@ export function ProductManager({
               value={form.otpSupportNumber}
               onChange={(event) => setForm((current) => ({ ...current, otpSupportNumber: event.target.value }))}
               placeholder="OTP support number (shown to user)"
+              className={inputToneClass}
               required
             />
           ) : null}
@@ -340,34 +377,39 @@ export function ProductManager({
               value={form.deliveryNotes}
               onChange={(event) => setForm((current) => ({ ...current, deliveryNotes: event.target.value }))}
               placeholder="Delivery instructions for admin or user"
-              className="min-h-24 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+              className={`field h-auto min-h-24 py-3 ${inputToneClass}`}
             />
           ) : null}
 
           <div className="flex gap-3">
-            <Button type="submit" disabled={submitting}>
+            <Button type="submit" className="btn-primary px-6" disabled={submitting}>
               {submitting ? "Saving..." : form.id ? "Update product" : "Create product"}
             </Button>
             {form.id ? (
-              <Button type="button" variant="ghost" onClick={resetForm}>
+              <Button
+                type="button"
+                variant="ghost"
+                className="border border-zinc-700/80 bg-zinc-900/80 text-zinc-100 hover:bg-zinc-800"
+                onClick={resetForm}
+              >
                 Cancel edit
               </Button>
             ) : null}
           </div>
         </form>
 
-        <div className="space-y-4">
+        <div className="space-y-4 rounded-[1.75rem] border border-zinc-700/80 bg-zinc-950/70 p-5 shadow-[0_18px_40px_rgba(0,0,0,0.28)] md:p-6">
           <div className="relative">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search products"
-              className="pl-10"
+              className={`pl-10 ${inputToneClass}`}
             />
           </div>
-          <div className="overflow-hidden rounded-2xl border border-border/80">
-            <div className="grid grid-cols-[1fr_auto_auto] gap-3 bg-muted/60 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <div className="overflow-hidden rounded-2xl border border-zinc-700/80">
+            <div className="grid grid-cols-[1fr_auto_auto] gap-3 bg-zinc-900/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">
               <p>Product</p>
               <p>Status</p>
               <p className="text-right">Actions</p>
@@ -389,12 +431,12 @@ export function ProductManager({
                       {product.categoryName} - {formatCurrency(product.salePrice || product.price)} - {product.durationInDays}d
                     </p>
                   </div>
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{product.stockStatus}</p>
+                  <p className="text-xs uppercase tracking-[0.14em] text-zinc-400">{product.stockStatus}</p>
                   <div className="flex items-center justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => editProduct(product)}
-                      className="rounded-full border border-border/70 p-2 text-muted-foreground hover:text-foreground"
+                      className="rounded-full border border-zinc-700/80 p-2 text-zinc-400 hover:text-zinc-100"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>

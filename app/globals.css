@@ -3,47 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: 230 12% 7%;
-  --foreground: 20 15% 94%;
-  --card: 228 11% 10%;
-  --border: 224 10% 21%;
-  --input: 224 10% 21%;
-  --ring: 8 92% 58%;
-  --muted: 228 9% 14%;
-  --muted-foreground: 26 8% 67%;
-  --primary: 8 92% 58%;
+  --background: 30 9% 6%;
+  --foreground: 42 20% 94%;
+  --card: 30 10% 10%;
+  --border: 32 12% 22%;
+  --input: 32 12% 22%;
+  --ring: 35 88% 56%;
+  --muted: 30 8% 14%;
+  --muted-foreground: 32 10% 68%;
+  --primary: 35 88% 56%;
   --primary-foreground: 0 0% 100%;
-  --accent: 224 11% 16%;
+  --accent: 22 38% 18%;
   --accent-foreground: 20 15% 94%;
   --success: 142 56% 44%;
   --warning: 28 92% 54%;
-  --surface: 228 11% 10%;
-  --surface-foreground: 20 15% 94%;
-  --gradient-start: 10 90% 58%;
-  --gradient-mid: 0 66% 38%;
-  --gradient-end: 24 95% 55%;
+  --surface: 30 10% 10%;
+  --surface-foreground: 42 20% 94%;
+  --gradient-start: 39 90% 55%;
+  --gradient-mid: 18 82% 42%;
+  --gradient-end: 10 88% 52%;
 }
 
 .dark {
-  --background: 230 12% 7%;
-  --foreground: 20 15% 94%;
-  --card: 228 11% 10%;
-  --border: 224 10% 21%;
-  --input: 224 10% 21%;
-  --ring: 8 92% 58%;
-  --muted: 228 9% 14%;
-  --muted-foreground: 26 8% 67%;
-  --primary: 8 92% 58%;
+  --background: 30 9% 6%;
+  --foreground: 42 20% 94%;
+  --card: 30 10% 10%;
+  --border: 32 12% 22%;
+  --input: 32 12% 22%;
+  --ring: 35 88% 56%;
+  --muted: 30 8% 14%;
+  --muted-foreground: 32 10% 68%;
+  --primary: 35 88% 56%;
   --primary-foreground: 0 0% 100%;
-  --accent: 224 11% 16%;
+  --accent: 22 38% 18%;
   --accent-foreground: 20 15% 94%;
   --success: 142 56% 44%;
   --warning: 28 92% 54%;
-  --surface: 228 11% 10%;
-  --surface-foreground: 20 15% 94%;
-  --gradient-start: 10 90% 58%;
-  --gradient-mid: 0 66% 38%;
-  --gradient-end: 24 95% 55%;
+  --surface: 30 10% 10%;
+  --surface-foreground: 42 20% 94%;
+  --gradient-start: 39 90% 55%;
+  --gradient-mid: 18 82% 42%;
+  --gradient-end: 10 88% 52%;
 }
 
 html {
@@ -68,18 +68,18 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 68% 54% at 10% -8%, rgba(239, 68, 68, 0.15) 0%, transparent 58%),
+    radial-gradient(ellipse 68% 54% at 10% -8%, rgba(245, 158, 11, 0.14) 0%, transparent 58%),
     radial-gradient(ellipse 44% 34% at 88% -2%, rgba(249, 115, 22, 0.1) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(8, 10, 18, 0.98), rgba(6, 7, 13, 1)),
-    hsl(230 12% 7%);
+    linear-gradient(180deg, rgba(10, 9, 8, 0.98), rgba(6, 5, 4, 1)),
+    hsl(30 9% 6%);
 }
 
 html:not(.dark) body {
   background:
-    radial-gradient(ellipse 68% 54% at 10% -8%, rgba(239, 68, 68, 0.15) 0%, transparent 58%),
+    radial-gradient(ellipse 68% 54% at 10% -8%, rgba(245, 158, 11, 0.14) 0%, transparent 58%),
     radial-gradient(ellipse 44% 34% at 88% -2%, rgba(249, 115, 22, 0.1) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(8, 10, 18, 0.98), rgba(6, 7, 13, 1)),
-    hsl(230 12% 7%);
+    linear-gradient(180deg, rgba(10, 9, 8, 0.98), rgba(6, 5, 4, 1)),
+    hsl(30 9% 6%);
 }
 
 ::selection {
@@ -201,7 +201,7 @@ html:not(.dark) body {
   }
 
   .dot-grid {
-    background-image: radial-gradient(circle, rgba(59, 130, 246, 0.18) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(245, 158, 11, 0.2) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
@@ -281,7 +281,7 @@ html:not(.dark) body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 34px rgba(239, 68, 68, 0.34);
+  box-shadow: 0 18px 34px rgba(245, 158, 11, 0.32);
 }
 
 .btn-primary:active {
