@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Grid2X2, List, Search, Sparkles } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { Category, Offer, Product } from "@/types";
 import { ProductCard } from "@/components/products/product-card";
@@ -120,13 +120,6 @@ export function ProductCatalog({
     });
   }
 
-  function handleCategoryKey(event: KeyboardEvent<HTMLDivElement>, value: string) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      setCategory(value);
-    }
-  }
-
   function handleInlineAddToCart(product: Product) {
     if (product.isOutOfStock) {
       toast.error("No stock available for this item.");
@@ -146,86 +139,15 @@ export function ProductCatalog({
 
   return (
     <div className="space-y-8">
-      {categoryStats.length ? (
-        <div>
-          <div className="section-shell border border-border/65 bg-background/84 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] backdrop-blur-xl md:px-5">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Categories</p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">Top horizontal category strip</p>
-              </div>
-              {category !== "all" ? (
-                <button type="button" onClick={resetFilters} className="text-sm font-semibold text-primary">
-                  Show all
-                </button>
-              ) : null}
-            </div>
-
-            <div className="overflow-x-auto [scrollbar-width:none]">
-              <div className="flex min-w-max items-center gap-6 border-b border-border/60 pb-1">
-                <motion.div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setCategory("all")}
-                  onKeyDown={(event) => handleCategoryKey(event, "all")}
-                  whileTap={{ scale: 0.98 }}
-                  className={`shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm font-semibold transition-colors ${
-                    category === "all"
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  All categories
-                </motion.div>
-
-                {categoryStats.map(({ category: item, count }, index) => {
-                  const highlighted = isFeaturedCategory(item);
-                  const active = category === item.id;
-
-                  return (
-                    <motion.div
-                      key={item.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setCategory(item.id)}
-                      onKeyDown={(event) => handleCategoryKey(event, item.id)}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.03 }}
-                      whileTap={{ scale: 0.985 }}
-                      className={`group shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm font-semibold transition-colors ${
-                        active
-                          ? "border-primary text-foreground"
-                          : "border-transparent text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <span>{item.name}</span>
-                      <span className="ml-2 text-xs text-muted-foreground">
-                        {count > 0 ? count : "0"}
-                      </span>
-                      {highlighted ? (
-                        <span className="ml-2 rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-primary">
-                          Main
-                        </span>
-                      ) : null}
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
       {activeOffers.length ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {activeOffers.map((offer, index) => (
             <motion.div
               key={offer.id}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.06 }}
-              className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(160deg,rgba(17,24,39,0.96),rgba(30,41,59,0.92))] p-5 text-white shadow-[0_18px_42px_rgba(15,23,42,0.14)]"
+              className="relative h-full overflow-hidden rounded-[1.25rem] border border-white/10 bg-[linear-gradient(160deg,rgba(17,24,39,0.96),rgba(30,41,59,0.92))] p-5 text-white shadow-[0_18px_42px_rgba(0,0,0,0.25)]"
             >
               <div
                 className={`absolute -right-10 -top-10 h-36 w-36 rounded-full ${
@@ -498,7 +420,7 @@ export function ProductCatalog({
 
       {visibleProducts.length ? (
         <>
-          <motion.div layout className={layout === "grid" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : "grid gap-5"}>
+          <motion.div layout className={layout === "grid" ? "grid gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" : "grid gap-5"}>
             <AnimatePresence mode="popLayout">
               {visibleProducts.map((product) => (
                 <motion.div

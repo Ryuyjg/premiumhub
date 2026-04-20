@@ -3,47 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: 40 36% 96%;
-  --foreground: 30 20% 10%;
-  --card: 0 0% 100%;
-  --border: 36 22% 82%;
-  --input: 36 22% 82%;
-  --ring: 42 89% 52%;
-  --muted: 40 22% 92%;
-  --muted-foreground: 30 12% 35%;
-  --primary: 42 89% 52%;
-  --primary-foreground: 28 40% 8%;
-  --accent: 40 30% 90%;
-  --accent-foreground: 30 20% 10%;
-  --success: 157 58% 37%;
-  --warning: 35 90% 50%;
-  --surface: 38 40% 98%;
-  --surface-foreground: 30 20% 10%;
-  --gradient-start: 43 92% 56%;
-  --gradient-mid: 32 58% 22%;
-  --gradient-end: 36 78% 40%;
+  --background: 230 12% 7%;
+  --foreground: 20 15% 94%;
+  --card: 228 11% 10%;
+  --border: 224 10% 21%;
+  --input: 224 10% 21%;
+  --ring: 8 92% 58%;
+  --muted: 228 9% 14%;
+  --muted-foreground: 26 8% 67%;
+  --primary: 8 92% 58%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 224 11% 16%;
+  --accent-foreground: 20 15% 94%;
+  --success: 142 56% 44%;
+  --warning: 28 92% 54%;
+  --surface: 228 11% 10%;
+  --surface-foreground: 20 15% 94%;
+  --gradient-start: 10 90% 58%;
+  --gradient-mid: 0 66% 38%;
+  --gradient-end: 24 95% 55%;
 }
 
 .dark {
-  --background: 24 14% 6%;
-  --foreground: 40 30% 92%;
-  --card: 24 14% 9%;
-  --border: 35 15% 20%;
-  --input: 35 15% 20%;
-  --ring: 43 86% 60%;
-  --muted: 26 11% 13%;
-  --muted-foreground: 38 16% 70%;
-  --primary: 43 86% 60%;
-  --primary-foreground: 28 42% 10%;
-  --accent: 28 12% 16%;
-  --accent-foreground: 40 30% 92%;
-  --success: 150 45% 52%;
-  --warning: 38 94% 62%;
-  --surface: 24 14% 9%;
-  --surface-foreground: 40 30% 92%;
-  --gradient-start: 44 88% 62%;
-  --gradient-mid: 30 42% 19%;
-  --gradient-end: 37 74% 47%;
+  --background: 230 12% 7%;
+  --foreground: 20 15% 94%;
+  --card: 228 11% 10%;
+  --border: 224 10% 21%;
+  --input: 224 10% 21%;
+  --ring: 8 92% 58%;
+  --muted: 228 9% 14%;
+  --muted-foreground: 26 8% 67%;
+  --primary: 8 92% 58%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 224 11% 16%;
+  --accent-foreground: 20 15% 94%;
+  --success: 142 56% 44%;
+  --warning: 28 92% 54%;
+  --surface: 228 11% 10%;
+  --surface-foreground: 20 15% 94%;
+  --gradient-start: 10 90% 58%;
+  --gradient-mid: 0 66% 38%;
+  --gradient-end: 24 95% 55%;
 }
 
 html {
@@ -68,18 +68,18 @@ h6,
 
 .dark body {
   background:
-    radial-gradient(ellipse 70% 52% at 8% -10%, rgba(245, 158, 11, 0.16) 0%, transparent 56%),
-    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(234, 179, 8, 0.09) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(14, 11, 8, 0.99), rgba(10, 8, 6, 1)),
-    hsl(24 14% 6%);
+    radial-gradient(ellipse 68% 54% at 10% -8%, rgba(239, 68, 68, 0.15) 0%, transparent 58%),
+    radial-gradient(ellipse 44% 34% at 88% -2%, rgba(249, 115, 22, 0.1) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(8, 10, 18, 0.98), rgba(6, 7, 13, 1)),
+    hsl(230 12% 7%);
 }
 
 html:not(.dark) body {
   background:
-    radial-gradient(ellipse 68% 54% at 14% -10%, rgba(245, 158, 11, 0.1) 0%, transparent 58%),
-    radial-gradient(ellipse 48% 36% at 90% 0%, rgba(146, 64, 14, 0.06) 0%, transparent 52%),
-    linear-gradient(180deg, rgba(255, 252, 245, 0.68), rgba(250, 244, 232, 0.78)),
-    hsl(40 36% 96%);
+    radial-gradient(ellipse 68% 54% at 10% -8%, rgba(239, 68, 68, 0.15) 0%, transparent 58%),
+    radial-gradient(ellipse 44% 34% at 88% -2%, rgba(249, 115, 22, 0.1) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(8, 10, 18, 0.98), rgba(6, 7, 13, 1)),
+    hsl(230 12% 7%);
 }
 
 ::selection {
@@ -113,18 +113,18 @@ html:not(.dark) body {
   }
 
   .section-shell {
-    @apply rounded-[2rem] border backdrop-blur-xl;
+    @apply rounded-[1.5rem] border backdrop-blur-xl;
     border-color: hsl(var(--border) / 0.78);
-    background-color: hsl(var(--surface) / 0.88);
-    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.06);
+    background-color: hsl(var(--surface) / 0.92);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
   }
 
   .surface {
-    @apply rounded-3xl border backdrop-blur-md;
+    @apply rounded-2xl border backdrop-blur-md;
     border-color: hsl(var(--border) / 0.82);
-    background-color: hsl(var(--surface) / 0.9);
+    background-color: hsl(var(--surface) / 0.94);
     color: hsl(var(--surface-foreground));
-    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
   }
 
   .surface-interactive {
@@ -147,8 +147,8 @@ html:not(.dark) body {
   .gradient-text {
     background-image: linear-gradient(
       130deg,
-      hsl(var(--foreground)),
-      hsl(var(--gradient-start))
+      hsl(var(--primary)),
+      hsl(var(--gradient-end))
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -166,7 +166,7 @@ html:not(.dark) body {
     @apply inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-foreground;
     border-color: hsl(var(--primary) / 0.2);
     background-color: hsl(var(--surface) / 0.84);
-    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+    box-shadow: 0 10px 24px rgba(239, 68, 68, 0.12);
   }
 
   .btn-primary {
@@ -177,7 +177,7 @@ html:not(.dark) body {
       hsl(var(--gradient-start)),
       hsl(var(--gradient-end))
     );
-    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.16);
+    box-shadow: 0 12px 28px rgba(239, 68, 68, 0.28);
   }
 
   .btn-ghost {
@@ -195,8 +195,8 @@ html:not(.dark) body {
 
   .page-grid {
     background-image:
-      linear-gradient(rgba(71, 85, 105, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(71, 85, 105, 0.08) 1px, transparent 1px);
+      linear-gradient(rgba(239, 68, 68, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249, 115, 22, 0.06) 1px, transparent 1px);
     background-size: 56px 56px;
   }
 
@@ -244,20 +244,20 @@ html:not(.dark) body {
 
 .dark .glass-panel {
   border-color: hsl(var(--border) / 0.95);
-  background: linear-gradient(180deg, hsl(var(--surface) / 0.96), hsl(var(--muted) / 0.82));
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+  background: linear-gradient(180deg, hsl(var(--surface) / 0.98), hsl(var(--muted) / 0.84));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32);
 }
 
 .dark .section-shell {
   border-color: hsl(var(--border) / 0.95);
-  background: linear-gradient(180deg, hsl(var(--surface) / 0.97), hsl(var(--muted) / 0.82));
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.26);
+  background: linear-gradient(180deg, hsl(var(--surface) / 0.98), hsl(var(--muted) / 0.84));
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
 }
 
 .dark .surface {
   border-color: hsl(var(--border) / 0.9);
-  background: linear-gradient(180deg, hsl(var(--surface) / 0.97), hsl(var(--muted) / 0.8));
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, hsl(var(--surface) / 0.98), hsl(var(--muted) / 0.82));
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
 }
 
 .surface-interactive:hover {
@@ -281,7 +281,7 @@ html:not(.dark) body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 32px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 18px 34px rgba(239, 68, 68, 0.34);
 }
 
 .btn-primary:active {
@@ -307,6 +307,15 @@ html:not(.dark) body {
   border-color: hsl(var(--border) / 0.9);
   background-color: hsl(var(--surface) / 0.94);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 .stat-card:hover {

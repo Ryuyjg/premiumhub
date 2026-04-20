@@ -85,7 +85,7 @@ export function ProductCard({
       className="relative"
     >
       <div
-        className={`group relative overflow-hidden rounded-[1.65rem] border border-border/70 bg-[hsl(var(--surface)/0.93)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/22 hover:shadow-[0_24px_52px_rgba(15,23,42,0.12)] ${
+        className={`group relative flex h-full flex-col overflow-hidden rounded-[1.2rem] border border-border/70 bg-[hsl(var(--surface)/0.94)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:border-primary/45 hover:shadow-[0_24px_52px_rgba(239,68,68,0.18)] ${
           variant === "list" ? "md:rounded-[1.35rem]" : ""
         }`}
       >
@@ -123,7 +123,7 @@ export function ProductCard({
           </div>
         </Link>
 
-        <div className={`${variant === "list" ? "p-5 md:p-6" : "p-6"}`}>
+        <div className={`${variant === "list" ? "p-5 md:p-6" : "p-6"} flex flex-1 flex-col`}>
           <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/72 px-4 py-3">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Plan price</p>
@@ -143,7 +143,7 @@ export function ProductCard({
             Instant dashboard tracking after purchase
           </div>
 
-          <div className="mt-5">
+          <div className="mt-auto pt-5">
             <Button type="button" onClick={handleAddToCart} className="h-12 w-full" disabled={isOutOfStock || isAdding}>
               {isOutOfStock ? "No stock" : isAdding ? "Adding..." : "Choose this plan"}
             </Button>

@@ -230,7 +230,7 @@ export function SiteHeader() {
         </div>
 
         <div className="border-t border-border/35">
-          <div className="container overflow-x-auto [scrollbar-width:thin]">
+          <div className="container no-scrollbar overflow-x-auto">
             <nav className="flex min-w-max items-center gap-6 py-2.5">
               {STARTER_CATEGORIES.map((item) => {
                 const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
