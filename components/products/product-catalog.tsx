@@ -26,7 +26,7 @@ export function ProductCatalog({
   offers: Offer[];
 }) {
   const searchParams = useSearchParams();
-  const { search, category, setSearch, setCategory, addToCart } = useAppStore();
+  const { search, category, setSearch, setCategory, addToCart, cartItems } = useAppStore();
   const [visibleCount, setVisibleCount] = useState(6);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -118,6 +118,14 @@ export function ProductCatalog({
   function handleInlineAddToCart(product: Product) {
     if (product.isOutOfStock) {
       toast.error("No stock available for this item.");
+      return;
+    }
+
+    const alreadyInCart = cartItems.some((item) => item.productId === product.id);
+    if (alreadyInCart) {
+      toast.message("Already in cart", {
+        description: "This product is already in your cart."
+      });
       return;
     }
 

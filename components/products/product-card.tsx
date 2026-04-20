@@ -22,8 +22,10 @@ export function ProductCard({
   onPreview?: (product: Product) => void;
 }) {
   const addToCart = useAppStore((state) => state.addToCart);
+  const cartItems = useAppStore((state) => state.cartItems);
   const [isAdding, setIsAdding] = useState(false);
   const isOutOfStock = Boolean(product.isOutOfStock);
+  const isAlreadyInCart = cartItems.some((item) => item.productId === product.id);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -49,8 +51,14 @@ export function ProductCard({
       return;
     }
 
+    if (isAlreadyInCart) {
+      toast.message("Already in cart", {
+        description: "This product is already in your cart."
+      });
+      return;
+    }
+
     setIsAdding(true);
-    await new Promise((r) => setTimeout(r, 350));
 
     addToCart({
       productId: product.id,
@@ -145,7 +153,7 @@ export function ProductCard({
 
           <div className="mt-auto pt-5">
             <Button type="button" onClick={handleAddToCart} className="h-12 w-full" disabled={isOutOfStock || isAdding}>
-              {isOutOfStock ? "No stock" : isAdding ? "Adding..." : "Choose this plan"}
+            {isOutOfStock ? "No stock" : isAdding ? "Adding..." : isAlreadyInCart ? "In cart" : "Add to cart"}
             </Button>
           </div>
         </div>
