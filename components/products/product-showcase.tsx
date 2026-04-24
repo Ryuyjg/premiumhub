@@ -10,18 +10,18 @@ import { Reveal } from "@/components/marketing/reveal";
 const resetSteps = [
   {
     icon: Sparkles,
-    title: "Lead with flagship plans",
-    text: "Keep your first fold focused on the plans that convert best."
+    title: "Clear plan details",
+    text: "Each plan shows duration, pricing, and delivery details before you buy."
   },
   {
     icon: ShieldCheck,
-    title: "Strengthen offer clarity",
-    text: "Price, duration, and delivery expectations should be visible in seconds."
+    title: "Trusted checkout flow",
+    text: "Add to cart, checkout quickly, and track your order from your account."
   },
   {
     icon: LayoutDashboard,
-    title: "Protect post-purchase trust",
-    text: "Dashboard-based delivery and support improve repeat purchase confidence."
+    title: "Support after purchase",
+    text: "If you need help, support channels are available directly from the store."
   }
 ];
 
@@ -34,25 +34,25 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             <div className="space-y-3">
               <span className="glow-badge">
                 <Sparkles className="h-3 w-3" />
-                Pricing spotlight
+                Top picks
               </span>
               <h2 className="text-3xl font-black tracking-tight md:text-4xl lg:text-5xl">
                 {products.length ? (
                   <>
-                    High-intent plans ready for
-                    <span className="gradient-text block">faster conversion.</span>
+                    Popular plans selected
+                    <span className="gradient-text block">for customers.</span>
                   </>
                 ) : (
                   <>
-                    Plan showcase area is ready
-                    <span className="gradient-text block">for your best offers.</span>
+                    Trusted digital plans
+                    <span className="gradient-text block">in one place.</span>
                   </>
                 )}
               </h2>
               <p className="max-w-2xl text-muted-foreground">
                 {products.length
-                  ? "These are your featured plans. Keep this section focused on the most trusted and best-selling products."
-                  : "Publish your strongest offers here first so new visitors see quality before quantity."}
+                  ? "Browse customer-favorite plans with clear pricing and fast add-to-cart flow."
+                  : "New plans are being updated. You can still browse the full catalog right now."}
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.text}</p>
                 <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
                   <CheckCircle2 className="h-4 w-4" />
-                  Conversion-first foundation
+                  Customer-first standard
                 </div>
               </div>
             </Reveal>
