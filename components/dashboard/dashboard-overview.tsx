@@ -111,13 +111,16 @@ export function DashboardOverview({
             </div>
           </div>
 
-          <div className="grid gap-2.5 text-sm sm:grid-cols-2 lg:w-[19rem]">
+          <div className="grid gap-2.5 text-sm sm:grid-cols-3 lg:w-[29rem]">
             <Link href="/products" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 font-bold text-primary transition hover:bg-white/90">
               Browse catalog <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/cart" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 py-3 font-bold text-white transition hover:bg-white/20">
               Open cart
             </Link>
+            <a href="#support-center" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 py-3 font-bold text-white transition hover:bg-white/20">
+              Support
+            </a>
           </div>
         </div>
       </section>

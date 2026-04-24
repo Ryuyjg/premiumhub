@@ -35,11 +35,13 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
-  { id: "catalog", label: "Catalog", icon: Boxes },
-  { id: "operations", label: "Operations", icon: ShieldCheck },
+  { id: "category", label: "Category", icon: Boxes },
+  { id: "products", label: "Product Management", icon: ShieldCheck },
+  { id: "offers", label: "Offers", icon: TicketPercent },
+  { id: "settings", label: "Settings", icon: FileText },
   { id: "users", label: "Users", icon: Users2 },
-  { id: "growth", label: "Growth", icon: TicketPercent },
-  { id: "content", label: "Content", icon: FileText }
+  { id: "coupons", label: "Coupons", icon: Wallet },
+  { id: "support", label: "Support Requests", icon: BarChart3 }
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -109,7 +111,7 @@ export function AdminDashboard({
         : 0;
 
       toast.success(`Catalog cleared. ${deleted} records removed.`);
-      setActiveTab("catalog");
+      setActiveTab("products");
       setConfirmResetCatalog(false);
       router.refresh();
     } catch (error) {
@@ -130,10 +132,10 @@ export function AdminDashboard({
           <div className="space-y-2">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-widest">
               <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-              Enterprise command center
+              Admin control center
             </span>
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Admin Dashboard</h1>
-            <p className="max-w-xl text-white/75 text-sm">Manage catalog, orders, users, and growth tools from one place.</p>
+            <p className="max-w-xl text-white/75 text-sm">Manage categories, products, users, coupons, offers, settings, and support from one place.</p>
             <button
               type="button"
               onClick={() => setConfirmResetCatalog(true)}
@@ -236,57 +238,38 @@ export function AdminDashboard({
             </>
           ) : null}
 
-          {activeTab === "catalog" ? (
+          {activeTab === "category" ? (
+            <CategoryManager categories={categories} products={products} />
+          ) : null}
+
+          {activeTab === "products" ? (
             <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
               <ProductManager products={products} categories={categories} />
-              <CategoryManager categories={categories} products={products} />
+              <AccountManager accounts={accounts} products={products} />
             </div>
           ) : null}
 
-          {activeTab === "operations" ? (
+          {activeTab === "offers" ? (
             <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-              <AccountManager accounts={accounts} products={products} />
-              <OrderManager orders={orders} />
-              <SupportManager tickets={tickets} />
+              <OfferManager offers={offers} />
+              <ReviewManager reviews={reviews} products={products} />
             </div>
+          ) : null}
+
+          {activeTab === "settings" ? (
+            <SiteContentManager pages={sitePages} supportChannels={supportChannels} />
           ) : null}
 
           {activeTab === "users" ? (
-            <div className="grid gap-6">
-              <UserBalanceManager users={users} />
-            </div>
+            <UserBalanceManager users={users} />
           ) : null}
 
-          {activeTab === "growth" ? (
-            <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-              <CouponManager coupons={coupons} />
-              <ReviewManager reviews={reviews} products={products} />
-              <OfferManager offers={offers} />
-              <Card>
-                <h2 className="text-xl font-semibold">Growth snapshots</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Track tactical levers influencing conversion.</p>
-                <div className="mt-6 space-y-4">
-                  <div className="rounded-2xl border border-border/80 p-4 bg-muted/20">
-                    <p className="text-sm text-muted-foreground">Featured products</p>
-                    <p className="mt-1 text-2xl font-semibold">{products.filter((item) => item.featured).length}</p>
-                  </div>
-                  <div className="rounded-2xl border border-border/80 p-4 bg-muted/20">
-                    <p className="text-sm text-muted-foreground">Active discount codes</p>
-                    <p className="mt-1 text-2xl font-semibold">{coupons.filter((item) => item.active).length}</p>
-                  </div>
-                  <div className="rounded-2xl border border-border/80 p-4 bg-muted/20">
-                    <p className="text-sm text-muted-foreground">Credential pools at capacity</p>
-                    <p className="mt-1 text-2xl font-semibold">
-                      {accounts.filter((item) => item.activeUsers >= item.maxUsers).length}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
+          {activeTab === "coupons" ? (
+            <CouponManager coupons={coupons} />
           ) : null}
 
-          {activeTab === "content" ? (
-            <SiteContentManager pages={sitePages} supportChannels={supportChannels} />
+          {activeTab === "support" ? (
+            <SupportManager tickets={tickets} />
           ) : null}
         </motion.div>
       </AnimatePresence>

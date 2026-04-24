@@ -38,10 +38,10 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
   }
 
   return (
-    <Card>
-      <h2 className="text-xl font-semibold">Support and issue reporting</h2>
+    <Card id="support-center">
+      <h2 className="text-xl font-semibold">In-app support</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Need help? Raise a tracked support ticket here, or use the public contact page for faster pre-sale questions.
+        Need help? Raise a support request directly inside your account and track replies here.
       </p>
       <form onSubmit={submitTicket} className="mt-4 grid gap-3">
         <Input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="Issue subject" required />
@@ -53,7 +53,7 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
           required
         />
         <Button type="submit" disabled={submitting}>
-          {submitting ? "Sending..." : "Report issue"}
+          {submitting ? "Sending..." : "Send support request"}
         </Button>
       </form>
       <div className="mt-5 space-y-3">
