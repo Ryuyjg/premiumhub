@@ -114,8 +114,8 @@ export function SiteHeader() {
       <div
         className={`border-b transition-all duration-300 ${
           scrolled
-            ? "border-border/55 bg-background/84 shadow-[0_14px_36px_rgba(15,23,42,0.08)] backdrop-blur-2xl"
-            : "border-transparent bg-background/72 backdrop-blur-xl"
+            ? "border-border/55 bg-background/96 shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
+            : "border-transparent bg-background/92"
         }`}
       >
         <div className="container flex h-[4.8rem] items-center justify-between gap-3">
@@ -238,6 +238,7 @@ export function SiteHeader() {
                   <Link
                     key={item.slug}
                     href={`/products?category=${item.slug}`}
+                    onClick={() => setActiveCategorySlug(item.slug)}
                     className={`shrink-0 whitespace-nowrap border-b-2 pb-1.5 text-sm font-semibold transition-colors ${
                       active
                         ? "border-primary text-foreground"
@@ -260,7 +261,7 @@ export function SiteHeader() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="border-b border-border/45 bg-background/96 px-5 py-5 backdrop-blur-2xl md:hidden"
+            className="border-b border-border/45 bg-background/96 px-5 py-5 md:hidden"
           >
             <div className="space-y-2">
               <Link
