@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.IMGBB_API_KEY;
+    const apiKey = String(process.env.IMGBB_API_KEY || "").trim();
     if (!apiKey) {
       return NextResponse.json(
         { error: "Free image hosting setup required. Please get a free API key from https://api.imgbb.com and add it as IMGBB_API_KEY in Vercel." },
@@ -57,7 +57,13 @@ export async function POST(request: NextRequest) {
     const data = await uploadResponse.json();
 
     if (!uploadResponse.ok || !data.success) {
-      throw new Error(data.error?.message || "Failed to upload to ImgBB");
+      const upstreamMessage = String(data?.error?.message || "Failed to upload to ImgBB");
+      if (/Invalid API v1 key/i.test(upstreamMessage)) {
+        throw new Error(
+          "Invalid IMGBB_API_KEY. Re-copy the API key from ImgBB dashboard, update Vercel env IMGBB_API_KEY, and redeploy."
+        );
+      }
+      throw new Error(upstreamMessage);
     }
 
     // Return the direct image URL from ImgBB
