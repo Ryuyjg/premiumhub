@@ -92,7 +92,7 @@ export function SiteHeader() {
 
     const nextSlug = new URLSearchParams(window.location.search).get("category");
     setActiveCategorySlug((prev) => (prev === nextSlug ? prev : nextSlug));
-  }, [pathname]);
+  });
 
   const isLoggedIn = Boolean(user) || sessionAuthenticated || isAdminRoute;
   const authLoading = loading || checkingSession;
@@ -114,8 +114,8 @@ export function SiteHeader() {
       <div
         className={`border-b transition-all duration-300 ${
           scrolled
-            ? "border-border/55 bg-background/96 shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
-            : "border-transparent bg-background/92"
+            ? "border-border/70 bg-[hsl(var(--surface)/0.98)] shadow-[0_14px_36px_rgba(0,0,0,0.36)]"
+            : "border-border/40 bg-[hsl(var(--surface)/0.96)]"
         }`}
       >
         <div className="container flex h-[4.8rem] items-center justify-between gap-3">
@@ -229,7 +229,7 @@ export function SiteHeader() {
           </div>
         </div>
 
-        <div className="border-t border-border/35">
+        <div className="border-t border-border/50 bg-[hsl(var(--surface)/0.98)]">
           <div className="container no-scrollbar overflow-x-auto">
             <nav className="flex min-w-max items-center gap-6 py-2.5">
               {STARTER_CATEGORIES.map((item) => {
@@ -242,7 +242,7 @@ export function SiteHeader() {
                     className={`shrink-0 whitespace-nowrap border-b-2 pb-1.5 text-sm font-semibold transition-colors ${
                       active
                         ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
+                        : "border-transparent text-foreground/78 hover:text-foreground"
                     }`}
                   >
                     {item.name}
