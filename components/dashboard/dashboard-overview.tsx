@@ -2,22 +2,17 @@
 
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
   CheckCircle2,
   CreditCard,
-  Headset,
   LayoutDashboard,
-  ShieldCheck,
   ShoppingBag,
   TrendingUp,
   Wallet,
   AlertCircle,
-  Clock3,
-  Sparkles
+  Clock3
 } from "lucide-react";
 import Link from "next/link";
 import type { AppUser, Order, Subscription, SupportTicket } from "@/types";
-import { APP_NAME } from "@/lib/constants";
 import { daysUntil, formatCurrency, formatDate } from "@/lib/utils";
 import { RevealCredentials } from "@/components/dashboard/reveal-credentials";
 import { SupportCenter } from "@/components/dashboard/support-center";
@@ -43,7 +38,6 @@ export function DashboardOverview({
   orders: Order[];
   tickets: SupportTicket[];
 }) {
-  const firstName = user.displayName?.split(" ")[0] || "there";
   const activeSubCount = subscriptions.filter((s) => s.status === "active").length;
   const paidOrderCount = orders.filter((o) => o.status === "paid").length;
   const nextExpiry = subscriptions.length ? Math.min(...subscriptions.map((s) => daysUntil(s.expiresAt))) : null;
@@ -86,39 +80,20 @@ export function DashboardOverview({
 
   return (
     <div className="space-y-7">
-      <section className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-gradient-to-br from-foreground via-[hsl(var(--gradient-start))] to-accent p-6 text-white shadow-[0_28px_56px_rgba(15,23,42,0.18)] md:p-8">
-        <div className="absolute -right-16 -top-14 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-10 -left-8 h-36 w-36 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div className="space-y-3">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/80">Customer workspace</p>
-            <h1 className="text-3xl font-black tracking-tight md:text-4xl">
-              Welcome back, {firstName}
-            </h1>
-            <p className="max-w-2xl text-sm text-white/90 md:text-base">
-              {APP_NAME} keeps your orders, delivery details, renewals, and support in one clean workspace.
-            </p>
-            <div className="flex flex-wrap gap-2 text-xs font-semibold">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
-                <ShieldCheck className="h-3.5 w-3.5" /> Protected account
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
-                <Sparkles className="h-3.5 w-3.5" /> Delivery records
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3 py-1">
-                <Headset className="h-3.5 w-3.5" /> Support history
-              </span>
-            </div>
+      <section className="section-shell rounded-[1.75rem] p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">My purchases</p>
+            <h1 className="mt-1 text-2xl font-black tracking-tight md:text-3xl">Account overview</h1>
           </div>
-
-          <div className="grid gap-2.5 text-sm sm:grid-cols-3 lg:w-[29rem]">
-            <Link href="/products" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 font-bold text-primary transition hover:bg-white/90">
-              Browse catalog <ArrowRight className="h-4 w-4" />
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/products" className="btn-ghost h-10 px-4 text-sm">
+              Browse catalog
             </Link>
-            <Link href="/cart" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 py-3 font-bold text-white transition hover:bg-white/20">
+            <Link href="/cart" className="btn-ghost h-10 px-4 text-sm">
               Open cart
             </Link>
-            <a href="#support-center" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 py-3 font-bold text-white transition hover:bg-white/20">
+            <a href="#support-center" className="btn-primary h-10 px-4 text-sm">
               Support
             </a>
           </div>

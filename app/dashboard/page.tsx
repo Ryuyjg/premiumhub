@@ -14,13 +14,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="container py-12 md:py-16">
-      <div className="section-shell mb-8 p-6 md:p-7">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Customer workspace</p>
-        <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">Everything in one account area</h1>
-        <p className="mt-2 max-w-2xl text-muted-foreground">
-          Review orders, delivery details, renewals, and support history from a single workspace built for clean follow-up.
-        </p>
-      </div>
       <DashboardOverview user={user} subscriptions={subscriptions} orders={orders} tickets={tickets} />
     </div>
   );
