@@ -18,6 +18,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    if (!file.type?.startsWith("image/")) {
+      return NextResponse.json({ error: "Only image files are allowed." }, { status: 400 });
+    }
+
+    const configuredMaxMb = Number(process.env.IMGBB_MAX_UPLOAD_MB || "10");
+    const maxUploadMb = Number.isFinite(configuredMaxMb) && configuredMaxMb > 0 ? configuredMaxMb : 10;
+    const maxBytes = Math.floor(maxUploadMb * 1024 * 1024);
+
+    if (file.size > maxBytes) {
+      return NextResponse.json(
+        { error: `Image too large. Max allowed is ${maxUploadMb}MB.` },
+        { status: 400 }
+      );
+    }
+
     const apiKey = process.env.IMGBB_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
