@@ -92,7 +92,7 @@ export function CheckoutButton({ product }: { product: Product }) {
         placeholder="Coupon code (optional)"
       />
       <div className="rounded-2xl border border-dashed border-border/70 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
-        Secure checkout note: wallet balance flow is active, and external gateway can be enabled again later.
+        Secure checkout note: delivery updates and support follow-up stay inside your customer dashboard.
       </div>
       <Button
         onClick={handleWalletCheckout}

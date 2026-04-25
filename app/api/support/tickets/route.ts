@@ -17,7 +17,7 @@ type SupportTicketDoc = {
 
 const ticketSchema = z.object({
   subject: z.string().min(3),
-  message: z.string().min(10)
+  message: z.string().min(3)
 });
 
 const replySchema = z.object({
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ id: ref.id });
   } catch (error) {
     return NextResponse.json(
-      { error: "Subject must be at least 3 characters and message must be at least 10 characters." },
+      { error: "Subject and message must be at least 3 characters." },
       { status: 400 }
     );
   }

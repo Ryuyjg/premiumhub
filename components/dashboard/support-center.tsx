@@ -86,8 +86,8 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
       return;
     }
 
-    if (message.trim().length < 10) {
-      toast.error("Write at least 10 characters so support can understand the issue.");
+    if (message.trim().length < 3) {
+      toast.error("Write at least 3 characters to start chat.");
       return;
     }
 

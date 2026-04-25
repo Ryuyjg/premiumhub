@@ -29,23 +29,23 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     eyebrow: "About",
     title: "About OTT SHOP",
     description: "OTT SHOP is a digital subscription store.",
-    body: ["We sell digital plans and software access.", "For help, use the support channels listed on the Contact page."].join("\n\n"),
+    body: ["We sell digital plans, software access, game offers, and support-based digital services.", "For help before or after purchase, use the contact channels listed on the Contact page."].join("\n\n"),
     layout: "cards",
     sections: [
       createSection(
         "curated-catalog",
         "Curated catalog",
-        "Products are meant to be added intentionally, with better copy, better visuals, and real delivery details."
+        "Products are listed with clear pricing, duration, delivery notes, and support details before checkout."
       ),
       createSection(
         "trust-first-delivery",
         "Trust-first delivery",
-        "Orders, delivery handling, and customer support stay organized inside the platform instead of living only in chat."
+        "Orders, delivery handling, and customer support stay organized inside the customer account area."
       ),
       createSection(
         "built-to-evolve",
         "Built to evolve",
-        "The storefront can improve step by step while keeping the customer experience clean and premium."
+        "The store is built for a clean buying experience across mobile and desktop."
       )
     ]
   },
@@ -86,11 +86,11 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
     layout: "faq",
     sections: [
       createSection("faq-1", "What does OTT SHOP sell?", "The storefront is built for curated digital products, software, access plans, and private offers."),
-      createSection("faq-2", "Why is the catalog smaller right now?", "The store was intentionally reset so products can be added back manually with stronger copy and cleaner delivery details."),
+      createSection("faq-2", "How do I choose the right product?", "Open a category, compare the price and duration, then open the product page for full details before adding it to cart."),
       createSection("faq-3", "Where do customers receive delivery details?", "Orders, credentials, invite delivery information, and support updates are meant to appear inside the customer dashboard."),
       createSection("faq-4", "Can products be out of stock?", "Yes. Stock status is managed per product so the store does not sell items that are not ready for delivery."),
       createSection("faq-5", "Do all items deliver the same way?", "No. Some items deliver directly, some require manual handling, and some use invite-based access."),
-      createSection("faq-6", "Will more products be added later?", "Yes. The site is built for a clean manual restock instead of old starter inventory.")
+      createSection("faq-6", "Can I ask before buying?", "Yes. Use WhatsApp, Telegram, or dashboard support if you need help choosing the correct product.")
     ]
   },
   {
@@ -196,7 +196,7 @@ export const DEFAULT_SITE_PAGES: SitePageSeed[] = [
       createSection("store-faq-1", "How fast are orders delivered?", "Delivery timing depends on the product type. Products with direct access can be fulfilled quickly, while manual items may take longer."),
       createSection("store-faq-2", "Do I need an account to view my purchases?", "Yes. The customer dashboard is the main place to check orders, delivery details, and support updates."),
       createSection("store-faq-3", "Can I contact support before buying?", "Yes. Use the available support channels if you need clarification before placing an order."),
-      createSection("store-faq-4", "Will my products stay listed forever?", "Not always. The catalog is owner-managed, so products can be paused, restocked, or updated at any time."),
+      createSection("store-faq-4", "Can product availability change?", "Yes. Digital product availability can change based on stock, delivery capacity, or service updates."),
       createSection("store-faq-5", "What should I do if a product is missing from the catalog?", "Reach out through support channels if you want to ask about availability or a custom restock.")
     ]
   }
@@ -217,6 +217,14 @@ export const DEFAULT_SUPPORT_CHANNELS: SupportChannelSeed[] = [
     href: "https://t.me/ogdigital",
     buttonLabel: "Open Telegram",
     order: 1,
+    active: true
+  },
+  {
+    title: "Dashboard support",
+    description: "Signed-in customers can open tracked support chats inside their account dashboard.",
+    href: "/dashboard#support-center",
+    buttonLabel: "Open dashboard support",
+    order: 2,
     active: true
   }
 ];

@@ -28,7 +28,7 @@ const deliveryModeLabels: Record<string, string> = {
 const deliveryModeDescriptions: Record<string, string> = {
   direct_credentials: "Access details are organized inside the dashboard once the order clears.",
   otp_manual: "This item needs manual handling after payment before final access is shared.",
-  email_invite: "This product sends access through an invite flow, so the buyer email matters."
+  email_invite: "This product uses invite delivery, so enter the email address that should receive access."
 };
 
 function getParagraphs(text: string) {
@@ -67,8 +67,8 @@ export function ProductDetail({
   ];
 
   const confidenceNotes = [
-    "Owner-managed listings only, with catalog control kept inside the store.",
-    "Delivery updates and support follow-up stay inside the dashboard after checkout.",
+    "Clear product details, pricing, duration, and delivery notes are shown before checkout.",
+    "Delivery updates and support follow-up stay inside your dashboard after checkout.",
     product.deliveryNotes?.trim() || deliveryModeDescriptions[deliveryMode]
   ];
 
@@ -76,7 +76,7 @@ export function ProductDetail({
     {
       icon: Layers3,
       title: "Product snapshot",
-      text: product.shortDescription || "This listing is prepared as a cleaner, curated digital product."
+      text: product.shortDescription || "A curated digital product with account-based delivery tracking."
     },
     {
       icon: Clock3,
@@ -114,7 +114,7 @@ export function ProductDetail({
                 transition={{ duration: 0.34 }}
                 className="absolute inset-0"
               >
-                <Image src={activeImage || product.imageUrls[0]} alt={product.name} fill className="object-cover" />
+                <Image src={activeImage || product.imageUrls[0]} alt={product.name} fill className="bg-black object-contain" />
               </motion.div>
             </AnimatePresence>
             <div className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-full bg-foreground/14 blur-3xl" />
@@ -134,7 +134,7 @@ export function ProductDetail({
                       : "border-border/70"
                   }`}
                 >
-                  <Image src={image} alt={product.name} fill className="object-cover" />
+                  <Image src={image} alt={product.name} fill className="bg-black object-contain" />
                 </motion.button>
               ))}
             </div>
@@ -252,8 +252,7 @@ export function ProductDetail({
               detailParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
             ) : (
               <p>
-                This listing is ready for a stronger custom description. Use the admin panel to expand the sales copy,
-                onboarding notes, and setup expectations.
+                This product includes managed delivery, account tracking, and support follow-up after checkout.
               </p>
             )}
           </div>
@@ -304,7 +303,7 @@ export function ProductDetail({
             ))}
             {reviews.length === 0 ? (
               <p className="text-sm leading-7 text-muted-foreground">
-                No public reviews yet. Once this category starts moving, real customer feedback can appear here.
+                Reviews for this product will appear here as verified customer feedback becomes available.
               </p>
             ) : null}
           </div>
@@ -326,7 +325,7 @@ export function ProductDetail({
               </Link>
             ))}
             {relatedProducts.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No related items are live in this category yet.</p>
+              <p className="text-sm text-muted-foreground">Browse the full catalog to discover more digital products.</p>
             ) : null}
           </div>
         </motion.div>

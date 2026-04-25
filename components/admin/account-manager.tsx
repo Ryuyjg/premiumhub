@@ -220,7 +220,6 @@ export function AccountManager({
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
                       className="h-8 px-3"
                       onClick={() => {
                         setEditingId(account.id);

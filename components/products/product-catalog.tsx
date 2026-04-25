@@ -96,7 +96,7 @@ export function ProductCatalog({
                     }
                     alt={product.name}
                     fill
-                    className="object-contain p-2 transition duration-300 hover:scale-[1.02]"
+                    className="bg-black object-contain transition duration-300 hover:scale-[1.03]"
                   />
                 </div>
               </Link>
@@ -126,8 +126,8 @@ export function ProductCatalog({
       ) : (
         <div className="rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.9)] p-6 text-center text-sm text-muted-foreground">
           {category === MEGA_SALES_CATEGORY_SLUG
-            ? "No mega sale products yet. Mark products as featured, best-selling, or set sale price."
-            : "No products in this category."}
+            ? "Mega sale products will appear here soon. Browse the regular categories for active items."
+            : "Products for this category will appear here soon. Try another category or contact support."}
         </div>
       )}
     </div>

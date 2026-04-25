@@ -12,9 +12,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/providers/auth-provider";
 
 const emptyCartIdeas = [
-  "Start with your highest-converting plans instead of listing everything.",
-  "Use clear delivery notes so buyers understand exactly what they receive.",
-  "Keep trust pages and support links visible before launching paid traffic."
+  "Browse a category and add the plan that matches your need.",
+  "Open each product page to review duration, delivery notes, and support details.",
+  "Contact support before checkout if you need help choosing the right item."
 ];
 
 export default function CartPage() {
@@ -92,7 +92,7 @@ export default function CartPage() {
           )}
         </h1>
         <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-          Keep checkout clean and focused. Buyers convert better when plan details are clear and trust signals are visible.
+          Review your selected digital products before checkout. Delivery updates stay available in your account.
         </p>
       </div>
 
@@ -109,7 +109,7 @@ export default function CartPage() {
             <div className="space-y-2">
               <p className="text-xl font-bold">Nothing added yet</p>
               <p className="text-sm text-muted-foreground">
-                Start with the items you want customers to remember your store for.
+                Add a product from the catalog to begin checkout.
               </p>
             </div>
             <Link href="/products" className="btn-primary">
@@ -224,7 +224,7 @@ export default function CartPage() {
 
               <div className="space-y-3">
                 <div className="rounded-[1.5rem] border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  Wallet checkout is active for approved users. Gateway integration can be plugged back in anytime.
+                  Wallet checkout is available for signed-in customers. Contact support if you need help before ordering.
                 </div>
 
                 <Button
@@ -255,7 +255,7 @@ export default function CartPage() {
 
               <div className="mt-8 space-y-3 rounded-[2rem] border border-border/60 bg-background/72 p-5">
                 {[
-                  { icon: CreditCard, text: "Reconnect the next gateway when the catalog is ready", color: "text-primary" },
+                  { icon: CreditCard, text: "Secure checkout with order tracking", color: "text-primary" },
                   { icon: ShieldCheck, text: "Dashboard delivery and support flow stay active", color: "text-accent" }
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">

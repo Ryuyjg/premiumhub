@@ -203,6 +203,30 @@ export async function getSitePage(slug: string) {
   return pages.find((page) => page.slug === slug) || null;
 }
 
+export function getDefaultSitePage(slug: string) {
+  const page = DEFAULT_SITE_PAGES.find((item) => item.slug === slug);
+  if (!page) {
+    return null;
+  }
+
+  const timestamp = new Date().toISOString();
+  return {
+    id: page.slug,
+    ...page,
+    createdAt: timestamp,
+    updatedAt: timestamp
+  } satisfies SitePage;
+}
+
+export async function getSitePageOrDefault(slug: string): Promise<SitePage> {
+  const fallback = getDefaultSitePage(slug) || getDefaultSitePage("support-channels")!;
+  try {
+    return (await getSitePage(slug)) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export async function getSupportChannels() {
   let channels: SupportChannel[] = [];
 
@@ -218,6 +242,26 @@ export async function getSupportChannels() {
     return sortSupportChannels(completeChannels);
   } catch {
     return sortSupportChannels(channels);
+  }
+}
+
+export function getDefaultSupportChannels() {
+  const timestamp = new Date().toISOString();
+  return DEFAULT_SUPPORT_CHANNELS.map((channel, index) => ({
+    id: `default-${index + 1}`,
+    ...channel,
+    href: normalizeSupportHref(channel.href),
+    createdAt: timestamp,
+    updatedAt: timestamp
+  })) satisfies SupportChannel[];
+}
+
+export async function getSupportChannelsOrDefault() {
+  try {
+    const channels = await getSupportChannels();
+    return channels.length ? channels : getDefaultSupportChannels();
+  } catch {
+    return getDefaultSupportChannels();
   }
 }
 

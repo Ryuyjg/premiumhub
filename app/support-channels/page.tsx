@@ -1,5 +1,5 @@
 import { SitePageView } from "@/components/content/site-page-view";
-import { getSitePage, getSupportChannels } from "@/lib/site-content";
+import { getSitePageOrDefault, getSupportChannelsOrDefault } from "@/lib/site-content";
 import type { SitePage, SupportChannel } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -47,14 +47,10 @@ export default async function SupportChannelsPage() {
     }
   ];
 
-  let page: SitePage | null = null;
-  let supportChannels: SupportChannel[] = [];
-
-  try {
-    [page, supportChannels] = await Promise.all([getSitePage("support-channels"), getSupportChannels()]);
-  } catch {
-    // Fail-safe fallback so support page never crashes for customers.
-  }
+  const [page, supportChannels] = await Promise.all([
+    getSitePageOrDefault("support-channels"),
+    getSupportChannelsOrDefault()
+  ]);
 
   return (
     <SitePageView

@@ -1,17 +1,12 @@
-import { notFound } from "next/navigation";
 import { SitePageView } from "@/components/content/site-page-view";
-import { getSitePage, getSupportChannels } from "@/lib/site-content";
+import { getSitePageOrDefault, getSupportChannelsOrDefault } from "@/lib/site-content";
 import { normalizeSupportHref } from "@/lib/url-normalize";
 import type { SupportChannel } from "@/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function ContactPage() {
-  const [page, supportChannels] = await Promise.all([getSitePage("contact"), getSupportChannels()]);
-
-  if (!page) {
-    notFound();
-  }
+  const [page, supportChannels] = await Promise.all([getSitePageOrDefault("contact"), getSupportChannelsOrDefault()]);
 
   const preferred = supportChannels
     .filter((channel) => {

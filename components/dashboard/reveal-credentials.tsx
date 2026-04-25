@@ -152,7 +152,6 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
                       <Button
                         type="button"
                         variant="ghost"
-                        size="icon"
                         className="h-8 w-8 shrink-0 transition-colors hover:bg-primary/10 hover:text-primary"
                         onClick={() => copyValue(credentials.email, "Email")}
                       >
@@ -175,7 +174,6 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
                         <Button
                           type="button"
                           variant="ghost"
-                          size="icon"
                           className="h-8 w-8 transition-colors hover:bg-primary/10 hover:text-primary"
                           onClick={() => setShowPassword((value) => !value)}
                         >
@@ -184,7 +182,6 @@ export function RevealCredentials({ subscriptionId }: { subscriptionId: string }
                         <Button
                           type="button"
                           variant="ghost"
-                          size="icon"
                           className="h-8 w-8 transition-colors hover:bg-primary/10 hover:text-primary"
                           onClick={() => copyValue(credentials.password, "Password")}
                         >

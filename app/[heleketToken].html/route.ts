@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 
-export async function GET(
-  _request: Request,
-  context: { params: Promise<{ heleketToken: string }> }
-) {
-  const { heleketToken } = await context.params;
+export async function GET(request: Request) {
+  const heleketToken = new URL(request.url).pathname.split("/").pop()?.replace(/\.html$/, "") || "";
 
   if (!heleketToken.startsWith("heleket_")) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

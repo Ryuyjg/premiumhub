@@ -38,24 +38,24 @@ export const STARTER_CATEGORIES = [
     name: "Virtual Numbers",
     slug: "virtual-numbers",
     order: 4,
-    description: "Number rentals, verification-ready options, and region-based virtual lines."
+    description: "Region-based virtual number services for supported account verification and testing needs."
   },
   {
     name: "Telegram Sessions",
     slug: "telegram-sessions",
     order: 5,
-    description: "Session files, ready logins, and Telegram account access offers."
+    description: "Telegram setup, onboarding, support sessions, and account workflow assistance for your own projects."
   },
   {
     name: "Telegram Auto Software",
     slug: FEATURED_CATEGORY_SLUG,
     order: 6,
     description:
-      "Main product lane for Telegram automation suites, sender tools, scraping tools, growth systems, and bigger long-form listings."
+      "Telegram business automation tools for owned channels, customer support, opt-in updates, and workflow management."
   }
 ] as const;
 
-const categoryOrder = new Map(STARTER_CATEGORIES.map((item, index) => [item.slug, index]));
+const categoryOrder: Map<string, number> = new Map(STARTER_CATEGORIES.map((item, index) => [item.slug, index]));
 
 export function getStarterCategoryMeta(slug: string) {
   return STARTER_CATEGORIES.find((item) => item.slug === slug) || null;

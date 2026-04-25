@@ -27,8 +27,8 @@ export async function POST(request: Request) {
       if (!doc.exists) {
         return NextResponse.json({ error: "One or more products not found." }, { status: 404 });
       }
-      const data = doc.data() as Product;
-      products.push({ id: doc.id, ...data });
+      const data = doc.data() as Omit<Product, "id">;
+      products.push({ ...data, id: doc.id } as Product);
       totalAmount += (data.salePrice || data.price);
 
       // Stock check for direct credentials

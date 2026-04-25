@@ -35,8 +35,8 @@ const trustCards = [
   },
   {
     icon: Wallet,
-    title: "Safer rollout",
-    description: "Checkout architecture is ready for integration while customer trust flow stays stable and polished.",
+    title: "Account checkout",
+    description: "Signed-in customers can place orders, track delivery, and contact support from one dashboard.",
     href: "/faq",
     cta: "See how it works",
     iconTone: "bg-primary/10 text-primary",
@@ -55,7 +55,7 @@ export function TrustSection() {
             <span className="gradient-text block">visible by default.</span>
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-8 text-muted-foreground">
-            Structured support visibility, legal transparency, and account-based delivery create a serious buying experience.
+            Clear support visibility, legal transparency, and account-based delivery create a serious buying experience.
           </p>
         </div>
       </Reveal>

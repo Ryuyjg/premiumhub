@@ -1,15 +1,10 @@
-import { notFound } from "next/navigation";
 import { SitePageView } from "@/components/content/site-page-view";
-import { getSitePage } from "@/lib/site-content";
+import { getSitePageOrDefault } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
-  const page = await getSitePage("about");
-
-  if (!page) {
-    notFound();
-  }
+  const page = await getSitePageOrDefault("about");
 
   return <SitePageView page={page} />;
 }

@@ -16,8 +16,8 @@ import { Reveal } from "@/components/marketing/reveal";
 const features = [
   {
     icon: ShoppingBag,
-    title: "Manual catalog control",
-    description: "Publish each plan intentionally instead of flooding the storefront with low-quality listings.",
+    title: "Curated catalog",
+    description: "Browse clean categories with clear digital products, prices, and delivery expectations.",
     gradient: "from-primary/14 to-primary/5",
     iconBg: "bg-primary/12",
     iconColor: "text-primary",
@@ -26,7 +26,7 @@ const features = [
   {
     icon: Sparkles,
     title: "Flexible digital product mix",
-    description: "Sell subscriptions, software, private offers, and account access from one clean storefront.",
+    description: "Find subscriptions, software, games, virtual number services, and Telegram support products.",
     gradient: "from-primary/16 to-primary/6",
     iconBg: "bg-primary/12",
     iconColor: "text-primary",
@@ -70,8 +70,8 @@ const features = [
   },
   {
     icon: CreditCard,
-    title: "Checkout-ready architecture",
-    description: "Payment integrations can be swapped without rebuilding the storefront experience.",
+    title: "Tracked checkout",
+    description: "Orders stay connected to your account so delivery details and support are easy to find.",
     gradient: "from-foreground/8 to-foreground/3",
     iconBg: "bg-foreground/8",
     iconColor: "text-foreground",
