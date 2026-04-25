@@ -95,7 +95,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to send support reply." },
+      { error: "Reply message must not be empty." },
       { status: 400 }
     );
   }

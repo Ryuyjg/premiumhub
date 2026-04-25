@@ -80,12 +80,23 @@ export function SupportCenter({ tickets }: { tickets: SupportTicket[] }) {
 
   async function submitTicket(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (subject.trim().length < 3) {
+      toast.error("Add a subject with at least 3 characters.");
+      return;
+    }
+
+    if (message.trim().length < 10) {
+      toast.error("Write at least 10 characters so support can understand the issue.");
+      return;
+    }
+
     setSubmitting(true);
     try {
       const response = await fetch("/api/support/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, message })
+        body: JSON.stringify({ subject: subject.trim(), message: message.trim() })
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {

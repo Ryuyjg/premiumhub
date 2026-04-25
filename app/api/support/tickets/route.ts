@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ id: ref.id });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to create support ticket." },
+      { error: "Subject must be at least 3 characters and message must be at least 10 characters." },
       { status: 400 }
     );
   }
@@ -125,7 +125,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to send support message." },
+      { error: "Message must not be empty." },
       { status: 400 }
     );
   }
