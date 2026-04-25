@@ -114,7 +114,13 @@ export function ProductDetail({
                 transition={{ duration: 0.34 }}
                 className="absolute inset-0"
               >
-                <Image src={activeImage || product.imageUrls[0]} alt={product.name} fill className="bg-white object-contain p-8" />
+                <Image
+                  src={activeImage || product.imageUrls[0]}
+                  alt={product.name}
+                  fill
+                  unoptimized
+                  className="bg-white object-contain p-8"
+                />
               </motion.div>
             </AnimatePresence>
             <div className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-full bg-foreground/14 blur-3xl" />
@@ -134,7 +140,7 @@ export function ProductDetail({
                       : "border-border/70"
                   }`}
                 >
-                  <Image src={image} alt={product.name} fill className="bg-white object-contain p-3" />
+                  <Image src={image} alt={product.name} fill unoptimized className="bg-white object-contain p-3" />
                 </motion.button>
               ))}
             </div>
