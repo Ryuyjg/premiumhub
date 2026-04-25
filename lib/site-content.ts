@@ -16,6 +16,10 @@ function sanitizeSections(value: unknown): SitePageSection[] {
 
   return value
     .map((section, index) => {
+      if (!section || typeof section !== "object" || Array.isArray(section)) {
+        return null;
+      }
+
       const record = section as Record<string, unknown>;
       const title = String(record.title || "").trim();
       const description = String(record.description || "").trim();
@@ -151,10 +155,44 @@ async function ensureDefaultSupportChannels(channels: SupportChannel[]) {
   }));
 }
 
+function mergeFallbackPages(pages: SitePage[]) {
+  const existing = new Set(pages.map((page) => page.slug));
+  const missing = DEFAULT_SITE_PAGES.filter((page) => !existing.has(page.slug));
+
+  if (!missing.length) {
+    return sortSitePages(pages);
+  }
+
+  const timestamp = new Date().toISOString();
+  return sortSitePages([
+    ...pages,
+    ...missing.map((page) => ({
+      id: page.slug,
+      ...page,
+      createdAt: timestamp,
+      updatedAt: timestamp
+    }))
+  ]);
+}
+
 export async function getSitePages() {
-  const snapshot = await adminDb.collection("sitePages").get();
-  const pages = snapshot.docs.map((doc) => normalizePage(doc.id, doc.data() as Record<string, unknown>));
-  const completePages = await ensureDefaultSitePages(pages);
+  let pages: SitePage[] = [];
+
+  try {
+    const snapshot = await adminDb.collection("sitePages").get();
+    pages = snapshot.docs.map((doc) => normalizePage(doc.id, doc.data() as Record<string, unknown>));
+  } catch {
+    pages = [];
+  }
+
+  let completePages = pages;
+  try {
+    completePages = await ensureDefaultSitePages(pages);
+  } catch {
+    // Never crash policy/support pages because of seeding failures.
+    completePages = mergeFallbackPages(pages);
+  }
+
   return sortSitePages(
     completePages.filter((page) => EDITABLE_SITE_PAGE_SLUGS.includes(page.slug as (typeof EDITABLE_SITE_PAGE_SLUGS)[number]))
   );
@@ -166,10 +204,21 @@ export async function getSitePage(slug: string) {
 }
 
 export async function getSupportChannels() {
-  const snapshot = await adminDb.collection("supportChannels").get();
-  const channels = snapshot.docs.map((doc) => normalizeSupportChannel(doc.id, doc.data() as Record<string, unknown>));
-  const completeChannels = await ensureDefaultSupportChannels(channels);
-  return sortSupportChannels(completeChannels);
+  let channels: SupportChannel[] = [];
+
+  try {
+    const snapshot = await adminDb.collection("supportChannels").get();
+    channels = snapshot.docs.map((doc) => normalizeSupportChannel(doc.id, doc.data() as Record<string, unknown>));
+  } catch {
+    channels = [];
+  }
+
+  try {
+    const completeChannels = await ensureDefaultSupportChannels(channels);
+    return sortSupportChannels(completeChannels);
+  } catch {
+    return sortSupportChannels(channels);
+  }
 }
 
 export async function getPublicSiteContent() {
