@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     description: APP_DESCRIPTION
   },
   other: {
-    heleket: "cbbfa05d"
+    heleket: "e122e7a0"
   },
   robots: { index: true, follow: true }
 };
