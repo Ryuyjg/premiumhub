@@ -192,8 +192,18 @@ export type SupportTicket = {
   subject: string;
   message: string;
   status: "open" | "in_progress" | "resolved";
+  messages?: SupportMessage[];
+  lastMessageAt?: string;
   createdAt: string;
   updatedAt?: string;
+};
+
+export type SupportMessage = {
+  id: string;
+  sender: "user" | "admin";
+  body: string;
+  email?: string;
+  createdAt: string;
 };
 
 export type UserNotification = {
