@@ -96,7 +96,7 @@ export function ProductCatalog({
                     }
                     alt={product.name}
                     fill
-                    className="bg-black object-contain transition duration-300 hover:scale-[1.03]"
+                    className="bg-white object-contain p-3 transition duration-300 hover:scale-[1.03]"
                   />
                 </div>
               </Link>

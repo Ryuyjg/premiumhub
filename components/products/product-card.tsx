@@ -115,7 +115,7 @@ export function ProductCard({
               }
               alt={product.name}
               fill
-              className="bg-black object-contain transition duration-500 group-hover:scale-105"
+              className="bg-white object-contain p-5 transition duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/26 to-transparent" />
 
