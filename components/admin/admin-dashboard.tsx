@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BarChart3, Boxes, FileText, Layers, ShieldCheck, TicketPercent, Users2, Wallet } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import type {
   AnalyticsSummary,
@@ -45,6 +45,12 @@ const tabs = [
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
+const TAB_QUERY_KEY = "tab";
+const ACTIVE_TAB_STORAGE_KEY = "ott-shop-admin-active-tab";
+
+function isValidAdminTab(value: string | null): value is TabId {
+  return Boolean(value && tabs.some((tab) => tab.id === value));
+}
 
 export function AdminDashboard({
   analytics,
@@ -74,9 +80,57 @@ export function AdminDashboard({
   supportChannels: SupportChannel[];
 }) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabId>("overview");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+    if (typeof window === "undefined") {
+      return "overview";
+    }
+
+    const urlTab = new URLSearchParams(window.location.search).get(TAB_QUERY_KEY);
+    if (isValidAdminTab(urlTab)) {
+      return urlTab;
+    }
+
+    const storedTab = window.localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
+    return isValidAdminTab(storedTab) ? storedTab : "overview";
+  });
   const [resettingCatalog, setResettingCatalog] = useState(false);
   const [confirmResetCatalog, setConfirmResetCatalog] = useState(false);
+
+  useEffect(() => {
+    const queryTab = searchParams.get(TAB_QUERY_KEY);
+    if (isValidAdminTab(queryTab) && queryTab !== activeTab) {
+      setActiveTab(queryTab);
+      return;
+    }
+
+    if (!queryTab && typeof window !== "undefined") {
+      const storedTab = window.localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
+      if (isValidAdminTab(storedTab) && storedTab !== activeTab) {
+        setActiveTab(storedTab);
+      }
+    }
+  }, [searchParams, activeTab]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, activeTab);
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get(TAB_QUERY_KEY) === activeTab) {
+      return;
+    }
+    params.set(TAB_QUERY_KEY, activeTab);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [activeTab, pathname, router]);
+
+  function handleTabChange(tab: TabId) {
+    setActiveTab(tab);
+  }
 
   const paidOrders = useMemo(() => orders.filter((order) => order.status === "paid").length, [orders]);
   const failedOrders = useMemo(() => orders.filter((order) => order.status === "failed").length, [orders]);
@@ -164,7 +218,7 @@ export function AdminDashboard({
             <button
               key={tab.id}
               type="button"
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-white text-primary shadow-md"
