@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
+import { MEGA_SALES_CATEGORY_SLUG } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/utils";
 import { useAppStore } from "@/store/use-app-store";
 
@@ -25,6 +26,11 @@ export function ProductCatalog({
       return;
     }
 
+    if (slug === MEGA_SALES_CATEGORY_SLUG && category !== MEGA_SALES_CATEGORY_SLUG) {
+      setCategory(MEGA_SALES_CATEGORY_SLUG);
+      return;
+    }
+
     const matched = categories.find((item) => item.slug === slug);
     if (matched && category !== matched.id) {
       setCategory(matched.id);
@@ -32,7 +38,19 @@ export function ProductCatalog({
   }, [searchParams, categories, category, setCategory]);
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => category === "all" || product.categoryId === category);
+    return products.filter((product) => {
+      if (category === "all") {
+        return true;
+      }
+
+      if (category === MEGA_SALES_CATEGORY_SLUG) {
+        const hasSalePrice = typeof product.salePrice === "number" && product.salePrice < product.price;
+        const promotional = hasSalePrice || Boolean(product.featured) || Boolean(product.bestSelling);
+        return promotional;
+      }
+
+      return product.categoryId === category;
+    });
   }, [products, category]);
 
   function handleInlineAddToCart(product: Product) {
@@ -107,7 +125,9 @@ export function ProductCatalog({
         </div>
       ) : (
         <div className="rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.9)] p-6 text-center text-sm text-muted-foreground">
-          No products in this category.
+          {category === MEGA_SALES_CATEGORY_SLUG
+            ? "No mega sale products yet. Mark products as featured, best-selling, or set sale price."
+            : "No products in this category."}
         </div>
       )}
     </div>

@@ -2,6 +2,12 @@ import type { Category } from "@/types";
 import { slugify } from "@/lib/utils";
 
 export const FEATURED_CATEGORY_SLUG = "telegram-auto-software";
+export const MEGA_SALES_CATEGORY_SLUG = "mega-sales";
+
+export const MEGA_SALES_NAV_ITEM = {
+  name: "Mega Sales",
+  slug: MEGA_SALES_CATEGORY_SLUG
+} as const;
 
 export const STARTER_CATEGORIES = [
   {
