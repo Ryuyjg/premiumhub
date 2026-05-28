@@ -164,7 +164,9 @@ export function AdminDashboard({
         ? payload.results.reduce((sum: number, item: { deleted?: number }) => sum + Number(item.deleted || 0), 0)
         : 0;
 
-      toast.success(`Catalog cleared. ${deleted} records removed.`);
+      const seededProducts = Number(payload?.seeded?.products || 0);
+      const seededCategories = Number(payload?.seeded?.categories || 0);
+      toast.success(`Catalog reset. ${deleted} records removed, ${seededCategories} categories and ${seededProducts} products added.`);
       setActiveTab("products");
       setConfirmResetCatalog(false);
       router.refresh();
@@ -196,7 +198,7 @@ export function AdminDashboard({
               disabled={resettingCatalog}
               className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-primary transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {resettingCatalog ? "Clearing catalog..." : "Clear catalog and start fresh"}
+              {resettingCatalog ? "Resetting catalog..." : "Reset catalog with starter products"}
             </button>
           </div>
           <div className="grid grid-cols-3 gap-3">
@@ -330,9 +332,9 @@ export function AdminDashboard({
 
       <ConfirmDialog
         open={confirmResetCatalog}
-        title="Clear catalog and start fresh?"
-        description="This will delete products, categories, offers, coupons, reviews, account pools, and old gateway transaction data."
-        confirmLabel="Yes, clear everything"
+        title="Reset catalog with starter products?"
+        description="This will delete products, categories, offers, coupons, reviews, account pools, and old gateway transaction data, then add 10 starter products to every category."
+        confirmLabel="Yes, reset catalog"
         cancelLabel="No"
         busy={resettingCatalog}
         onCancel={() => setConfirmResetCatalog(false)}
