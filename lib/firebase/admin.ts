@@ -7,16 +7,43 @@ function getPrivateKey() {
   return process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 }
 
-const adminApp =
-  getApps()[0] ||
-  initializeApp({
+const useLocalEmulator =
+  process.env.USE_LOCAL_FIREBASE_EMULATOR === "true" ||
+  Boolean(process.env.FIRESTORE_EMULATOR_HOST);
+
+function getAdminApp() {
+  if (getApps().length) {
+    return getApps()[0];
+  }
+
+  if (useLocalEmulator) {
+    return initializeApp({
+      projectId: process.env.FIREBASE_PROJECT_ID || "local-ottwebshop",
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "local-ottwebshop.appspot.com"
+    });
+  }
+
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = getPrivateKey();
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error(
+      "Missing Firebase Admin credentials. Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY or enable USE_LOCAL_FIREBASE_EMULATOR=true."
+    );
+  }
+
+  return initializeApp({
     credential: cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: getPrivateKey()
+      projectId,
+      clientEmail,
+      privateKey
     }),
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
   });
+}
+
+const adminApp = getAdminApp();
 
 export const adminAuth = getAuth(adminApp);
 export const adminDb = getFirestore(adminApp);
