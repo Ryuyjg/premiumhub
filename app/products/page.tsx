@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { ProductCatalog } from "@/components/products/product-catalog";
 import { getCategories, getProducts } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Catalog",

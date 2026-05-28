@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { LogIn, LogOut, Menu, Settings, Shield, ShoppingCart, X } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { useAppStore } from "@/store/use-app-store";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -38,6 +38,15 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const nextSlug = new URLSearchParams(window.location.search).get("category");
+    setActiveCategorySlug((prev) => (prev === nextSlug ? prev : nextSlug));
+  }, [pathname]);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,14 +96,18 @@ export function SiteHeader() {
     };
   }, [settingsOpen]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
+  function handleCategoryClick(event: MouseEvent<HTMLAnchorElement>, slug: string) {
+    if (!pathname.startsWith("/products")) {
       return;
     }
 
-    const nextSlug = new URLSearchParams(window.location.search).get("category");
-    setActiveCategorySlug((prev) => (prev === nextSlug ? prev : nextSlug));
-  });
+    event.preventDefault();
+    const nextParams = new URLSearchParams(window.location.search);
+    nextParams.set("category", slug);
+    const nextPath = `/products?${nextParams.toString()}`;
+    setActiveCategorySlug(slug);
+    window.history.pushState(null, "", nextPath);
+  }
 
   const isLoggedIn = Boolean(user) || sessionAuthenticated || isAdminRoute;
   const authLoading = loading || checkingSession;
@@ -240,7 +253,8 @@ export function SiteHeader() {
                   <Link
                     key={item.slug}
                     href={`/products?category=${item.slug}`}
-                    onClick={() => setActiveCategorySlug(item.slug)}
+                    onClick={(event) => handleCategoryClick(event, item.slug)}
+                    scroll={false}
                     className={`shrink-0 whitespace-nowrap border-b-2 pb-1.5 text-sm font-semibold transition-colors ${
                       active
                         ? "border-primary text-foreground"

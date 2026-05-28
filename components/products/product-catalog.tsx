@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
 import { MEGA_SALES_CATEGORY_SLUG } from "@/lib/catalog";
@@ -18,40 +18,40 @@ export function ProductCatalog({
   categories: Category[];
 }) {
   const searchParams = useSearchParams();
-  const { category, setCategory, addToCart, cartItems } = useAppStore();
+  const { addToCart, cartItems } = useAppStore();
 
-  useEffect(() => {
+  const selectedCategory = useMemo(() => {
     const slug = searchParams.get("category");
     if (!slug) {
-      return;
+      return "all";
     }
 
-    if (slug === MEGA_SALES_CATEGORY_SLUG && category !== MEGA_SALES_CATEGORY_SLUG) {
-      setCategory(MEGA_SALES_CATEGORY_SLUG);
-      return;
+    if (slug === MEGA_SALES_CATEGORY_SLUG) {
+      return MEGA_SALES_CATEGORY_SLUG;
     }
 
     const matched = categories.find((item) => item.slug === slug);
-    if (matched && category !== matched.slug) {
-      setCategory(matched.slug);
-    }
-  }, [searchParams, categories, category, setCategory]);
+    return matched ? matched.slug : "all";
+  }, [searchParams, categories]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      if (category === "all") {
+      if (selectedCategory === "all") {
         return true;
       }
 
-      if (category === MEGA_SALES_CATEGORY_SLUG) {
+      if (selectedCategory === MEGA_SALES_CATEGORY_SLUG) {
         const hasSalePrice = typeof product.salePrice === "number" && product.salePrice < product.price;
         const promotional = hasSalePrice || Boolean(product.featured) || Boolean(product.bestSelling);
         return promotional;
       }
 
-      return product.categoryId === category || product.categoryName.toLowerCase() === category.replace(/-/g, " ");
+      return (
+        product.categoryId === selectedCategory ||
+        product.categoryName.toLowerCase() === selectedCategory.replace(/-/g, " ")
+      );
     });
-  }, [products, category]);
+  }, [products, selectedCategory]);
 
   function handleInlineAddToCart(product: Product) {
     if (product.isOutOfStock) {
@@ -126,7 +126,7 @@ export function ProductCatalog({
         </div>
       ) : (
         <div className="rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.9)] p-6 text-center text-sm text-muted-foreground">
-          {category === MEGA_SALES_CATEGORY_SLUG
+          {selectedCategory === MEGA_SALES_CATEGORY_SLUG
             ? "Mega sale products will appear here soon. Browse the regular categories for active items."
             : "Products for this category will appear here soon. Try another category or contact support."}
         </div>
