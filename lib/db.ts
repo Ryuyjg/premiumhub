@@ -1,6 +1,7 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { FEATURED_CATEGORY_SLUG, STARTER_CATEGORIES, sortCategories } from "@/lib/catalog";
+import { buildCatalogSeed } from "@/lib/catalog-seed";
 import type {
   AppUser,
   AnalyticsSummary,
@@ -19,6 +20,8 @@ import { slugify } from "@/lib/utils";
 function withId<T>(id: string, data: any) {
   return { id, ...data } as T;
 }
+
+let starterCatalogSeedPromise: Promise<void> | null = null;
 
 async function getDirectStockSeatMap() {
   const snapshot = await adminDb.collection("ottAccounts").where("status", "!=", "disabled").get();
@@ -139,6 +142,39 @@ async function ensureStarterCategories(categories: Category[]) {
   ];
 }
 
+async function ensureStarterCatalogSeeded() {
+  if (starterCatalogSeedPromise) {
+    await starterCatalogSeedPromise;
+    return;
+  }
+
+  starterCatalogSeedPromise = (async () => {
+    const existingProducts = await adminDb.collection("products").limit(1).get();
+    if (!existingProducts.empty) {
+      return;
+    }
+
+    const seed = buildCatalogSeed();
+    const batch = adminDb.batch();
+
+    seed.categories.forEach((category) => {
+      batch.set(adminDb.collection("categories").doc(category.id), category, { merge: true });
+    });
+
+    seed.products.forEach((product) => {
+      batch.set(adminDb.collection("products").doc(product.slug), product, { merge: true });
+    });
+
+    await batch.commit();
+  })();
+
+  try {
+    await starterCatalogSeedPromise;
+  } finally {
+    starterCatalogSeedPromise = null;
+  }
+}
+
 export async function expireOverdueSubscriptions() {
   try {
     const snapshot = await adminDb
@@ -187,6 +223,7 @@ export async function expireOverdueSubscriptions() {
 }
 
 export async function getFeaturedProducts() {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([
     adminDb
       .collection("products")
@@ -201,6 +238,7 @@ export async function getFeaturedProducts() {
 }
 
 export async function getProducts() {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([
     adminDb.collection("products").where("stockStatus", "==", "active").get(),
     getDirectStockSeatMap()
@@ -209,11 +247,13 @@ export async function getProducts() {
 }
 
 export async function getAdminProducts() {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([adminDb.collection("products").get(), getDirectStockSeatMap()]);
   return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
 }
 
 export async function getProductBySlug(slug: string) {
+  await ensureStarterCatalogSeeded();
   const [snapshot, seatMap] = await Promise.all([
     adminDb
       .collection("products")
@@ -228,6 +268,7 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function getCategories() {
+  await ensureStarterCatalogSeeded();
   const snapshot = await adminDb.collection("categories").get();
   const categories = snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
   const completeList = await ensureStarterCategories(categories);

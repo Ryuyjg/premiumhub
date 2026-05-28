@@ -142,7 +142,7 @@ function randomInt(min: number, max: number) {
 }
 
 function iconUrl(iconSlug: string) {
-  return `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${iconSlug}.svg`;
+  return `/product-logos/${iconSlug}.svg`;
 }
 
 function buildProductDescription(template: ProductSeedTemplate, category: SeedCategory) {
