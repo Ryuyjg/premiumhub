@@ -22,6 +22,16 @@ let storageEmulatorConnected = false;
 
 const useLocalEmulator = process.env.NEXT_PUBLIC_USE_LOCAL_FIREBASE_EMULATOR === "true";
 
+function getEmulatorHost() {
+  if (process.env.NEXT_PUBLIC_FIREBASE_EMULATOR_HOST) {
+    return process.env.NEXT_PUBLIC_FIREBASE_EMULATOR_HOST;
+  }
+  if (typeof window !== "undefined" && window.location.hostname) {
+    return window.location.hostname;
+  }
+  return "127.0.0.1";
+}
+
 function ensureBrowserApp() {
   if (typeof window === "undefined") {
     return null;
@@ -50,7 +60,7 @@ export function getClientAuth() {
 
   cachedAuth = getAuth(app);
   if (useLocalEmulator && !authEmulatorConnected) {
-    connectAuthEmulator(cachedAuth, "http://127.0.0.1:9099", { disableWarnings: true });
+    connectAuthEmulator(cachedAuth, `http://${getEmulatorHost()}:9099`, { disableWarnings: true });
     authEmulatorConnected = true;
   }
   return cachedAuth;
@@ -68,7 +78,7 @@ export function getClientDb() {
 
   cachedDb = getFirestore(app);
   if (useLocalEmulator && !firestoreEmulatorConnected) {
-    connectFirestoreEmulator(cachedDb, "127.0.0.1", 8080);
+    connectFirestoreEmulator(cachedDb, getEmulatorHost(), 8080);
     firestoreEmulatorConnected = true;
   }
   return cachedDb;
@@ -86,7 +96,7 @@ export function getClientStorage() {
 
   cachedStorage = getStorage(app);
   if (useLocalEmulator && !storageEmulatorConnected) {
-    connectStorageEmulator(cachedStorage, "127.0.0.1", 9199);
+    connectStorageEmulator(cachedStorage, getEmulatorHost(), 9199);
     storageEmulatorConnected = true;
   }
   return cachedStorage;
