@@ -32,8 +32,8 @@ export function ProductCatalog({
     }
 
     const matched = categories.find((item) => item.slug === slug);
-    if (matched && category !== matched.id) {
-      setCategory(matched.id);
+    if (matched && category !== matched.slug) {
+      setCategory(matched.slug);
     }
   }, [searchParams, categories, category, setCategory]);
 
@@ -49,7 +49,7 @@ export function ProductCatalog({
         return promotional;
       }
 
-      return product.categoryId === category;
+      return product.categoryId === category || product.categoryName.toLowerCase() === category.replace(/-/g, " ");
     });
   }, [products, category]);
 

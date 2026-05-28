@@ -23,6 +23,16 @@ function withId<T>(id: string, data: any) {
 
 let starterCatalogSeedPromise: Promise<void> | null = null;
 
+function getSeedProducts(seatMap = new Map<string, number>()) {
+  return buildCatalogSeed().products.map((product) =>
+    withDeliveryAndStock(withId<Product>(product.slug, product), seatMap)
+  );
+}
+
+function getSeedCategories() {
+  return buildCatalogSeed().categories.map((category) => withId<Category>(category.id, category));
+}
+
 async function getDirectStockSeatMap() {
   const snapshot = await adminDb.collection("ottAccounts").where("status", "!=", "disabled").get();
   const seatMap = new Map<string, number>();
@@ -227,56 +237,83 @@ export async function expireOverdueSubscriptions() {
 }
 
 export async function getFeaturedProducts() {
-  await ensureStarterCatalogSeeded();
-  const [snapshot, seatMap] = await Promise.all([
-    adminDb
-      .collection("products")
-      .where("featured", "==", true)
-      .where("stockStatus", "==", "active")
-      .limit(6)
-      .get(),
-    getDirectStockSeatMap()
-  ]);
+  try {
+    await ensureStarterCatalogSeeded();
+    const [snapshot, seatMap] = await Promise.all([
+      adminDb
+        .collection("products")
+        .where("featured", "==", true)
+        .where("stockStatus", "==", "active")
+        .limit(6)
+        .get(),
+      getDirectStockSeatMap()
+    ]);
 
-  return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
+    const products = dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
+    return products.length ? products : getSeedProducts().filter((product) => product.featured).slice(0, 6);
+  } catch {
+    return getSeedProducts().filter((product) => product.featured).slice(0, 6);
+  }
 }
 
 export async function getProducts() {
-  await ensureStarterCatalogSeeded();
-  const [snapshot, seatMap] = await Promise.all([
-    adminDb.collection("products").where("stockStatus", "==", "active").get(),
-    getDirectStockSeatMap()
-  ]);
-  return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
+  try {
+    await ensureStarterCatalogSeeded();
+    const [snapshot, seatMap] = await Promise.all([
+      adminDb.collection("products").where("stockStatus", "==", "active").get(),
+      getDirectStockSeatMap()
+    ]);
+    const products = dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
+    return products.length ? products : getSeedProducts();
+  } catch {
+    return getSeedProducts();
+  }
 }
 
 export async function getAdminProducts() {
-  await ensureStarterCatalogSeeded();
-  const [snapshot, seatMap] = await Promise.all([adminDb.collection("products").get(), getDirectStockSeatMap()]);
-  return dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
+  try {
+    await ensureStarterCatalogSeeded();
+    const [snapshot, seatMap] = await Promise.all([adminDb.collection("products").get(), getDirectStockSeatMap()]);
+    const products = dedupeProducts(snapshot.docs.map((doc) => withDeliveryAndStock(withId<Product>(doc.id, doc.data()), seatMap)));
+    return products.length ? products : getSeedProducts();
+  } catch {
+    return getSeedProducts();
+  }
 }
 
 export async function getProductBySlug(slug: string) {
-  await ensureStarterCatalogSeeded();
-  const [snapshot, seatMap] = await Promise.all([
-    adminDb
-      .collection("products")
-      .where("slug", "==", slug)
-      .where("stockStatus", "==", "active")
-      .limit(1)
-      .get(),
-    getDirectStockSeatMap()
-  ]);
+  try {
+    await ensureStarterCatalogSeeded();
+    const [snapshot, seatMap] = await Promise.all([
+      adminDb
+        .collection("products")
+        .where("slug", "==", slug)
+        .where("stockStatus", "==", "active")
+        .limit(1)
+        .get(),
+      getDirectStockSeatMap()
+    ]);
 
-  return snapshot.empty ? null : withDeliveryAndStock(withId<Product>(snapshot.docs[0].id, snapshot.docs[0].data()), seatMap);
+    if (!snapshot.empty) {
+      return withDeliveryAndStock(withId<Product>(snapshot.docs[0].id, snapshot.docs[0].data()), seatMap);
+    }
+  } catch {
+    // Fall back to the committed starter catalog below.
+  }
+
+  return getSeedProducts().find((product) => product.slug === slug) || null;
 }
 
 export async function getCategories() {
-  await ensureStarterCatalogSeeded();
-  const snapshot = await adminDb.collection("categories").get();
-  const categories = snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
-  const completeList = await ensureStarterCategories(categories);
-  return sortCategories(completeList);
+  try {
+    await ensureStarterCatalogSeeded();
+    const snapshot = await adminDb.collection("categories").get();
+    const categories = snapshot.docs.map((doc) => withId<Category>(doc.id, doc.data()));
+    const completeList = await ensureStarterCategories(categories);
+    return sortCategories(completeList);
+  } catch {
+    return sortCategories(getSeedCategories());
+  }
 }
 
 export async function getOffers() {
