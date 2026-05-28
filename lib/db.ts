@@ -149,8 +149,12 @@ async function ensureStarterCatalogSeeded() {
   }
 
   starterCatalogSeedPromise = (async () => {
-    const existingProducts = await adminDb.collection("products").limit(1).get();
-    if (!existingProducts.empty) {
+    const existingActiveProducts = await adminDb
+      .collection("products")
+      .where("stockStatus", "==", "active")
+      .limit(1)
+      .get();
+    if (!existingActiveProducts.empty) {
       return;
     }
 
