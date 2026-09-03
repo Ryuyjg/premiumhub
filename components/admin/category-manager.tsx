@@ -12,6 +12,11 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { slugify } from "@/lib/utils";
+import {
+  CATALOG_UPDATED_EVENT,
+  getStoredCategories,
+  saveStoredCategories
+} from "@/lib/client-catalog";
 
 type CategoryForm = {
   id?: string;
@@ -41,33 +46,19 @@ export function CategoryManager({
   const [confirmDelete, setConfirmDelete] = useState<Category | null>(null);
   const [form, setForm] = useState<CategoryForm>(initialForm);
 
-  // Synchronize state with initial categories and localStorage overrides
-  const [categoryList, setCategoryList] = useState<Category[]>(categories);
+  // Persistent Client-Side Category List
+  const [categoryList, setCategoryList] = useState<Category[]>(() =>
+    getStoredCategories(categories)
+  );
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("ott_categories");
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setCategoryList(parsed);
-            return;
-          }
-        } catch {
-          // Fallback to props
-        }
-      }
+    function syncCategories() {
+      setCategoryList(getStoredCategories(categories));
     }
-    setCategoryList(categories);
+    syncCategories();
+    window.addEventListener(CATALOG_UPDATED_EVENT, syncCategories);
+    return () => window.removeEventListener(CATALOG_UPDATED_EVENT, syncCategories);
   }, [categories]);
-
-  const saveToStorage = (updated: Category[]) => {
-    setCategoryList(updated);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("ott_categories", JSON.stringify(updated));
-    }
-  };
 
   const categoryUsage = useMemo(() => {
     const usageMap = new Map<string, number>();
@@ -120,7 +111,6 @@ export function CategoryManager({
         order: form.order === "" ? categoryList.length : Number(form.order)
       };
 
-      // Try server API first
       try {
         await fetch("/api/admin/categories", {
           method: form.id ? "PUT" : "POST",
@@ -128,7 +118,7 @@ export function CategoryManager({
           body: JSON.stringify(newCategory)
         });
       } catch {
-        // Ignore static host failure
+        // Ignore static export API error
       }
 
       let updatedList: Category[];
@@ -138,7 +128,8 @@ export function CategoryManager({
         updatedList = [...categoryList, newCategory];
       }
 
-      saveToStorage(updatedList);
+      saveStoredCategories(updatedList);
+      setCategoryList(updatedList);
       toast.success(form.id ? "Category updated." : "Category created.");
       resetForm();
     } catch (error) {
@@ -174,7 +165,7 @@ export function CategoryManager({
           })
         });
       } catch {
-        // Ignore static host error
+        // Ignore static export API error
       }
 
       const updated = categoryList.map((item) => {
@@ -183,7 +174,8 @@ export function CategoryManager({
         return item;
       });
 
-      saveToStorage(updated);
+      saveStoredCategories(updated);
+      setCategoryList(updated);
       toast.success("Category order updated.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category reorder failed.");
@@ -198,13 +190,14 @@ export function CategoryManager({
       try {
         await fetch(`/api/admin/categories?id=${category.id}`, { method: "DELETE" });
       } catch {
-        // Ignore static host error
+        // Ignore static export API error
       }
 
       const updated = categoryList.filter((item) => item.id !== category.id);
-      saveToStorage(updated);
+      saveStoredCategories(updated);
+      setCategoryList(updated);
 
-      toast.success("Category deleted successfully.");
+      toast.success("Category deleted.");
       setConfirmDelete(null);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category delete failed.");
@@ -217,7 +210,7 @@ export function CategoryManager({
     <Card className="h-full">
       <h2 className="text-xl font-bold text-slate-900">{form.id ? "Edit Category" : "Category Management"}</h2>
       <p className="mt-1 text-sm text-slate-600">
-        Create, edit, reorder, or delete store categories.
+        Create, edit, reorder, or delete store categories. Changes persist across reloads.
       </p>
 
       <div className="mt-5 grid gap-4">
@@ -243,7 +236,7 @@ export function CategoryManager({
         />
 
         <div className="space-y-3">
-          <p className="text-xs uppercase font-bold tracking-wider text-slate-600">Category image</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-600">Category image</p>
           <div className="flex flex-wrap items-center gap-3">
             <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
             {form.imageUrl ? (

@@ -33,6 +33,13 @@ import { OfferManager } from "@/components/admin/offer-manager";
 import { SiteContentManager } from "@/components/admin/site-content-manager";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
+import {
+  CATALOG_UPDATED_EVENT,
+  getStoredCategories,
+  getStoredProducts,
+  resetStoredCatalog
+} from "@/lib/client-catalog";
+
 const tabs = [
   { id: "overview", label: "Overview", icon: Layers },
   { id: "category", label: "Category", icon: Boxes },
@@ -54,17 +61,17 @@ function isValidAdminTab(value: string | null): value is TabId {
 
 export function AdminDashboard({
   analytics,
-  products,
-  orders,
-  coupons,
-  accounts,
-  categories,
-  users,
-  reviews,
-  tickets,
+  products = [],
+  orders = [],
+  coupons = [],
+  accounts = [],
+  categories = [],
+  users = [],
+  reviews = [],
+  tickets = [],
   offers = [],
-  sitePages,
-  supportChannels
+  sitePages = [],
+  supportChannels = []
 }: {
   analytics: AnalyticsSummary;
   products: Product[];
@@ -82,6 +89,23 @@ export function AdminDashboard({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [activeCategories, setActiveCategories] = useState<Category[]>(() =>
+    getStoredCategories(categories)
+  );
+  const [activeProducts, setActiveProducts] = useState<Product[]>(() =>
+    getStoredProducts(products)
+  );
+
+  useEffect(() => {
+    function syncCatalog() {
+      setActiveCategories(getStoredCategories(categories));
+      setActiveProducts(getStoredProducts(products));
+    }
+    syncCatalog();
+    window.addEventListener(CATALOG_UPDATED_EVENT, syncCatalog);
+    return () => window.removeEventListener(CATALOG_UPDATED_EVENT, syncCatalog);
+  }, [categories, products]);
   const [activeTab, setActiveTab] = useState<TabId>(() => {
     if (typeof window === "undefined") {
       return "overview";
@@ -266,26 +290,26 @@ export function AdminDashboard({
           {activeTab === "overview" && (
             <div className="grid gap-8 lg:grid-cols-2">
               <OrderManager orders={orders} />
-              <AccountManager accounts={accounts} products={products} />
+              <AccountManager accounts={accounts} products={activeProducts} />
             </div>
           )}
 
-          {activeTab === "category" && <CategoryManager categories={categories} products={products} />}
+          {activeTab === "category" && <CategoryManager categories={activeCategories} products={activeProducts} />}
 
-          {activeTab === "products" && <ProductManager products={products} categories={categories} />}
+          {activeTab === "products" && <ProductManager products={activeProducts} categories={activeCategories} />}
 
-          {activeTab === "offers" && <OfferManager offers={offers} products={products} categories={categories} />}
+          {activeTab === "offers" && <OfferManager offers={offers} products={activeProducts} categories={activeCategories} />}
 
           {activeTab === "settings" && <SiteContentManager initialPages={sitePages} initialChannels={supportChannels} />}
 
           {activeTab === "users" && (
             <div className="space-y-8">
               <UserBalanceManager users={users} />
-              <ReviewManager reviews={reviews} products={products} />
+              <ReviewManager reviews={reviews} products={activeProducts} />
             </div>
           )}
 
-          {activeTab === "coupons" && <CouponManager coupons={coupons} products={products} categories={categories} />}
+          {activeTab === "coupons" && <CouponManager coupons={coupons} products={activeProducts} categories={activeCategories} />}
 
           {activeTab === "support" && <SupportManager tickets={tickets} />}
         </motion.div>

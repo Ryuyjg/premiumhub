@@ -13,6 +13,11 @@ import { Card } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
+import {
+  CATALOG_UPDATED_EVENT,
+  getStoredProducts,
+  saveStoredProducts
+} from "@/lib/client-catalog";
 
 type ProductForm = {
   id?: string;
@@ -60,32 +65,18 @@ export function ProductManager({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [query, setQuery] = useState("");
-  const [productList, setProductList] = useState<Product[]>(products);
+  const [productList, setProductList] = useState<Product[]>(() =>
+    getStoredProducts(products)
+  );
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("ott_products");
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setProductList(parsed);
-            return;
-          }
-        } catch {
-          // Fallback to props
-        }
-      }
+    function syncProducts() {
+      setProductList(getStoredProducts(products));
     }
-    setProductList(products);
+    syncProducts();
+    window.addEventListener(CATALOG_UPDATED_EVENT, syncProducts);
+    return () => window.removeEventListener(CATALOG_UPDATED_EVENT, syncProducts);
   }, [products]);
-
-  const saveToStorage = (updated: Product[]) => {
-    setProductList(updated);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("ott_products", JSON.stringify(updated));
-    }
-  };
 
   const [form, setForm] = useState<ProductForm>({
     ...initialForm,
@@ -175,7 +166,7 @@ export function ProductManager({
         updated = [payload as Product, ...productList];
       }
 
-      saveToStorage(updated);
+      saveStoredProducts(updated);
       toast.success(form.id ? "Product updated." : "Product created.");
       resetForm();
     } catch (error) {
@@ -194,7 +185,7 @@ export function ProductManager({
       }
 
       const updated = productList.filter((item) => item.id !== id);
-      saveToStorage(updated);
+      saveStoredProducts(updated);
 
       toast.success("Product deleted successfully.");
       setConfirmDelete(null);
