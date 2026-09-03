@@ -1,8 +1,15 @@
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/components/products/product-detail";
-import { getProductBySlug, getProductReviews, getRelatedProducts } from "@/lib/db";
+import { getProductBySlug, getProductReviews, getProducts, getRelatedProducts } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
+
+export async function generateStaticParams() {
+  const products = await getProducts().catch(() => []);
+  return products.map((product) => ({
+    slug: product.slug
+  }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

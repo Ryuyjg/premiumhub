@@ -3,7 +3,7 @@ import { getSitePageOrDefault, getSupportChannelsOrDefault } from "@/lib/site-co
 import { normalizeSupportHref } from "@/lib/url-normalize";
 import type { SupportChannel } from "@/types";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default async function ContactPage() {
   const [page, supportChannels] = await Promise.all([getSitePageOrDefault("contact"), getSupportChannelsOrDefault()]);

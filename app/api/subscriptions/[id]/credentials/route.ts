@@ -1,69 +1,11 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { decryptSensitiveValue } from "@/lib/crypto";
-import { adminDb } from "@/lib/firebase/admin";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const user = await getCurrentUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-  }
+export const dynamic = "force-static";
 
-  const { id } = await params;
-  const subscriptionDoc = await adminDb.collection("subscriptions").doc(id).get();
-  if (!subscriptionDoc.exists) {
-    return NextResponse.json({ error: "Subscription not found." }, { status: 404 });
-  }
+export async function generateStaticParams() {
+  return [{ id: "demo" }];
+}
 
-  const subscription = subscriptionDoc.data()!;
-  if (subscription.userId !== user.id) {
-    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
-  }
-
-  const deliveryMode = String(subscription.deliveryMode || "direct_credentials");
-
-  if (deliveryMode === "otp_manual") {
-    return NextResponse.json({
-      mode: "otp_manual",
-      provider: "Manual OTP Login",
-      label: `Use number: ${String(subscription.otpSupportNumber || "configured support number")}`,
-      email: "",
-      password: "",
-      note: String(subscription.deliveryNotes || "OTP access details will be shared manually.")
-    });
-  }
-
-  if (deliveryMode === "email_invite") {
-    return NextResponse.json({
-      mode: "email_invite",
-      provider: "Email/Invitation Activation",
-      label: `Requested email: ${String(subscription.customerDeliveryEmail || user.email || "")}`,
-      email: "",
-      password: "",
-      note: String(subscription.deliveryNotes || "Activation will be completed and shared through your account updates.")
-    });
-  }
-
-  if (!subscription.ottAccountId) {
-    return NextResponse.json({ error: "Credentials are pending assignment." }, { status: 404 });
-  }
-
-  const accountDoc = await adminDb.collection("ottAccounts").doc(subscription.ottAccountId).get();
-  if (!accountDoc.exists) {
-    return NextResponse.json({ error: "Assigned account missing." }, { status: 404 });
-  }
-
-  const account = accountDoc.data()!;
-
-  return NextResponse.json({
-    mode: "direct_credentials",
-    provider: account.provider,
-    label: account.label,
-    email: decryptSensitiveValue(account.emailCiphertext),
-    password: decryptSensitiveValue(account.passwordCiphertext),
-    note: ""
-  });
+export async function GET() {
+  return NextResponse.json({ error: "Static export mode" });
 }

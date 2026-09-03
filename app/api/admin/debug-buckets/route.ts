@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-static";
 import { adminStorage } from "@/lib/firebase/admin";
 
 export async function GET() {

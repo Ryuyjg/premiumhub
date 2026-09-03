@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-static";
 import { z } from "zod";
 import { isAdminAuthorized } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";

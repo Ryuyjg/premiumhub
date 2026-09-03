@@ -2,7 +2,7 @@ import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
 import { getOrdersForUser, getSubscriptionsForUser, getSupportTicketsForUser } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default async function DashboardPage() {
   const user = await requireUser();

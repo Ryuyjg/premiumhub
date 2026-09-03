@@ -2,7 +2,7 @@ import { SitePageView } from "@/components/content/site-page-view";
 import { getSitePageOrDefault, getSupportChannelsOrDefault } from "@/lib/site-content";
 import type { SitePage, SupportChannel } from "@/types";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default async function SupportChannelsPage() {
   const fallbackPage: SitePage = {

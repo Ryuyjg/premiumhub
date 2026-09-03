@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getProducts } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export async function GET() {
   try {

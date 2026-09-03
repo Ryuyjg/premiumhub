@@ -13,7 +13,7 @@ import {
 } from "@/lib/db";
 import { getSitePages, getSupportChannels } from "@/lib/site-content";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default async function AdminPage() {
   const [analytics, products, orders, users, coupons, accounts, categories, reviews, tickets, offers, sitePages, supportChannels] =
