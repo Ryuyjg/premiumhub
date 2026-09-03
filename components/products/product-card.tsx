@@ -3,14 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { useState } from "react";
-import { ArrowRight, CheckCircle2, Clock3, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowRight, Clock3, MessageCircle, Sparkles } from "lucide-react";
 import type { MouseEvent } from "react";
-import { toast } from "sonner";
 import type { Product } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useAppStore } from "@/store/use-app-store";
+import { getWhatsAppOrderUrl } from "@/lib/whatsapp";
 
 export function ProductCard({
   product,
@@ -21,11 +19,8 @@ export function ProductCard({
   variant?: "grid" | "list";
   onPreview?: (product: Product) => void;
 }) {
-  const addToCart = useAppStore((state) => state.addToCart);
-  const cartItems = useAppStore((state) => state.cartItems);
-  const [isAdding, setIsAdding] = useState(false);
-  const isOutOfStock = Boolean(product.isOutOfStock);
-  const isAlreadyInCart = cartItems.some((item) => item.productId === product.id);
+  const isOutOfStock = Boolean(product.isOutOfStock) || product.stockCount === 0;
+  const stockCount = product.stockCount;
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -45,42 +40,14 @@ export function ProductCard({
     y.set(0);
   }
 
-  async function handleAddToCart() {
-    if (isOutOfStock) {
-      toast.error("No stock available for this item.");
-      return;
-    }
-
-    if (isAlreadyInCart) {
-      toast.message("Already in cart", {
-        description: "This product is already in your cart."
-      });
-      return;
-    }
-
-    setIsAdding(true);
-
-    addToCart({
-      productId: product.id,
-      slug: product.slug,
-      name: product.name,
-      price: product.salePrice || product.price,
-      imageUrl: product.imageUrls[0] || "",
-      categoryName: product.categoryName
-    });
-
-    toast.success(`${product.name} added to cart`, {
-      description: "Complete checkout when you are ready.",
-      icon: <ShoppingBag className="h-4 w-4 text-primary" />,
-      duration: 2600
-    });
-    setIsAdding(false);
+  function handleOrderNow() {
+    if (isOutOfStock) return;
+    const url = getWhatsAppOrderUrl(product, 1);
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   function handlePreview(event: MouseEvent<HTMLAnchorElement>) {
-    if (!onPreview) {
-      return;
-    }
+    if (!onPreview) return;
     event.preventDefault();
     onPreview(product);
   }
@@ -135,7 +102,7 @@ export function ProductCard({
         <div className={`${variant === "list" ? "p-5 md:p-6" : "p-6"} flex flex-1 flex-col`}>
           <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/72 px-4 py-3">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Plan price</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Price</p>
               <p className="mt-1 text-3xl font-extrabold">{formatCurrency(product.salePrice || product.price)}</p>
               {product.salePrice ? (
                 <p className="text-sm text-muted-foreground line-through">{formatCurrency(product.price)}</p>
@@ -147,14 +114,34 @@ export function ProductCard({
             </span>
           </div>
 
-          <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-            <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-            Instant dashboard tracking after purchase
+          <div className="mt-4 flex items-center justify-between text-xs">
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+              isOutOfStock
+                ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                : stockCount && stockCount <= 5
+                ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+            }`}>
+              <span className={`h-2 w-2 rounded-full ${
+                isOutOfStock ? "bg-rose-500" : stockCount && stockCount <= 5 ? "bg-amber-500" : "bg-emerald-500"
+              }`} />
+              {isOutOfStock
+                ? "Out of stock"
+                : stockCount !== undefined
+                ? `⚡ ${stockCount} left in stock`
+                : "In stock"}
+            </span>
           </div>
 
           <div className="mt-auto pt-5">
-            <Button type="button" onClick={handleAddToCart} className="h-12 w-full" disabled={isOutOfStock || isAdding}>
-            {isOutOfStock ? "No stock" : isAdding ? "Adding..." : isAlreadyInCart ? "In cart" : "Add to cart"}
+            <Button
+              type="button"
+              onClick={handleOrderNow}
+              className="h-12 w-full gap-2 rounded-xl bg-emerald-600 font-bold text-white hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700"
+              disabled={isOutOfStock}
+            >
+              <MessageCircle className="h-5 w-5 fill-white text-emerald-600" />
+              {isOutOfStock ? "Out of Stock" : "Order Now on WhatsApp"}
             </Button>
           </div>
         </div>

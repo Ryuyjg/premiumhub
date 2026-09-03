@@ -25,6 +25,7 @@ type ProductForm = {
   price: string;
   discount: string;
   durationInDays: string;
+  stockCount: string;
   featured: boolean;
   bestSelling: boolean;
   deliveryMode: "direct_credentials" | "otp_manual" | "email_invite";
@@ -42,6 +43,7 @@ const initialForm: ProductForm = {
   price: "",
   discount: "0",
   durationInDays: "30",
+  stockCount: "10",
   featured: false,
   bestSelling: false,
   deliveryMode: "direct_credentials",
@@ -101,6 +103,7 @@ export function ProductManager({
         price: Number(form.price),
         discount: Number(form.discount || "0"),
         durationInDays: Number(form.durationInDays || "30"),
+        stockCount: Number(form.stockCount || "0"),
         featured: form.featured,
         bestSelling: form.bestSelling,
         deliveryMode: form.deliveryMode,
@@ -177,6 +180,7 @@ export function ProductManager({
       price: String(product.price),
       discount: String(discount),
       durationInDays: String(product.durationInDays || 30),
+      stockCount: String(product.stockCount ?? 10),
       featured: Boolean(product.featured),
       bestSelling: Boolean(product.bestSelling),
       deliveryMode: product.deliveryMode || "direct_credentials",
@@ -295,7 +299,7 @@ export function ProductManager({
             )}
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
             <Input
               type="number"
               min="1"
@@ -321,6 +325,15 @@ export function ProductManager({
               value={form.durationInDays}
               onChange={(event) => setForm((current) => ({ ...current, durationInDays: event.target.value }))}
               placeholder="Duration in days"
+              className={inputToneClass}
+              required
+            />
+            <Input
+              type="number"
+              min="0"
+              value={form.stockCount}
+              onChange={(event) => setForm((current) => ({ ...current, stockCount: event.target.value }))}
+              placeholder="Stock count"
               className={inputToneClass}
               required
             />

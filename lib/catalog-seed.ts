@@ -36,6 +36,7 @@ type CatalogSeedProduct = {
   otpSupportNumber: string | null;
   deliveryNotes: string;
   stockStatus: "active";
+  stockCount: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -196,6 +197,7 @@ export function buildCatalogSeed() {
         otpSupportNumber: "",
         deliveryNotes: "Delivery instructions and setup notes are shared after successful purchase.",
         stockStatus: "active",
+        stockCount: randomInt(3, 18),
         createdAt: now,
         updatedAt: now
       });

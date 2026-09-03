@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { LogIn, LogOut, Menu, Settings, Shield, ShoppingCart, X } from "lucide-react";
+import { LogIn, LogOut, Menu, MessageCircle, Settings, Shield, X } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { usePathname, useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useRef, useState } from "react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
-import { useAppStore } from "@/store/use-app-store";
 import { useAuth } from "@/components/providers/auth-provider";
 import { getClientAuth } from "@/lib/firebase/client";
 import { MEGA_SALES_NAV_ITEM, STARTER_CATEGORIES } from "@/lib/catalog";
@@ -18,20 +17,14 @@ export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sessionAuthenticated, setSessionAuthenticated] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const settingsRef = useRef<HTMLDivElement | null>(null);
-  const cartItemsCount = useAppStore((state) => state.cartItems.length);
   const { user, loading } = useAuth();
   const isAdminRoute = pathname.startsWith("/admin");
   const [activeCategorySlug, setActiveCategorySlug] = useState<string | null>(null);
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -88,11 +81,11 @@ export function SiteHeader() {
     }
 
     if (settingsOpen) {
-      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("mousedown", handleOutsideClick as unknown as EventListener);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick as unknown as EventListener);
     };
   }, [settingsOpen]);
 
@@ -147,18 +140,15 @@ export function SiteHeader() {
           <div className="hidden flex-1 md:block" />
 
           <div className="flex items-center gap-2.5">
-            <Link
-              href="/cart"
-              className="control-surface relative inline-flex h-10 items-center gap-2 rounded-full px-3.5 text-sm font-semibold"
+            <a
+              href="https://wa.me/917012958322"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-emerald-600 px-4 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700"
             >
-              <ShoppingCart className="h-4 w-4" />
-              <span className="hidden sm:inline">Cart</span>
-              {hydrated && cartItemsCount > 0 ? (
-                <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
-                  {cartItemsCount}
-                </span>
-              ) : null}
-            </Link>
+              <MessageCircle className="h-4 w-4 fill-white text-emerald-600" />
+              <span>WhatsApp Us</span>
+            </a>
 
             <div className="relative hidden md:block" ref={settingsRef}>
               <button
@@ -172,13 +162,6 @@ export function SiteHeader() {
 
               {settingsOpen ? (
                 <div className="absolute right-0 top-12 z-30 w-56 rounded-2xl border border-border/70 bg-[hsl(var(--surface)/0.98)] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.14)]">
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setSettingsOpen(false)}
-                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
-                  >
-                    My purchases
-                  </Link>
                   <Link
                     href="/support-channels"
                     onClick={() => setSettingsOpen(false)}
@@ -208,27 +191,26 @@ export function SiteHeader() {
                     Terms of use
                   </Link>
                   <div className="my-1 border-t border-border/60" />
-                  {authLoading ? (
-                    <div className="px-3 py-2 text-sm text-muted-foreground">Checking session...</div>
-                  ) : isLoggedIn ? (
-                    <button
-                      type="button"
-                      onClick={handleSignOut}
-                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-500/10"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Logout
-                    </button>
-                  ) : (
-                    <Link
-                      href="/login"
-                      onClick={() => setSettingsOpen(false)}
-                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
-                    >
-                      <LogIn className="h-4 w-4" />
-                      Login
-                    </Link>
-                  )}
+                  {!authLoading &&
+                    (isLoggedIn ? (
+                      <button
+                        type="button"
+                        onClick={handleSignOut}
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-500/10"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                      </button>
+                    ) : (
+                      <Link
+                        href="/login"
+                        onClick={() => setSettingsOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                      >
+                        <LogIn className="h-4 w-4" />
+                        Login
+                      </Link>
+                    ))}
                 </div>
               ) : null}
             </div>
@@ -280,24 +262,19 @@ export function SiteHeader() {
             className="border-b border-border/45 bg-background/96 px-5 py-5 md:hidden"
           >
             <div className="space-y-2">
-              <Link
-                href="/cart"
+              <a
+                href="https://wa.me/917012958322"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
-                className="control-surface flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-foreground"
+                className="flex items-center justify-between rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-sm"
               >
-                Cart
-                <ShoppingCart className="h-4 w-4" />
-              </Link>
+                <span>WhatsApp Us</span>
+                <MessageCircle className="h-4 w-4 fill-white text-emerald-600" />
+              </a>
 
               <div className="mt-2 rounded-2xl border border-border/60 bg-[hsl(var(--surface)/0.94)] p-2">
                 <p className="px-2 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Settings</p>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-2 text-sm text-foreground transition hover:bg-muted/60"
-                >
-                  My purchases
-                </Link>
                 <Link
                   href="/support-channels"
                   onClick={() => setOpen(false)}

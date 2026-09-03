@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 export async function GET() {
   return new Response("heleket=e122e7a0", {
     headers: {
@@ -6,3 +8,4 @@ export async function GET() {
     }
   });
 }
+

@@ -79,6 +79,7 @@ export type Product = {
   otpSupportNumber?: string;
   deliveryNotes?: string;
   isOutOfStock?: boolean;
+  stockCount?: number;
   seoTitle?: string;
   seoDescription?: string;
   createdAt?: string;

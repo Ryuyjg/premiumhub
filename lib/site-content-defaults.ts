@@ -206,7 +206,7 @@ export const DEFAULT_SUPPORT_CHANNELS: SupportChannelSeed[] = [
   {
     title: "WhatsApp",
     description: "Message support directly on WhatsApp.",
-    href: "https://wa.me/917907102615",
+    href: "https://wa.me/917012958322",
     buttonLabel: "Open WhatsApp",
     order: 0,
     active: true
