@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Pencil, Search, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
