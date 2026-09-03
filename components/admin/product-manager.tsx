@@ -73,8 +73,8 @@ export function ProductManager({
     );
   }, [products, query]);
   const inputToneClass =
-    "border-zinc-700/90 bg-zinc-900/80 text-zinc-100 placeholder:text-zinc-500 focus:border-orange-500/60 focus:bg-zinc-900";
-  const fieldLabelClass = "grid gap-2 text-sm text-zinc-200";
+    "border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20";
+  const fieldLabelClass = "grid gap-2 text-sm font-semibold text-slate-800";
 
   function resetForm() {
     setForm({

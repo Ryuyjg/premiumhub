@@ -270,7 +270,7 @@ export function AdminDashboard({
             </div>
           )}
 
-          {activeTab === "category" && <CategoryManager categories={categories} />}
+          {activeTab === "category" && <CategoryManager categories={categories} products={products} />}
 
           {activeTab === "products" && <ProductManager products={products} categories={categories} />}
 

@@ -28,11 +28,11 @@ const initialForm: CategoryForm = {
 };
 
 export function CategoryManager({
-  categories,
-  products
+  categories = [],
+  products = []
 }: {
-  categories: Category[];
-  products: Product[];
+  categories?: Category[];
+  products?: Product[];
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
