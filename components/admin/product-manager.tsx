@@ -16,6 +16,7 @@ import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 import {
   CATALOG_UPDATED_EVENT,
   getStoredProducts,
+  recordDeletedProduct,
   saveStoredProducts
 } from "@/lib/client-catalog";
 
@@ -184,7 +185,8 @@ export function ProductManager({
         // Ignore static host error
       }
 
-      const updated = productList.filter((item) => item.id !== id);
+      recordDeletedProduct({ id, slug: id });
+      const updated = productList.filter((item) => item.id !== id && item.slug !== id);
       saveStoredProducts(updated);
 
       toast.success("Product deleted successfully.");

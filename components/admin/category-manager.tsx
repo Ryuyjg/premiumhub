@@ -15,6 +15,7 @@ import { slugify } from "@/lib/utils";
 import {
   CATALOG_UPDATED_EVENT,
   getStoredCategories,
+  recordDeletedCategory,
   saveStoredCategories
 } from "@/lib/client-catalog";
 
@@ -193,7 +194,10 @@ export function CategoryManager({
         // Ignore static export API error
       }
 
-      const updated = categoryList.filter((item) => item.id !== category.id);
+      recordDeletedCategory(category);
+      const updated = categoryList.filter(
+        (item) => item.id !== category.id && item.slug !== category.slug
+      );
       saveStoredCategories(updated);
       setCategoryList(updated);
 
