@@ -11,7 +11,7 @@ type Props = {
 
 export function AppProviders({ children }: Props) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light" enableSystem={false}>
       <AuthProvider>
         <NotificationListener />
         {children}
