@@ -1,0 +1,9 @@
+User-Agent: *
+Allow: /
+Allow: /products
+Allow: /login
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /api
+
+Sitemap: http://localhost:3000/sitemap.xml
