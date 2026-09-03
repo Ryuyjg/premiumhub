@@ -1,5 +1,5 @@
-export const APP_NAME = "OTT SHOP";
-export const APP_TAGLINE = "Curated digital access";
+export const APP_NAME = "PremiumHub";
+export const APP_TAGLINE = "Digital Subscriptions & Premium Access";
 export const APP_DESCRIPTION =
   "A premium storefront for curated digital products, software, subscriptions, and private offers with manual catalog control.";
 
