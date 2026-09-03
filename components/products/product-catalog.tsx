@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { MessageCircle } from "lucide-react";
 import type { Category, Product } from "@/types";
