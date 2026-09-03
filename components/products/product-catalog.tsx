@@ -2,22 +2,43 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { MessageCircle } from "lucide-react";
 import type { Category, Product } from "@/types";
 import { MEGA_SALES_CATEGORY_SLUG } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/utils";
 import { getWhatsAppOrderUrl } from "@/lib/whatsapp";
+import {
+  CATALOG_UPDATED_EVENT,
+  getStoredCategories,
+  getStoredProducts
+} from "@/lib/client-catalog";
 
 export function ProductCatalog({
-  products,
-  categories
+  products = [],
+  categories = []
 }: {
-  products: Product[];
-  categories: Category[];
+  products?: Product[];
+  categories?: Category[];
 }) {
   const searchParams = useSearchParams();
+
+  const [catalogCategories, setCatalogCategories] = useState<Category[]>(() =>
+    getStoredCategories(categories)
+  );
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>(() =>
+    getStoredProducts(products)
+  );
+
+  useEffect(() => {
+    function syncCatalog() {
+      setCatalogCategories(getStoredCategories(categories));
+      setCatalogProducts(getStoredProducts(products));
+    }
+    syncCatalog();
+    window.addEventListener(CATALOG_UPDATED_EVENT, syncCatalog);
+    return () => window.removeEventListener(CATALOG_UPDATED_EVENT, syncCatalog);
+  }, [categories, products]);
 
   const selectedCategory = useMemo(() => {
     const slug = searchParams.get("category");
@@ -29,12 +50,12 @@ export function ProductCatalog({
       return MEGA_SALES_CATEGORY_SLUG;
     }
 
-    const matched = categories.find((item) => item.slug === slug);
+    const matched = catalogCategories.find((item) => item.slug === slug);
     return matched ? matched.slug : "all";
-  }, [searchParams, categories]);
+  }, [searchParams, catalogCategories]);
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
+    return catalogProducts.filter((product) => {
       if (selectedCategory === "all") {
         return true;
       }
@@ -50,7 +71,7 @@ export function ProductCatalog({
         product.categoryName.toLowerCase() === selectedCategory.replace(/-/g, " ")
       );
     });
-  }, [products, selectedCategory]);
+  }, [catalogProducts, selectedCategory]);
 
   function handleInlineOrderNow(product: Product) {
     if (product.isOutOfStock || product.stockCount === 0) return;

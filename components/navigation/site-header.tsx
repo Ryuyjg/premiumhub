@@ -10,8 +10,8 @@ import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { useAuth } from "@/components/providers/auth-provider";
 import { getClientAuth } from "@/lib/firebase/client";
 import { MEGA_SALES_NAV_ITEM, STARTER_CATEGORIES } from "@/lib/catalog";
-
-const HEADER_CATEGORY_ITEMS = [...STARTER_CATEGORIES, MEGA_SALES_NAV_ITEM];
+import { CATALOG_UPDATED_EVENT, getStoredCategories } from "@/lib/client-catalog";
+import type { Category } from "@/types";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -25,6 +25,19 @@ export function SiteHeader() {
   const { user, loading } = useAuth();
   const isAdminRoute = pathname.startsWith("/admin");
   const [activeCategorySlug, setActiveCategorySlug] = useState<string | null>(null);
+
+  const [headerCategories, setHeaderCategories] = useState<Array<{ name: string; slug: string }>>(() =>
+    getStoredCategories([...STARTER_CATEGORIES] as unknown as Category[])
+  );
+
+  useEffect(() => {
+    function syncHeaderCategories() {
+      setHeaderCategories(getStoredCategories([...STARTER_CATEGORIES] as unknown as Category[]));
+    }
+    syncHeaderCategories();
+    window.addEventListener(CATALOG_UPDATED_EVENT, syncHeaderCategories);
+    return () => window.removeEventListener(CATALOG_UPDATED_EVENT, syncHeaderCategories);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -229,7 +242,7 @@ export function SiteHeader() {
         <div className="border-t border-border/50 bg-[hsl(var(--surface)/0.98)]">
           <div className="container no-scrollbar overflow-x-auto">
             <nav className="flex min-w-max items-center gap-6 py-2.5">
-              {HEADER_CATEGORY_ITEMS.map((item) => {
+              {[...headerCategories, MEGA_SALES_NAV_ITEM].map((item) => {
                 const active = pathname.startsWith("/products") && activeCategorySlug === item.slug;
                 return (
                   <Link
