@@ -144,10 +144,10 @@ export function AdminDashboard({
   );
   
   const kpiCards = useMemo(() => [
-    { icon: Wallet, label: "Total Revenue", value: formatCurrency(analytics.revenue), gradient: "from-primary/20 to-accent/10", iconBg: "bg-primary/15", iconColor: "text-primary" },
-    { icon: BarChart3, label: "Total Orders", value: String(analytics.orders), gradient: "from-emerald-500/15 to-teal-500/8", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500" },
-    { icon: Users2, label: "Active Users", value: String(analytics.activeUsers), gradient: "from-emerald-500/15 to-teal-500/8", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500" },
-    { icon: TicketPercent, label: "Live Subscriptions", value: String(analytics.activeSubscriptions), gradient: "from-amber-500/15 to-orange-500/8", iconBg: "bg-amber-500/10", iconColor: "text-amber-500" }
+    { icon: Wallet, label: "Total Revenue", value: formatCurrency(analytics.revenue), gradient: "from-blue-50 to-indigo-50/50", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
+    { icon: BarChart3, label: "Total Orders", value: String(analytics.orders), gradient: "from-emerald-50 to-teal-50/50", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600" },
+    { icon: Users2, label: "Active Users", value: String(analytics.activeUsers), gradient: "from-emerald-50 to-teal-50/50", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600" },
+    { icon: TicketPercent, label: "Live Subscriptions", value: String(analytics.activeSubscriptions), gradient: "from-amber-50 to-orange-50/50", iconBg: "bg-amber-500/10", iconColor: "text-amber-600" }
   ], [analytics]);
 
   async function handleResetCatalog() {
@@ -180,23 +180,23 @@ export function AdminDashboard({
   return (
     <div className="space-y-8">
       {/* Admin hero header */}
-      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary/90 via-accent to-[hsl(var(--gradient-mid))] p-8 md:p-10 text-white">
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-white/8 blur-3xl" />
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-8 md:p-10 text-white shadow-2xl border border-slate-800">
+        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-blue-500/15 blur-3xl" />
+        <div className="absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-indigo-500/15 blur-3xl" />
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "36px 36px" }} />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-widest">
-              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-              Admin control center
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-2 rounded-full bg-blue-500/20 border border-blue-400/30 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-300">
+              <span className="h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
+              Admin Control Center
             </span>
-            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Admin Dashboard</h1>
-            <p className="max-w-xl text-white/75 text-sm">Manage categories, products, users, coupons, offers, settings, and support from one place.</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">Admin Dashboard</h1>
+            <p className="max-w-xl text-slate-300 text-sm leading-relaxed">Manage categories, products, users, coupons, offers, settings, and support from one place.</p>
             <button
               type="button"
               onClick={() => setConfirmResetCatalog(true)}
               disabled={resettingCatalog}
-              className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-primary transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-slate-900 transition hover:bg-slate-100 shadow-md disabled:cursor-not-allowed disabled:opacity-70"
             >
               {resettingCatalog ? "Resetting catalog..." : "Reset catalog with starter products"}
             </button>
@@ -207,24 +207,24 @@ export function AdminDashboard({
               { label: "Account pools", value: `${accounts.length} managed` },
               { label: "Stock alerts", value: `${lowStockPools} low` }
             ].map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2.5 backdrop-blur-sm">
-                <p className="text-[10px] uppercase tracking-widest text-white/60">{s.label}</p>
-                <p className="mt-1 font-bold text-sm">{s.value}</p>
+              <div key={s.label} className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-md">
+                <p className="text-[10px] uppercase font-bold tracking-widest text-indigo-200">{s.label}</p>
+                <p className="mt-1 font-black text-sm text-white">{s.value}</p>
               </div>
             ))}
           </div>
         </div>
         {/* Tab bar */}
-        <div className="relative mt-8 flex flex-wrap gap-2">
+        <div className="relative mt-8 flex flex-wrap gap-2 pt-4 border-t border-white/10">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => handleTabChange(tab.id)}
-              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-all duration-200 ${
                 activeTab === tab.id
-                  ? "bg-white text-primary shadow-md"
-                  : "border border-white/25 bg-white/10 text-white hover:bg-white/20"
+                  ? "bg-white text-slate-950 shadow-lg scale-[1.02]"
+                  : "border border-white/20 bg-white/10 text-slate-100 hover:bg-white/20"
               }`}
             >
               <tab.icon className="h-4 w-4" />
@@ -243,14 +243,14 @@ export function AdminDashboard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * index }}
             whileHover={{ y: -4 }}
-            className={`relative overflow-hidden rounded-[1.75rem] border border-border bg-gradient-to-br ${item.gradient} p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_16px_48px_rgba(13,148,136,0.16)] dark:border-white/5`}
+            className={`relative overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md`}
           >
-            <span className="absolute -right-2 -top-3 text-7xl font-black text-foreground/3 select-none">{index + 1}</span>
+            <span className="absolute -right-2 -top-3 text-7xl font-black text-slate-900/5 select-none">{index + 1}</span>
             <div className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${item.iconBg} mb-4`}>
               <item.icon className={`h-5 w-5 ${item.iconColor}`} />
             </div>
-            <p className="text-sm text-muted-foreground">{item.label}</p>
-            <p className="mt-1.5 text-3xl font-bold">{item.value}</p>
+            <p className="text-sm font-semibold text-slate-600">{item.label}</p>
+            <p className="mt-1.5 text-3xl font-extrabold text-slate-900">{item.value}</p>
           </motion.div>
         ))}
       </div>
@@ -258,89 +258,48 @@ export function AdminDashboard({
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.25 }}
-          className="space-y-6"
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
         >
-          {activeTab === "overview" ? (
-            <>
-              <Card>
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold">Revenue trend</h2>
-                  <p className="text-sm text-muted-foreground">Paid order revenue over recent months.</p>
-                </div>
-                <div className="mt-6 flex h-64 items-end gap-3 md:gap-4 overflow-hidden rounded-2xl border border-border/70 bg-muted/20 p-4">
-                  {analytics.monthlyRevenue.length ? (
-                    analytics.monthlyRevenue.map((item) => (
-                      <div key={item.label} className="flex flex-1 flex-col items-center gap-3">
-                        <div
-                          className="w-full rounded-t-xl bg-gradient-to-t from-primary to-accent transition hover:opacity-90"
-                          style={{ height: `${Math.max(item.value / 20, 24)}px` }}
-                        />
-                        <div className="text-center">
-                          <p className="text-xs md:text-sm font-medium">{item.label}</p>
-                          <p className="hidden md:block text-xs text-muted-foreground">{formatCurrency(item.value)}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-muted-foreground">Revenue data will populate after paid orders arrive.</p>
-                  )}
-                </div>
-              </Card>
+          {activeTab === "overview" && (
+            <div className="grid gap-8 lg:grid-cols-2">
               <OrderManager orders={orders} />
-            </>
-          ) : null}
-
-          {activeTab === "category" ? (
-            <CategoryManager categories={categories} products={products} />
-          ) : null}
-
-          {activeTab === "products" ? (
-            <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-              <ProductManager products={products} categories={categories} />
               <AccountManager accounts={accounts} products={products} />
             </div>
-          ) : null}
+          )}
 
-          {activeTab === "offers" ? (
-            <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-              <OfferManager offers={offers} />
+          {activeTab === "category" && <CategoryManager categories={categories} />}
+
+          {activeTab === "products" && <ProductManager products={products} categories={categories} />}
+
+          {activeTab === "offers" && <OfferManager offers={offers} products={products} categories={categories} />}
+
+          {activeTab === "settings" && <SiteContentManager initialPages={sitePages} initialChannels={supportChannels} />}
+
+          {activeTab === "users" && (
+            <div className="space-y-8">
+              <UserBalanceManager users={users} />
               <ReviewManager reviews={reviews} products={products} />
             </div>
-          ) : null}
+          )}
 
-          {activeTab === "settings" ? (
-            <SiteContentManager pages={sitePages} supportChannels={supportChannels} />
-          ) : null}
+          {activeTab === "coupons" && <CouponManager coupons={coupons} products={products} categories={categories} />}
 
-          {activeTab === "users" ? (
-            <UserBalanceManager users={users} />
-          ) : null}
-
-          {activeTab === "coupons" ? (
-            <CouponManager coupons={coupons} />
-          ) : null}
-
-          {activeTab === "support" ? (
-            <SupportManager tickets={tickets} />
-          ) : null}
+          {activeTab === "support" && <SupportManager tickets={tickets} />}
         </motion.div>
       </AnimatePresence>
 
       <ConfirmDialog
         open={confirmResetCatalog}
-        title="Reset catalog with starter products?"
-        description="This will delete products, categories, offers, coupons, reviews, account pools, and old gateway transaction data, then add 10 starter products to every category."
-        confirmLabel="Yes, reset catalog"
-        cancelLabel="No"
-        busy={resettingCatalog}
-        onCancel={() => setConfirmResetCatalog(false)}
-        onConfirm={() => void handleResetCatalog()}
+        onOpenChange={setConfirmResetCatalog}
+        title="Reset Catalog to Starter Items?"
+        description="This will clear current product and category tables and seed standard products and categories. Are you sure you want to proceed?"
+        confirmLabel="Reset Catalog"
+        danger
+        onConfirm={handleResetCatalog}
       />
     </div>
   );
 }
-
