@@ -18,20 +18,40 @@ export function AdminLoginCard() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/admin-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await response.json().catch(() => ({}));
+      let isSuccess = false;
+      try {
+        const response = await fetch("/api/auth/admin-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        if (response.ok) {
+          isSuccess = true;
+        }
+      } catch {
+        // Ignore network/static host error
+      }
 
-      if (!response.ok) {
-        throw new Error(data.error || "Admin sign-in failed.");
+      // Static export fallback for GitHub Pages
+      if (!isSuccess) {
+        const validEmail = "anshifkp8590@gmail.com";
+        const validPassword = "podapatti";
+
+        if (email.trim().toLowerCase() === validEmail.toLowerCase() && password === validPassword) {
+          isSuccess = true;
+          document.cookie = "ott_admin=true; path=/; max-age=86400";
+          if (typeof window !== "undefined") {
+            localStorage.setItem("ott_admin", "true");
+          }
+        }
+      }
+
+      if (!isSuccess) {
+        throw new Error("Invalid admin credentials.");
       }
 
       toast.success("Admin access granted.");
-      router.replace("/admin");
-      router.refresh();
+      router.push("/admin");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Admin sign-in failed.");
     } finally {
