@@ -51,7 +51,11 @@ export function AdminLoginCard() {
       }
 
       toast.success("Admin access granted.");
-      router.push("/admin");
+      if (typeof window !== "undefined") {
+        window.location.assign("/premiumhub/admin");
+      } else {
+        router.push("/admin");
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Admin sign-in failed.");
     } finally {
