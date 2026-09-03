@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, Box, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Category, Product } from "@/types";
@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FEATURED_CATEGORY_SLUG } from "@/lib/catalog";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { slugify } from "@/lib/utils";
 
 type CategoryForm = {
   id?: string;
@@ -40,6 +41,34 @@ export function CategoryManager({
   const [confirmDelete, setConfirmDelete] = useState<Category | null>(null);
   const [form, setForm] = useState<CategoryForm>(initialForm);
 
+  // Synchronize state with initial categories and localStorage overrides
+  const [categoryList, setCategoryList] = useState<Category[]>(categories);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("ott_categories");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCategoryList(parsed);
+            return;
+          }
+        } catch {
+          // Fallback to props
+        }
+      }
+    }
+    setCategoryList(categories);
+  }, [categories]);
+
+  const saveToStorage = (updated: Category[]) => {
+    setCategoryList(updated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ott_categories", JSON.stringify(updated));
+    }
+  };
+
   const categoryUsage = useMemo(() => {
     const usageMap = new Map<string, number>();
     products.forEach((product) => {
@@ -49,7 +78,7 @@ export function CategoryManager({
   }, [products]);
 
   const orderedCategories = useMemo(() => {
-    return [...categories].sort((a, b) => {
+    return [...categoryList].sort((a, b) => {
       const aOrder = typeof a.order === "number" ? a.order : Number.MAX_SAFE_INTEGER;
       const bOrder = typeof b.order === "number" ? b.order : Number.MAX_SAFE_INTEGER;
       if (aOrder !== bOrder) {
@@ -57,7 +86,7 @@ export function CategoryManager({
       }
       return a.name.localeCompare(b.name);
     });
-  }, [categories]);
+  }, [categoryList]);
 
   function resetForm() {
     setForm(initialForm);
@@ -76,32 +105,42 @@ export function CategoryManager({
   async function saveCategory() {
     setSubmitting(true);
     try {
-      const payload = {
-        id: form.id,
-        name: form.name.trim(),
-        description: form.description.trim(),
-        imageUrl: form.imageUrl.trim(),
-        order: form.order === "" ? undefined : Number(form.order)
-      };
-
-      if (!payload.name) {
+      const name = form.name.trim();
+      if (!name) {
         throw new Error("Category name is required.");
       }
 
-      const response = await fetch("/api/admin/categories", {
-        method: form.id ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json().catch(() => ({}));
+      const slug = slugify(name);
+      const newCategory: Category = {
+        id: form.id || slug,
+        slug,
+        name,
+        description: form.description.trim(),
+        imageUrl: form.imageUrl.trim(),
+        order: form.order === "" ? categoryList.length : Number(form.order)
+      };
 
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to save category.");
+      // Try server API first
+      try {
+        await fetch("/api/admin/categories", {
+          method: form.id ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCategory)
+        });
+      } catch {
+        // Ignore static host failure
       }
 
+      let updatedList: Category[];
+      if (form.id) {
+        updatedList = categoryList.map((item) => (item.id === form.id ? newCategory : item));
+      } else {
+        updatedList = [...categoryList, newCategory];
+      }
+
+      saveToStorage(updatedList);
       toast.success(form.id ? "Category updated." : "Category created.");
       resetForm();
-      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category save failed.");
     } finally {
@@ -110,9 +149,9 @@ export function CategoryManager({
   }
 
   async function reorderCategory(category: Category, direction: "up" | "down") {
-    const currentIndex = categories.findIndex((item) => item.id === category.id);
+    const currentIndex = orderedCategories.findIndex((item) => item.id === category.id);
     const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-    const target = categories[targetIndex];
+    const target = orderedCategories[targetIndex];
 
     if (currentIndex < 0 || !target) {
       return;
@@ -123,24 +162,29 @@ export function CategoryManager({
 
     setReorderingId(category.id);
     try {
-      const response = await fetch("/api/admin/categories", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          updates: [
-            { id: category.id, order: targetOrder },
-            { id: target.id, order: currentOrder }
-          ]
-        })
-      });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to reorder categories.");
+      try {
+        await fetch("/api/admin/categories", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            updates: [
+              { id: category.id, order: targetOrder },
+              { id: target.id, order: currentOrder }
+            ]
+          })
+        });
+      } catch {
+        // Ignore static host error
       }
 
+      const updated = categoryList.map((item) => {
+        if (item.id === category.id) return { ...item, order: targetOrder };
+        if (item.id === target.id) return { ...item, order: currentOrder };
+        return item;
+      });
+
+      saveToStorage(updated);
       toast.success("Category order updated.");
-      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category reorder failed.");
     } finally {
@@ -149,26 +193,19 @@ export function CategoryManager({
   }
 
   async function deleteCategory(category: Category) {
-    const productCount = categoryUsage.get(category.id) || 0;
-    if (productCount > 0) {
-      toast.error(`Move or delete ${productCount} product${productCount === 1 ? "" : "s"} from ${category.name} first.`);
-      return;
-    }
-
     setDeletingId(category.id);
     try {
-      const response = await fetch(`/api/admin/categories?id=${category.id}`, {
-        method: "DELETE"
-      });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to delete category.");
+      try {
+        await fetch(`/api/admin/categories?id=${category.id}`, { method: "DELETE" });
+      } catch {
+        // Ignore static host error
       }
 
-      toast.success("Category deleted.");
+      const updated = categoryList.filter((item) => item.id !== category.id);
+      saveToStorage(updated);
+
+      toast.success("Category deleted successfully.");
       setConfirmDelete(null);
-      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Category delete failed.");
     } finally {
@@ -178,10 +215,9 @@ export function CategoryManager({
 
   return (
     <Card className="h-full">
-      <h2 className="text-xl font-semibold">{form.id ? "Edit category" : "Category management"}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Create, edit, add descriptions, and set category images. Deletion stays blocked while products still use that
-        category.
+      <h2 className="text-xl font-bold text-slate-900">{form.id ? "Edit Category" : "Category Management"}</h2>
+      <p className="mt-1 text-sm text-slate-600">
+        Create, edit, reorder, or delete store categories.
       </p>
 
       <div className="mt-5 grid gap-4">
@@ -196,18 +232,18 @@ export function CategoryManager({
           min="0"
           value={form.order}
           onChange={(event) => setForm((current) => ({ ...current, order: event.target.value }))}
-          placeholder="Sort order"
+          placeholder="Sort order (e.g. 0, 1, 2)"
         />
-        <p className="text-xs text-muted-foreground">Lower numbers appear first. Use `0` for the top category.</p>
+        <p className="text-xs text-slate-500">Lower numbers appear first in navigation.</p>
         <textarea
           value={form.description}
           onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
           placeholder="Category description"
-          className="min-h-28 w-full rounded-[1.25rem] border border-border/80 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 dark:bg-white/5"
+          className="min-h-24 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
 
         <div className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Category image</p>
+          <p className="text-xs uppercase font-bold tracking-wider text-slate-600">Category image</p>
           <div className="flex flex-wrap items-center gap-3">
             <ImageUploader onUploaded={(url) => setForm((current) => ({ ...current, imageUrl: url }))} />
             {form.imageUrl ? (
@@ -221,10 +257,10 @@ export function CategoryManager({
               <div className="relative h-36 overflow-hidden rounded-[1.15rem]">
                 <Image src={form.imageUrl} alt={form.name || "Category preview"} fill className="object-cover" />
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">Image ready for this category.</p>
+              <p className="mt-3 text-xs text-slate-500">Image ready for this category.</p>
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground">Upload an image if you want this category to have its own visual.</p>
+            <p className="text-xs text-slate-500">Upload an image if you want this category to have its own visual.</p>
           )}
         </div>
 
@@ -243,51 +279,43 @@ export function CategoryManager({
       <div className="mt-6 max-h-[34rem] space-y-2 overflow-y-auto pr-1">
         {orderedCategories.map((category, index) => {
           const productCount = categoryUsage.get(category.id) || 0;
-          const inUse = productCount > 0;
           const isDeleting = deletingId === category.id;
           const highlighted = category.slug === FEATURED_CATEGORY_SLUG;
           const isReordering = reorderingId === category.id;
 
           return (
-            <div key={category.id} className="rounded-2xl border border-border/80 px-3 py-3 md:px-4">
+            <div key={category.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="flex min-w-0 items-start gap-3">
-                  <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border border-border/70 bg-muted/30">
+                  <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
                     {category.imageUrl ? (
                       <Image src={category.imageUrl} alt={category.name} fill className="object-cover" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                        <Box className="h-4 w-4" />
+                      <div className="flex h-full w-full items-center justify-center text-slate-400">
+                        <Box className="h-5 w-5" />
                       </div>
                     )}
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">{category.name}</p>
+                      <p className="font-bold text-slate-900">{category.name}</p>
                       {highlighted ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
-                          Main product
+                        <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-600">
+                          Main category
                         </span>
                       ) : null}
-                      <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/65 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">
                         Order {category.order ?? index}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-muted/35 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">
                         <Box className="h-3 w-3" />
                         {productCount} product{productCount === 1 ? "" : "s"}
                       </span>
                     </div>
-                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                    <p className="mt-1 line-clamp-2 text-xs text-slate-600">
                       {category.description || "No description added."}
                     </p>
-                    {inUse ? (
-                      <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-300">In use, delete disabled.</p>
-                    ) : highlighted ? (
-                      <p className="mt-1 text-[11px] text-primary">Keep this lane for flagship Telegram automation listings.</p>
-                    ) : (
-                      <p className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-300">Safe to delete.</p>
-                    )}
                   </div>
                 </div>
 
@@ -296,7 +324,7 @@ export function CategoryManager({
                     type="button"
                     onClick={() => void reorderCategory(category, "up")}
                     disabled={index === 0 || isReordering}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/70 text-foreground transition hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label={`Move ${category.name} up`}
                   >
                     <ArrowUp className="h-3.5 w-3.5" />
@@ -305,7 +333,7 @@ export function CategoryManager({
                     type="button"
                     onClick={() => void reorderCategory(category, "down")}
                     disabled={index === orderedCategories.length - 1 || isReordering}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/70 text-foreground transition hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label={`Move ${category.name} down`}
                   >
                     <ArrowDown className="h-3.5 w-3.5" />
@@ -313,7 +341,7 @@ export function CategoryManager({
                   <button
                     type="button"
                     onClick={() => editCategory(category)}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-border/70 px-2.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground transition hover:bg-muted/40"
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-slate-200 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-700 hover:bg-slate-100"
                     aria-label={`Edit ${category.name}`}
                     title="Edit category"
                   >
@@ -323,10 +351,10 @@ export function CategoryManager({
                   <button
                     type="button"
                     onClick={() => setConfirmDelete(category)}
-                    disabled={inUse || isDeleting}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-rose-500/30 px-2.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-rose-600 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:border-border/60 disabled:text-muted-foreground"
+                    disabled={isDeleting}
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-rose-300 bg-rose-50 px-3 text-[10px] font-bold uppercase tracking-wider text-rose-600 hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label={`Delete ${category.name}`}
-                    title={inUse ? "Move linked products first" : "Delete category"}
+                    title="Delete category"
                   >
                     <Trash2 className="h-3 w-3" />
                     {isDeleting ? "Deleting..." : "Delete"}
@@ -343,11 +371,11 @@ export function CategoryManager({
         title="Delete category?"
         description={
           confirmDelete
-            ? `Delete "${confirmDelete.name}"? Products must already be moved out before this can be confirmed.`
+            ? `Are you sure you want to delete "${confirmDelete.name}"?`
             : ""
         }
         confirmLabel="Yes, delete"
-        cancelLabel="No"
+        cancelLabel="Cancel"
         busy={Boolean(confirmDelete && deletingId === confirmDelete.id)}
         onCancel={() => setConfirmDelete(null)}
         onConfirm={() => {

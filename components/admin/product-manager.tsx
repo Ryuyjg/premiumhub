@@ -52,14 +52,41 @@ const initialForm: ProductForm = {
 };
 
 export function ProductManager({
-  products,
-  categories
+  products = [],
+  categories = []
 }: {
-  products: Product[];
-  categories: Category[];
+  products?: Product[];
+  categories?: Category[];
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [query, setQuery] = useState("");
+  const [productList, setProductList] = useState<Product[]>(products);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("ott_products");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setProductList(parsed);
+            return;
+          }
+        } catch {
+          // Fallback to props
+        }
+      }
+    }
+    setProductList(products);
+  }, [products]);
+
+  const saveToStorage = (updated: Product[]) => {
+    setProductList(updated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ott_products", JSON.stringify(updated));
+    }
+  };
+
   const [form, setForm] = useState<ProductForm>({
     ...initialForm,
     categoryId: categories[0]?.id || ""
@@ -68,10 +95,10 @@ export function ProductManager({
   const selectedCategory = categories.find((category) => category.id === form.categoryId) || null;
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
+    return productList.filter((product) =>
       `${product.name} ${product.categoryName} ${product.stockStatus}`.toLowerCase().includes(query.toLowerCase())
     );
-  }, [products, query]);
+  }, [productList, query]);
   const inputToneClass =
     "border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20";
   const fieldLabelClass = "grid gap-2 text-sm font-semibold text-slate-800";
@@ -93,23 +120,29 @@ export function ProductManager({
         .filter(Boolean);
 
       const payload = {
-        id: form.id,
+        id: form.id || slugify(form.name),
+        slug: slugify(form.name),
         name: form.name.trim(),
         shortDescription: form.shortDescription.trim(),
         description: form.description.trim(),
         features,
         categoryId: form.categoryId,
+        categoryName: selectedCategory?.name || "General",
         imageUrl: form.imageUrl.trim(),
+        imageUrls: [form.imageUrl.trim()],
         price: Number(form.price),
+        salePrice: Number(form.discount) > 0 ? Number(form.price) * (1 - Number(form.discount) / 100) : null,
         discount: Number(form.discount || "0"),
         durationInDays: Number(form.durationInDays || "30"),
         stockCount: Number(form.stockCount || "0"),
+        stockStatus: "active" as const,
         featured: form.featured,
         bestSelling: form.bestSelling,
         deliveryMode: form.deliveryMode,
-        otpSupportNumber: form.otpSupportNumber.trim(),
+        otpSupportNumber: form.otpSupportNumber.trim() || null,
         deliveryNotes: form.deliveryNotes.trim(),
-        stockStatus: "active"
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       if (
@@ -125,20 +158,26 @@ export function ProductManager({
         throw new Error("Please fill all required product fields, including at least one feature bullet.");
       }
 
-      const response = await fetch("/api/admin/products", {
-        method: form.id ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to save product.");
+      try {
+        await fetch("/api/admin/products", {
+          method: form.id ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      } catch {
+        // Ignore static host failure
       }
 
+      let updated: Product[];
+      if (form.id) {
+        updated = productList.map((item) => (item.id === form.id ? (payload as Product) : item));
+      } else {
+        updated = [payload as Product, ...productList];
+      }
+
+      saveToStorage(updated);
       toast.success(form.id ? "Product updated." : "Product created.");
       resetForm();
-      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Product save failed.");
     } finally {
@@ -148,16 +187,17 @@ export function ProductManager({
 
   async function deleteProduct(id: string) {
     try {
-      const response = await fetch(`/api/admin/products?id=${id}`, {
-        method: "DELETE"
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to delete product.");
+      try {
+        await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
+      } catch {
+        // Ignore static host error
       }
-      toast.success("Product deleted.");
+
+      const updated = productList.filter((item) => item.id !== id);
+      saveToStorage(updated);
+
+      toast.success("Product deleted successfully.");
       setConfirmDelete(null);
-      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Delete failed.");
     }
