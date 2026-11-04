@@ -1,96 +1,103 @@
-# StreamVault
+﻿# ⚡ PremiumHub (StreamVault) — Digital Subscription SaaS
 
-Premium digital subscription selling platform built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, and Firebase.
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-15_App_Router-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 15" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Firebase-Auth_%26_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
+</div>
 
-## What is included
+<p align="center">
+  A production-grade, full-stack digital subscription SaaS ecosystem engineered with Next.js 15 App Router, Firebase Server SDK, AES encrypted credential vaults, and an administrative ERP dashboard.
+</p>
 
-- Premium SaaS-grade landing page with glassmorphism, gradients, motion, and responsive sections
-- Product catalog with search, filters, animated cards, and plan detail views
-- Firebase Auth login and secure server-side session cookies
-- Manual catalog management with wallet purchases and a clean base for future USDT gateway integration
-- Firestore-backed orders, subscriptions, coupons, analytics, and OTT account assignment
-- Admin workspace for analytics, products, coupons, orders, and credential vault management
-- AES-encrypted OTT credentials, Firestore rules, and Storage rules
-- Deployment-ready structure for Vercel + Firebase
+---
 
-## Stack
+## 🏗️ Architectural Overview
 
-- Next.js 15 App Router
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- Firebase Auth, Firestore, Storage, Admin SDK
-- Future USDT gateway (manual integration later)
-- Zustand
-- Zod
+`
+   ┌───────────────────────────────────────────────────────────────┐
+   │                       CLIENT LAYER                            │
+   │  Next.js 15 App Router • Framer Motion • Tailwind CSS Glass   │
+   └───────────────────────────────┬───────────────────────────────┘
+                                   │
+               ┌───────────────────┴───────────────────┐
+               ▼                                       ▼
+   ┌───────────────────────┐               ┌───────────────────────┐
+   │    CUSTOMER PORTAL    │               │    ADMIN WORKSPACE    │
+   │ Catalog • Dynamic Plan│               │ Analytics • Products  │
+   │ Selection • Checkout  │               │ Fulfillment • Vault   │
+   └───────────┬───────────┘               └───────────┬───────────┘
+               │                                       │
+               └───────────────────┬───────────────────┘
+                                   ▼
+   ┌───────────────────────────────────────────────────────────────┐
+   │                       BACKEND & SECURITY                      │
+   │ Firebase Admin SDK • AES Credential Encryption • Server Auth  │
+   └───────────────────────────────┬───────────────────────────────┘
+                                   ▼
+   ┌───────────────────────────────────────────────────────────────┐
+   │                      PERSISTENCE ENGINE                       │
+   │ Firestore Database • Firebase Storage • Security Rule Guards  │
+   └───────────────────────────────────────────────────────────────┘
+`
 
-## Setup
+---
 
-1. Install Node.js 20+ and npm 10+.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env.local`.
-4. Fill all Firebase values.
-5. Start the app with `npm run dev`.
+## ✨ Features
 
-## Environment variables
+- **🛡️ AES Encrypted Credential Vault**: Secure storage and decryption of digital subscription credentials (master email, password, profile pins) with zero client-side credential exposure.
+- **⚡ Next.js 15 App Router**: Server-side rendering (SSR), streaming suspense, and cookie-based server session verification.
+- **📊 Real-time Admin ERP Workspace**:
+  - Live order tracking and manual or automated fulfillment pipelines.
+  - Granular inventory tracking and catalog adjustments.
+  - Analytics dashboards for revenue metrics, active subscriptions, and churn rates.
+- **🔐 Role-Based Access Control (RBAC)**: Secure Firestore rules separating general user capabilities from elevated administrator rights.
+- **🏷️ Dynamic Coupon & Promo Rules**: Tiered promotional logic with automated expiry calculation and percentage discounts.
 
-### Frontend Firebase
+---
 
-- `NEXT_PUBLIC_APP_URL`
-- `NEXT_PUBLIC_FIREBASE_API_KEY`
-- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-- `NEXT_PUBLIC_FIREBASE_APP_ID`
-### Server secrets
+## 🛠️ Tech Stack
 
-- `FIREBASE_PROJECT_ID`
-- `FIREBASE_CLIENT_EMAIL`
-- `FIREBASE_PRIVATE_KEY`
-- `SESSION_COOKIE_NAME`
-- `SESSION_COOKIE_MAX_AGE`
-- `OTT_CREDENTIAL_SECRET`
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router, Server Actions)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/)
+- **Database & Auth**: [Firebase](https://firebase.google.com/) (Auth, Cloud Firestore, Cloud Storage, Admin SDK)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Validation**: [Zod](https://zod.dev/)
 
-## Firebase collections
+---
 
-- `users`
-- `categories`
-- `products`
-- `orders`
-- `subscriptions`
-- `coupons`
-- `ottAccounts`
-- `orderFulfillments`
+## 🚀 Getting Started
 
-## Admin bootstrap
+### 1. Prerequisites
+- Node.js 20+
+- Firebase project configuration
 
-1. Create a user via the login/register screen.
-2. In Firestore, update that user document role to `admin`.
-3. Add category documents first.
-4. Add products and OTT accounts from `/admin`.
+### 2. Installation
 
-## Catalog notes
+`ash
+# Clone the repository
+git clone https://github.com/Ryuyjg/premiumhub.git
+cd premiumhub
 
-- The app no longer auto-seeds starter categories or products.
-- Use the admin dashboard to add your catalog manually.
-- Use the admin dashboard clear action if you want to wipe catalog-side data and start fresh again.
+# Install dependencies
+npm install
 
-## Deployment
+# Copy environment variables
+cp .env.example .env.local
+`
 
-### Vercel
+### 3. Development Server
 
-1. Import the project into Vercel.
-2. Set all environment variables.
-3. Build command: `npm run build`
+`ash
+npm run dev
+`
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-### Firebase
+---
 
-- Deploy Firestore rules with `firebase deploy --only firestore:rules`
-- Deploy Storage rules with `firebase deploy --only storage`
+## 👨‍💻 Author
 
-## Notes
-
-- OTP auth is optional and can be layered in later using Firebase phone auth.
-- Add Firestore composite indexes as prompted in production for filtered `orders` and `subscriptions` queries.
-- Product images can be uploaded to Firebase Storage and then stored as public download URLs in product records.
+- **Muhammad Ansif** ([@Ryuyjg](https://github.com/Ryuyjg))
